@@ -1,79 +1,101 @@
 <template>
   <div>
-    <v-col cols="5">
-      <v-text-field
-        label="book"
-        single-line
+    <v-row>
+      <v-col md="4"> </v-col>
+      <v-col md="4">
+        <v-col>
+          <v-text-field
+            label="book"
+            single-line
+            outlined
+            type="text"
+            class="todo-input"
+            v-model="searchBookname"
+            @keyup.enter="getData"
+          ></v-text-field>
+        </v-col>
+      </v-col>
+      <v-col md="4">
+        <v-col class="ma-2"> 
+          <v-btn @click="getData">ค้นหา</v-btn>
+        </v-col>
+      </v-col>
+    </v-row>
+
+    <v-divider class="mt-2 mb-2"></v-divider>
+    <div class ="d-flex flex-wrap">
+      <v-card
+        v-for="[key, bookname] in Object.entries(results)"
+        :key="bookname.Bib_ID"
+        class="ma-4"
+        max-width="344"
         outlined
-        type="text"
-        class="todo-input"
-        v-model="newTodo"
-        @keyup.enter="addTodo"
-      ></v-text-field>
-    
-    
-      
-      
-     
-    </v-col>
-    <input
-      type="text"
-      class="todo-input"
-      placeholder="book"
-      v-model="newTodo"
-      
-    />
-    <!-- <div><input v-model="form.name"></div> -->
-    <div v-for="todo in todos" :key="todo.id" class="todo-item">
-      {{ todo.title }}
+        @click="handleBookclick(Book)"
+      >
+        <v-list-item three-line>
+          <v-list-item-content>
+            <div class="overline mb-4">Publishing:{{ key }}</div>
+            <v-list-item-title class="headline mb-1">
+              {{ bookname.field }}
+            </v-list-item-title>
+            <v-list-item-subtitle></v-list-item-subtitle>
+          </v-list-item-content>
+
+          <img
+            :src="image"
+            alt="กำลังดำเนินการ..."
+            :style="{ width: '80px', marginTop: '30px' }"
+          />
+        </v-list-item>
+      </v-card>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "todo-input",
   data() {
     return {
-      newTodo: "",
-      idForTodo: 3,
-      todos: [
-        {
-          id: 1,
-          title: "ภาษาไทย",
-          completed: false,
-        },
-        {
-          id: 2,
-          title: "คณิตศาสตร์",
-          completed: false,
-        },
-      ],
+      searchBookname: "",
+      results: [],
     };
   },
+
+  mounted() {
+    //console.log(this.$route.query.textSearch);
+    this.searchBookname = this.$route.query.textSearch;
+  },
+
   methods: {
-    addTodo() {
-      if (this.newTodo.trim() == 0) {
+    getData() {
+      if (this.searchBookname.trim() == 0) {
         return;
       }
-      this.todos.push({
-        id: this.idForTodo,
-        title: this.newTodo,
-        completed: false,
+      const url = `${this.$config.apiUrl}/bibdata/findbook/${this.searchBookname}?StartPage=1&perPage=5`;
+      axios.get(url).then((res) => {
+        // console.log(res);
+        this.results = res.data.Results;
+        let temp = {};
+        res.data.Results.forEach((element1) => {
+          element1.forEach((element2) => {
+            console.log(element2);
+            if (!temp[element2.Bib_ID]) {
+              temp[element2.Bib_ID] = { field: "", subField: "" };
+            }
+            temp[element2.Bib_ID].field += " " + element2.Field;
+            temp[element2.Bib_ID].subField += " " + element2.Subfield;
+          });
+        });
+        this.results = temp;
+        console.log(temp);
       });
-      this.newTodo = "";
-      this.idForTodo++;
     },
-props: ['form']
-
+    handleBookclick(Book) {
+      window.location = Book.url;
+    },
   },
 };
 </script>
 
-<style scoped lang="scss">
-.todo-input {
-  width: 100%;
-  padding: 10px 18px;
-  font-size: 18px;
-  margin-bottom: 16px;
-}
-</style>
+<style lang="css" scoped></style>

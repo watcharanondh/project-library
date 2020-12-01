@@ -58,9 +58,9 @@
         <v-col md="3">
           <div class="text-left">
             <table >
-              <tr v-for="({Barcode}, index) in bibitem.data" :key="index">
+              <tr v-for="(datas, index) in bibitem.data" :key="index">
                 <th>Barcode:</th> 
-                <td>{{Barcode}}</td>
+                <td>{{datas.Barcode}}</td>
               </tr>
               <tr>
                 <th>Copy :</th>  
@@ -113,18 +113,18 @@ export default {
   name: "macr21books-table",
   data() {
     return {
-
+      configs: this.$config,
       book: [],
       bibitem: [],
     };
   },
   mounted() {
     axios
-      .get("https://autolibrary-cisproject.herokuapp.com/bibdata/bibinfo/004")
+      .get(`${this.$config.apiUrl}/bibdata/bibinfo/004`)
       .then((response) => (this.book = response));
   
     axios
-      .get("https://autolibrary-cisproject.herokuapp.com/bibdata/bibitem/004")
+      .get(`${this.$config.apiUrl}/bibdata/bibitem/004`)
       .then((response) => (this.bibitem = response));
   
     },

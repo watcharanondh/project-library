@@ -14,20 +14,20 @@
 
       <v-layout row>
         <v-flex xs12 md4></v-flex>
-        <v-flex xs12 md4 mt-5>
+        <v-flex xs12 md4>
           <div :form="form">
-          <v-text-field
-            auto-select-first
-            clearable
-            deletable-chips
-            filled
-            rounded
-            solo
-            type="text"
-            class="todo-input"
-            v-model="searchBook"
-            @keyup.enter="addTodo"
-          ></v-text-field>
+            <v-text-field
+              auto-select-first
+              clearable
+              deletable-chips
+              filled
+              rounded
+              solo
+              type="text"
+              class="todo-input"
+              v-model="searchBook"
+              @keyup.enter="searchBookname"
+            ></v-text-field>
           </div>
           <!-- <button type="submit" @click="onLogin($event)" >ค้นหา</button> -->
         </v-flex>
@@ -36,33 +36,30 @@
       <h2 class="subtitle-1 font-weight-thin mb-4 black--text text-center">
         ระบุคำค้น เช่น ชื่อหนังสือ, ชื่อผู้แต่ง , หมายเลข ISBN ฯลฯ
       </h2>
+      <!-- <div><h1> <input type="text" name="food" value="" @input="changeBookname"> {{$store.getters.getBookname}} </h1></div> -->
     </v-container>
   </v-parallax>
 </template>
 
 <script>
-
 export default {
-   methods: {
-    addTodo() {
+  data() {
+    return {
+      searchBook: "",
+    };
+  },
+  methods: {
+    searchBookname() {
+      this.$router.push({
+        path: "SearchBooklist",
+        query: { textSearch: this.searchBook },
+      });
       if (this.searchBook.trim() == 0) {
         return;
       }
-      this.$emit('searchBook')
-      //window.location = "/SearchBooklist";
     },
   },
-
-  data() {
-    return {
-      form: {
-       searchBook:""
-      }    
-  }
-}
-}
+};
 </script>
 
 <style scoped></style>
-
-    
