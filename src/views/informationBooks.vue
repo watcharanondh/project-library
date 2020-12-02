@@ -28,7 +28,8 @@
         <v-col cols="12" md="8">
           <v-card class="pa-2" outlined tile color="grey lighten-3">
             ผู้แต่ง : สาขาคณิตศาสตร์มัธยมศึกษา <br />
-            สำนักพิมพ ์: สถาบันส่งเสริมการสอนวิทยาศาสตร์และเทคโนโลยี (สสวท.) <br />
+            สำนักพิมพ ์: สถาบันส่งเสริมการสอนวิทยาศาสตร์และเทคโนโลยี (สสวท.)
+            <br />
             เลขเรียกหนังสือ : 510 ส837ค 2559 <br />
             หมายเลข ISBN : 9743940774 <br />
           </v-card>
@@ -43,8 +44,7 @@
           </v-card>
         </v-col>
         <v-col md="5">
-          <v-card class="pa-2" outlined tile color="grey lighten-3">
-          </v-card>
+          <v-card class="pa-2" outlined tile color="grey lighten-3"> </v-card>
         </v-col>
 
         <v-col md="1">
@@ -57,28 +57,27 @@
       <v-row>
         <v-col md="3">
           <div class="text-left">
-            <table >
-              <tr v-for="(datas, index) in bibitem.data" :key="index">
-                <th>Barcode:</th> 
-                <td>{{datas.Barcode}}</td>
-              </tr>
-              <tr>
-                <th>Copy :</th>  
-                <td>{{Bib_ID}}</td>      
-              </tr>  
-              <tr>
-                <th>CallNo :</th>
-                <td>item.CallNo{{}}</td>
-              </tr>
-              <tr>
-                <th>สถานะ :</th>
-                <td>item.status{{}}</td>
-              </tr>
+            <table>
+              <thead>
+                <tr>
+                  <th>Barcode</th>
+                  <th>Copy</th>
+                  <th>CallNo</th>
+                  <th>สถานะ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(datas, index) in bibitem.data" :key="index">
+                  <td>{{ datas.Barcode }}</td>
+                  <td>{{ datas.Bib_ID }}</td>
+                  <td>{{ datas.CallNo }}</td>
+                  <td>{{ datas.borrowandreturn_bnr_ID }}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </v-col>
-        <v-col md="3">
-        </v-col>
+        <v-col md="3"> </v-col>
         <v-col md="1">
           <div class="text-left">
             <table>
@@ -118,17 +117,25 @@ export default {
       bibitem: [],
     };
   },
-  mounted() {
+  mounted(){
     axios
       .get(`${this.$config.apiUrl}/bibdata/bibinfo/004`)
       .then((response) => (this.book = response));
-  
     axios
       .get(`${this.$config.apiUrl}/bibdata/bibitem/004`)
-      .then((response) => (this.bibitem = response));
-  
-    },
-};
+      .then((res) => {(this.bibitem = res)
+        console.log(res) });
+  },
+  // methods: {
+  //     test() {
+  //     axios.get(`${this.$config.apiUrl}/bibdata/bibitem/004`).then((res) => {
+  //       (this.bibitem = res)
+  //       //console.log(res);
+  //     });
+  //     //this.bibitem = res.response;
+  //   },
+  // },
+}
 </script>
 
 <style scoped>
