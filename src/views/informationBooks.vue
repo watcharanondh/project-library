@@ -6,8 +6,11 @@
           <v-card class="pa-2" outlined tile color="grey lighten-3"> </v-card>
         </v-col>
         <v-col cols="12" md="3">
-          <v-card class="pa-2" outlined tile color="grey lighten-3">
-            หนังสือเรียนรายวิชาพื้นฐานคณิตศาสตร์ ม.1 เล่ม 1
+          <v-card 
+            v-for="item in bookinfo[0]"
+            :key="item.Title"
+            class="pa-2" outlined tile color="grey lighten-3">
+            {{item.Title}}
           </v-card>
         </v-col>
       </v-row>
@@ -15,23 +18,33 @@
       <!--หัวข้อชื่อหนังสือ และ ข้อมูลรายละเอียด-->
       <v-row>
         <v-col cols="12" md="4">
-          <v-card class="pa-2" outlined tile color="grey lighten-3">
+          <v-card
+            v-for="item in bookinfo[0]"
+            :key="item.PicPath"
+            class="pa-2"
+            outlined
+            tile
+            color="grey lighten-3"
+          >
             <v-img
-              :src="require('@/assets/logo.jpg')"
-              class="my-3"
-              contain
-              height="200"
-              Width="500"
+              :src="item.PicPath"
+              alt=""
+                class="my-3"
+                contain
+                height="350"
+              
             />
           </v-card>
         </v-col>
         <v-col cols="12" md="8">
-          <v-card class="pa-2" outlined tile color="grey lighten-3">
-            ผู้แต่ง : สาขาคณิตศาสตร์มัธยมศึกษา <br />
-            สำนักพิมพ ์: สถาบันส่งเสริมการสอนวิทยาศาสตร์และเทคโนโลยี (สสวท.)
+          <v-card  v-for="item in bookinfo[0]"
+            :key="item"
+          class="pa-2" outlined tile color="grey lighten-3">
+            ผู้แต่ง : {{item.Author}} <br />
+            สำนักพิมพ ์: {{item.Publish}}
             <br />
-            เลขเรียกหนังสือ : 510 ส837ค 2559 <br />
-            หมายเลข ISBN : 9743940774 <br />
+            เลขเรียกหนังสือ : {{item.CallNo}} <br />
+            หมายเลข ISBN : {{item.ISBN}} <br />
           </v-card>
         </v-col>
       </v-row>
@@ -67,11 +80,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(datas, index) in bibitem.data" :key="index">
-                  <td>{{ datas.Barcode }}</td>
-                  <td>{{ datas.Bib_ID }}</td>
-                  <td>{{ datas.CallNo }}</td>
-                  <td>{{ datas.borrowandreturn_bnr_ID }}</td>
+                <tr v-for="(items, index) in bookinfo[2]" :key="index">
+                  <td>{{ items.Barcode }}</td>
+                  <td>{{ items.Bib_ID }}</td>
+                  <td>{{ items.CallNo }}</td>
+                  <td>{{ items.borrowandreturn_bnr_ID }}</td>
                 </tr>
               </tbody>
             </table>
@@ -90,7 +103,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in book.data" :key="index">
+                <tr v-for="(item, index) in bookinfo[1]" :key="index">
                   <td>{{ item.Field }}</td>
                   <td>{{ item.Indicator1 }}</td>
                   <td>{{ item.Indicator2 }}</td>
@@ -113,29 +126,29 @@ export default {
   data() {
     return {
       configs: this.$config,
-      book: [],
-      bibitem: [],
+      bookID: "",
+      bookinfo:[],
     };
   },
-  mounted(){
+  mounted() {
+    this.bookID = this.$route.query.textSearch;
     axios
-      .get(`${this.$config.apiUrl}/bibdata/bibinfo/004`)
-      .then((response) => (this.book = response));
-    axios
-      .get(`${this.$config.apiUrl}/bibdata/bibitem/004`)
-      .then((res) => {(this.bibitem = res)
-        console.log(res) });
+      .get(`${this.$config.apiUrl}/bibdata/allbib/${this.bookID}`)
+      .then(response => {
+        this.bookinfo = response.data;
+        console.log("response: ", this.bookinfo)
+      })
   },
   // methods: {
   //     test() {
-  //     axios.get(`${this.$config.apiUrl}/bibdata/bibitem/004`).then((res) => {
+  //     axios.get(`${this.$config.apiUrl}/bibdata/allbib/001`).then((res) => {
   //       (this.bibitem = res)
   //       //console.log(res);
   //     });
   //     //this.bibitem = res.response;
   //   },
   // },
-}
+};
 </script>
 
 <style scoped>

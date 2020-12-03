@@ -34,11 +34,11 @@
           <div class="d-flex flex-wrap">
             <v-card
               v-for="item in results"
-              :key="item.Bib_ID"
+              :key="item"
               class="ma-4"
               max-width="344"
               outlined
-              @click="handleBookclick(Book)"
+              @click="handleBookclick(item)"
             >
               <v-list-item three-line>
                 <v-list-item-content>
@@ -78,6 +78,7 @@ export default {
       page: 1,
       searchBookname: "",
       results: [],
+      books_ID:"",
     };
   },
 
@@ -93,13 +94,20 @@ export default {
       }
       const url = `${this.$config.apiUrl}/bibdata/findbook/${this.searchBookname}?StartPage=1&perPage=5`;
       //console.log(url);
-      axios.get(url).then((response) => {
-        this.results = response.data.Results;
-        console.log(this.results);
+      axios
+          .get(url)
+          .then((response) => {this.results = response.data.Results;
+        //console.log(this.results);
       });
     },
-    handleBookclick(Book) {
-      window.location = Book.url;
+    handleBookclick(item) {
+      console.log("itemss:",item);
+       this.books_ID = item.Bib_ID;
+       this.$router.push({
+        path: "InformationBooks",
+        query: { textSearch: this.books_ID },
+      });
+     
     },
   },
 };
