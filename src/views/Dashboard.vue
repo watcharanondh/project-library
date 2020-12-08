@@ -8,7 +8,7 @@
         height="350"
       />
 
-      <h4 class="subheading black--text text-center mt-9">
+      <h4 class="subheading black--text text-center mt-8">
         สืบค้นหนังสือ
       </h4>
 
@@ -24,25 +24,24 @@
               rounded
               solo
               type="text"
-              class="todo-input"
+              class="DashBoard"
               v-model="searchBook"
-              @keyup.enter="searchBookname"
+              v-on:keyup.enter="searchBookname"
             ></v-text-field>
           </div>
-          <!-- <button type="submit" @click="onLogin($event)" >ค้นหา</button> -->
         </v-flex>
         <v-flex xs12 md4></v-flex>
       </v-layout>
       <h2 class="subtitle-1 font-weight-thin mb-4 black--text text-center">
         ระบุคำค้น เช่น ชื่อหนังสือ, ชื่อผู้แต่ง , หมายเลข ISBN ฯลฯ
       </h2>
-      <!-- <div><h1> <input type="text" name="food" value="" @input="changeBookname"> {{$store.getters.getBookname}} </h1></div> -->
     </v-container>
   </v-parallax>
 </template>
 
 <script>
 export default {
+  name: "DashBoard",
   data() {
     return {
       searchBook: "",
@@ -50,12 +49,14 @@ export default {
   },
   methods: {
     searchBookname() {
-      this.$router.push({
-        path: "SearchBooklist",
-        query: { textSearch: this.searchBook },
-      });
       if (this.searchBook.trim() == 0) {
-        return;
+        return alert("กรุณากรอกข้อมูลหนังสือที่ต้องการค้น");
+      } else {
+        this.$store.dispatch({
+          type: "inPutkeyword",
+          keyword: this.searchBook,
+        });
+        this.$router.push("/SearchBooklist");
       }
     },
   },

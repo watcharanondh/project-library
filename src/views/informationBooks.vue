@@ -125,18 +125,19 @@ export default {
   name: "macr21books-table",
   data() {
     return {
-      configs: this.$config,
-      bookID: "",
+      NumberbookID: "",
       bookinfo:[],
     };
   },
   mounted() {
-    this.bookID = this.$route.query.textSearch;
+    //this.bookID = this.$route.query.textSearch;
+    this.NumberbookID = this.$store.getters["numid"];
+    console.log("response: ",this.NumberbookID)
     axios
-      .get(`${this.$config.apiUrl}/bibdata/allbib/${this.bookID}`)
+      .get(`${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.NumberbookID}`)
       .then(response => {
         this.bookinfo = response.data;
-        console.log("response: ", this.bookinfo)
+        //console.log("response: ",this.$config.apiUrl)
       })
   },
   // methods: {

@@ -3,14 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import config from './views/config'
+import Vue2Filters from 'vue2-filters';
 
 Vue.config.productionTip = false
-
-// config
-Vue.prototype.$config = config
 
 new Vue({
   router,
@@ -18,3 +14,5 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+Vue.use(Vue2Filters);
