@@ -1,42 +1,41 @@
 <template>
-  <v-parallax height="607" class="grey lighten-3">
-    <v-container>
-      <v-img
-        :src="require('@/assets/WC.jpg')"
-        class="my-3"
-        contain
-        height="350"
-      />
-
-      <h4 class="subheading black--text text-center mt-8">
-        สืบค้นหนังสือ
-      </h4>
-
-      <v-layout row>
-        <v-flex xs12 md4></v-flex>
-        <v-flex xs12 md4>
-          <div :form="form">
-            <v-text-field
-              auto-select-first
-              clearable
-              deletable-chips
-              filled
-              rounded
-              solo
-              type="text"
-              class="DashBoard"
-              v-model="searchBook"
-              v-on:keyup.enter="searchBookname"
-            ></v-text-field>
-          </div>
-        </v-flex>
-        <v-flex xs12 md4></v-flex>
-      </v-layout>
-      <h2 class="subtitle-1 font-weight-thin mb-4 black--text text-center">
-        ระบุคำค้น เช่น ชื่อหนังสือ, ชื่อผู้แต่ง , หมายเลข ISBN ฯลฯ
-      </h2>
-    </v-container>
-  </v-parallax>
+  <v-container style="background:#E0E0E0;color:white">
+    <v-img
+      :src="require('@/assets/homepage/WC.jpg')"
+      class="my-3"
+      contain
+      height="350"
+    />
+    <br/>
+    <h4 class="subheading black--text text-center ">
+      สืบค้นหนังสือ
+    </h4>
+    <br/>
+    <v-layout row>
+      <v-flex xs12 md4></v-flex>
+      <v-flex xs12 md4>
+        <div>
+          <v-text-field
+            auto-select-first
+            clearable
+            deletable-chips
+            filled
+            rounded
+            solo
+            type="text"
+            class="DashBoard"
+            v-model="searchBook"
+            v-on:keyup.enter="searchBookname"
+          ></v-text-field>
+        </div>
+      </v-flex>
+      <v-flex xs12 md4></v-flex>
+    </v-layout>
+     <br/>
+    <h2 class="subtitle-1 font-weight-thin mb-4 black--text text-center">
+      ระบุคำค้น เช่น ชื่อหนังสือ, ชื่อผู้แต่ง , หมายเลข ISBN ฯลฯ
+    </h2>
+  </v-container>
 </template>
 
 <script>

@@ -11,7 +11,6 @@ export default new Vuex.Store({
     username: "",
     keyword: "",
     numid: "",
-
   },
   mutations: {
     SET_INPUT_KEYWORD(state, word) {

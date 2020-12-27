@@ -1,69 +1,56 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col md="4"> </v-col>
-      <v-col md="4">
-        <v-col>
-          <v-text-field
-            label="book"
-            single-line
-            auto-select-first
-            clearable
-            deletable-chips
-            filled
-            rounded
-            solo
-            outlined
-            type="text"
-            class="todo-input"
-            v-model="searchBookname"
-            v-on:keyup.enter="Get_API_Databook"
-          ></v-text-field>
-        </v-col>
-      </v-col>
-      <v-col md="4">
-        <v-col class="ma-2">
-          <v-btn v-on:click="Get_API_Databook">ค้นหา</v-btn>
-        </v-col>
-      </v-col>
-    </v-row>
-
+  <v-container style="background:#E0E0E0;color:white">
     <v-row>
       <!--col1-->
       <v-col sm="2">
-        <v-sheet color="grey lighten-3"></v-sheet>
+        <v-sheet color="black"></v-sheet>
       </v-col>
       <!--col2-->
       <v-col cols="12" sm="8">
         <!-- Table section -->
         <v-card>
           <v-data-table
-            :search="search"
+            :search="searchBookname"
             :headers="headers"
             :items="mDataArray"
-            v-model="search"
-            @keyup.enter="getData"
+            :items-per-page="5"
+            class="elevation-1"
           >
             <!-- table top section -->
             <template v-slot:top>
-              <v-toolbar flat color="white">
-                <v-toolbar-title>สืบค้นหนังสือที่เกี่ยวข้อง</v-toolbar-title>
+              <v-toolbar dark flat color="orange lighten-2">
+                <v-toolbar-title class="text--black">สืบค้นหนังสือที่เกี่ยวข้อง</v-toolbar-title>
+                <v-divider class="mx-5" inset vertical></v-divider>
                 <v-spacer></v-spacer>
                 <v-divider class="mx-5" inset vertical></v-divider>
-                <v-text-field
-                  v-model="searchBookname"
-                  append-icon="search"
-                  label="Search"
-                  single-line
-                  hide-details
-                ></v-text-field>
+                <v-row>
+                  <v-text-field
+                    v-model="searchBookname"
+                    v-on:keyup.enter="Get_API_Databook"
+                    clearable
+                    flat
+                    solo-inverted
+                    hide-details
+                    prepend-inner-icon="mdi-magnify"
+                    label="ค้นหา"
+                  ></v-text-field>
+                </v-row>
+                <div class="ms-10">
+                  <v-btn
+                    @click="Get_API_Databook"
+                    color="primary"
+                    dark
+                    class="mb-2"
+                  >
+                    <v-icon left>search</v-icon>
+                    <span>ค้นหา</span>
+                  </v-btn>
+                </div>
               </v-toolbar>
             </template>
-
             <!-- table tr section -->
-            <template v-slot:item="{ item }">
+            <template v-slot:item="{ item}">
               <tr v-on:click="InfoBookclick(item)">
-                <td>{{ item.Bib_ID }}</td>
                 <td>
                   <v-img
                     :src="item.PicPath"
@@ -90,61 +77,50 @@
 import axios from "axios";
 export default {
   name: "SearchBooklist",
-  data() {
-    return {
-      search: "",
-      mDataArray: [],
-      searchBookname: "",
-      numid: "",
+  data: () => ({
+    mDataArray: [],
+    searchBookname: "",
+    numid: "",
 
-      headers: [
-        {
-          text: "ID",
-          align: "left",
-          sortable: false,
-          value: "Bib_ID",
-        },
-        { text: "", value: "PicPath" },
-        { text: "ชื่อเรื่อง", value: "Title" },
-        { text: "ผู้แต่ง", value: "Author" },
-        { text: "ผู้เผยแพร่", value: "Publish" },
-        { text: "CallNo", value: "CallNo" },
-      ],
-    };
-  },
+    headers: [
+      { text: "รูป", value: "PicPath", align: "center" },
+      { text: "ชื่อเรื่อง", value: "Title", align: "center" },
+      { text: "ผู้แต่ง", value: "Author", align: "center" },
+      { text: "ผู้เผยแพร่", value: "Publish", align: "center" },
+      { text: "CallNo", value: "CallNo", align: "center" },
+    ],
+  }),
 
   mounted() {
     this.searchBookname = this.$store.getters["keyword"];
+    const url = `${process.env.VUE_APP_API_URL}/bibdata/findbook/${this.searchBookname}?StartPage=1&perPage=5`;
+        axios.get(url).then((results) => {
+          this.mDataArray = results.data.Results;
+        });
   },
+
 
   methods: {
     Get_API_Databook() {
       if (this.searchBookname.trim() == 0) {
-        return alert("กรุณากรอกข้อมูลหนังสือที่ต้องการค้น");
+        return alert("กรุณากรอกข้อมูลหนังสือที่ต้องการค้นหา");
       } else {
         const url = `${process.env.VUE_APP_API_URL}/bibdata/findbook/${this.searchBookname}?StartPage=1&perPage=5`;
         axios.get(url).then((results) => {
-          //this.results = response.data.Results;
-          //console.log(JSON.stringify(results.data.Results));
           this.mDataArray = results.data.Results;
         });
       }
     },
     InfoBookclick(item) {
-      this.numid = item.Bib_ID;
-      console.log(this.numid);
+      console.log(item);
       this.$store.dispatch({
         type: "inPutNumberbookID",
-        numid: this.numid,
+        numid: item.Bib_ID,
       });
       this.$router.push("/InformationBooks");
-      // this.$router.push({
-      //   path: "InformationBooks",
-      //   query: { textSearch: this.books_ID },
-      // });
     },
   },
 };
 </script>
 
-<style lang="css" scoped></style>
+<style></style>

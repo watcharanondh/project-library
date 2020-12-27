@@ -19,6 +19,8 @@ npm run build // yarn build
 ```
 npm run lint
 ```
+<%= VUE_APP_TITLE %>
+firebase deploy --only hosting
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

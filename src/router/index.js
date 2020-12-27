@@ -1,85 +1,132 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import DashBoard from '@/views/DashBoard.vue'
-import LoginUsers from '@/views/LoginUsers.vue'
-import Librarian from '@/views/Librarian.vue'
-import Admin from '@/views/Admin.vue'
-import Personnel from '@/views/Personnel.vue'
-import Student from '@/views/Student.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import DashBoard from "@/views/DashBoard.vue";
+import LoginUsers from "@/views/LoginUsers.vue";
+import Librarian_Menu from "@/views/Librarian_Menu.vue";
+import Admin_Menu from "@/views/Admin_Menu.vue";
+import Student_Personnel_Menu from "@/views/Student_Personnel_Menu.vue";
+import Manage_Resources from "@/views/Manage_Resources.vue";
+import CreateTemplate from "@/views/CreateTemplate.vue";
+import AddBook from "@/views/AddBook.vue";
+import Editresource from "@/views/Editresource.vue";
+import Member_Management from "@/views/Member_Management.vue";
+import Report from "@/views/Report.vue";
+import Edit_Personal_Information from "@/views/Edit_Personal_Information.vue";
+import Borrow_return from "@/views/Borrow_return.vue";
 
-import SearchBooklist from '@/views/SearchBooklist.vue'
-import InformationBooks from '@/views/InformationBooks.vue'
-import AddBook from '@/views/AddBook.vue'
+import SearchBooklist from "@/views/SearchBooklist.vue";
+import InformationBooks from "@/views/InformationBooks.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
-        
-        // หน้าหลัก
-        {
-          path: '/DashBoard',
-          name: 'DashBoard',
-          component: DashBoard
-        },
+  // หน้าหลัก
+  {
+    path: "/DashBoard",
+    name: "DashBoard",
+    component: DashBoard,
+  },
 
-        //หน้าค้นหาหนังสือ
-        {
-          path: '/SearchBooklist',
-          name: 'SearchBooklist',
-          component: SearchBooklist
-        },
+  //หน้าค้นหาหนังสือ
+  {
+    path: "/SearchBooklist",
+    name: "SearchBooklist",
+    component: SearchBooklist,
+  },
 
-        //ข้อมูลหนังสือ
-        {
-          path: '/InformationBooks',
-          name: 'InformationBooks',
-          component: InformationBooks
-        },
+  //ข้อมูลหนังสือ
+  {
+    path: "/InformationBooks",
+    name: "InformationBooks",
+    component: InformationBooks,
+  },
 
-        //ระบบLogin
-        {
-          path: '/LoginUsers',
-          name: 'LoginUsers',
-          component: LoginUsers
-        },
-        {
-          path: '/Librarian',
-          name: 'Librarian',
-          component: Librarian
-        },
-        {
-          path: '/Admin',
-          name: 'Admin',
-          component: Admin
-        },
-        {
-          path: '/Personnel',
-          name: 'Personnel',
-          component: Personnel
-        },
-        {
-          path: '/Student',
-          name: 'Student',
-          component: Student
-        },
-        
-        // จัดการข้อมูลสารสนเทศ
-        {
-          path: '/AddBook',
-          name: 'AddBook',
-          component: AddBook
-        },
+  //ระบบLogin
+  {
+    path: "/LoginUsers",
+    name: "LoginUsers",
+    component: LoginUsers,
+  },
+  {
+    path: "/Librarian_Menu",
+    name: "Librarian_Menu",
+    component: Librarian_Menu,
+  },
+  {
+    path: "/Admin_Menu",
+    name: "Admin_Menu",
+    component: Admin_Menu,
+  },
+  {
+    path: "/Student_Personnel_Menu",
+    name: "Student_Personnel_Menu",
+    component: Student_Personnel_Menu,
+  },
 
-        
-        {
-          path:"/",
-          redirect:"/Dashboard"
-        },
-        {
-          path:"*",
-          redirect:"/Dashboard"
-        }
+  //จัดการข้อมูลสารสนเทศ
+  {
+    path: "/Manage_Resources",
+    name: "Manage_Resources",
+    component: Manage_Resources,
+  },
 
+  // เพิ่มทรัพยากร
+  {
+    path: "/AddBook",
+    name: "AddBook",
+    component: AddBook,
+  },
+
+  // สร้าง Template
+  {
+    path: "/CreateTemplate",
+    name: "CreateTemplate",
+    component: CreateTemplate,
+  },
+
+  //แก้ไขข้อมูลสารสนเทศ
+  {
+    path: "/Editresource",
+    name: "Editresource",
+    component: Editresource,
+  },
+
+  //ระบบสมาชิก
+  {
+    path: "/Member_Management",
+    name: "Member_Management",
+    component: Member_Management,
+  },
+
+  //ออกรายงาน
+  {
+    path: "/Report",
+    name: "Report",
+    component: Report,
+  },
+
+  //แก้ไขข้อมูลส่วนตัว
+  {
+    path: "/Edit_Personal_Information",
+    name: "Edit_Personal_Information",
+    component: Edit_Personal_Information,
+  },
+
+  //รายการยืมคืน
+  {
+    path: "/Borrow_return",
+    name: "Borrow_return",
+    component: Borrow_return,
+  },
+
+  {
+    path: "/",
+    redirect: "/Dashboard",
+  },
+  {
+    path: "*",
+    redirect: "/Dashboard",
+  },
 
   // {
   //   path: '/about',
@@ -92,9 +139,9 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

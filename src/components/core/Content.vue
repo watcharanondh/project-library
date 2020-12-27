@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <v-content>
     <router-view></router-view>
   </v-content>

@@ -17,7 +17,7 @@
           alt="School Logo "
           class="shrink mr-2"
           contain
-          :src="require('@/assets/logo.jpg')"
+          :src="require('@/assets/homepage/logo.jpg')"
           max-height="150"
           max-width="150"
         />

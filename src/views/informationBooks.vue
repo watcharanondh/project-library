@@ -1,183 +1,210 @@
 <template>
-  <div id="macr21books-table">
-    <v-container class="grey lighten-3">
-      <v-row>
-        <v-col cols="6" md="4">
-          <v-card class="pa-2" outlined tile color="grey lighten-3"> </v-card>
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-card 
-            v-for="item in bookinfo[0]"
-            :key="item.Title"
-            class="pa-2" outlined tile color="grey lighten-3">
-            {{item.Title}}
-          </v-card>
-        </v-col>
-      </v-row>
+  <v-container class="grey lighten-3">
+    <v-row>
+      <v-col cols="6" md="4">
+        <v-card class="pa-2" outlined tile color="grey lighten-3">
+          <v-btn @click="$router.push('/SearchBooklist')" color="amber">
+            <v-icon left>reply</v-icon>
+            <span>ย้อนกลับ</span>
+          </v-btn>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-card
+          v-for="item in BookInfo"
+          :key="item.Title"
+          class="pa-2"
+          elevation="5"
+          outlined
+          shaped
+        >
+          <h1>{{ item.Title }}</h1>
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <!--หัวข้อชื่อหนังสือ และ ข้อมูลรายละเอียด-->
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-card
-            v-for="item in bookinfo[0]"
-            :key="item.PicPath"
-            class="pa-2"
-            outlined
-            tile
-            color="grey lighten-3"
-          >
+    <!--หัวข้อชื่อหนังสือ และ ข้อมูลรายละเอียด-->
+    <v-row>
+      <v-col cols="12" md="4">
+        <v-card
+          v-for="item in BookInfo"
+          :key="item.PicPath"
+          class="pa-2"
+          shaped
+          outlined
+          tile
+          color="grey lighten-3"
+        >
+          <div>
             <v-img
               :src="item.PicPath"
               alt=""
-                class="my-3"
-                contain
-                height="350"
-              
+              class="my-3"
+              contain
+              height="350"
             />
-          </v-card>
-        </v-col>
-        <v-col cols="12" md="8">
-          <v-card  v-for="item in bookinfo[0]"
-            :key="item"
-          class="pa-2" outlined tile color="grey lighten-3">
-            ผู้แต่ง : {{item.Author}} <br />
-            สำนักพิมพ ์: {{item.Publish}}
-            <br />
-            เลขเรียกหนังสือ : {{item.CallNo}} <br />
-            หมายเลข ISBN : {{item.ISBN}} <br />
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <!-- รายการ กับ MARC21 -->
-      <v-row>
-        <v-col md="1">
-          <v-card class="pa-2 white--text" outlined tile color="grey darken-2">
-            <div class="text-center">รายการ</div>
-          </v-card>
-        </v-col>
-        <v-col md="5">
-          <v-card class="pa-2" outlined tile color="grey lighten-3"> </v-card>
-        </v-col>
-
-        <v-col md="1">
-          <v-card class="pa-2 white--text" outlined tile color="grey darken-2">
-            <div class="text-center">MARC</div>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col md="3">
-          <div class="text-left">
-            <table>
-              <thead>
-                <tr>
-                  <th>Barcode</th>
-                  <th>Copy</th>
-                  <th>CallNo</th>
-                  <th>สถานะ</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(items, index) in bookinfo[2]" :key="index">
-                  <td>{{ items.Barcode }}</td>
-                  <td>{{ items.Bib_ID }}</td>
-                  <td>{{ items.CallNo }}</td>
-                  <td>{{ items.borrowandreturn_bnr_ID }}</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
-        </v-col>
-        <v-col md="3"> </v-col>
-        <v-col md="1">
+        </v-card>
+      </v-col>
+      <v-col md="5">
+        <v-card
+          v-for="item in BookInfo"
+          :key="item"
+          class="pa-2"
+          elevation="5"
+          outlined
+          shaped
+        >
+          <h4>
+            <div>ผู้แต่ง : {{ item.Author }}</div>
+          </h4>
+          <br />
+          <h4>
+            <div>สำนักพิมพ ์: {{ item.Publish }}</div>
+          </h4>
+          <br />
+          <h4>
+            <div>เลขเรียกหนังสือ : {{ item.CallNo }}</div>
+          </h4>
+          <br />
+          <h4>
+            <div>หมายเลข ISBN : {{ item.ISBN }}</div>
+          </h4>
+          <br />
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col md="1">
+        <v-card class="pa-2 white--text" outlined tile color="grey darken-2">
+          <div class="text-center">รายการ</div>
+        </v-card>
+      </v-col>
+      <v-col md="5">
+        <v-card class="pa-2" outlined tile color="grey lighten-3"> </v-card>
+      </v-col>
+
+      <v-col md="1">
+        <v-card class="pa-2 white--text" outlined tile color="grey darken-2">
+          <div class="text-center">MARC</div>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col md="4">
+        <!-- รายการ -->
+        <div class="text-left">
           <div class="text-left">
-            <table>
-              <thead>
+            <v-card>
+              <v-data-table
+                :headers="headers_list"
+                :items="items"
+                :items-per-page="5"
+                class="elevation-1"
+              >
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td align="center">{{ item.Barcode }}</td>
+                    <td align="center">{{ item.Copy }}</td>
+                    <td align="center">{{ item.CallNo }}</td>
+                    <td align="center">
+                      <v-chip :color="getColor(item.item_status)" dark>
+                        {{ item.item_status }}
+                      </v-chip>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-card>
+          </div>
+        </div>
+      </v-col>
+      <v-col md="2"> </v-col>
+      <v-col md="5">
+        <!-- ดู Marc21 -->
+        <div class="text-left">
+          <v-card>
+            <v-data-table
+              :headers="headers_Marc21"
+              :items="Marc21"
+              :items-per-page="5"
+              class="elevation-1"
+            >
+              <template v-slot:item="{ item }">
                 <tr>
-                  <th>Tag</th>
-                  <th>Indicator1</th>
-                  <th>Indicator2</th>
-                  <th>Subfield</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in bookinfo[1]" :key="index">
-                  <td>{{ item.Field }}</td>
-                  <td>{{ item.Indicator1 }}</td>
-                  <td>{{ item.Indicator2 }}</td>
+                  <td align="center">{{ item.Field }}</td>
+                  <td align="center">{{ item.Indicator1 }}</td>
+                  <td align="center">{{ item.Indicator1 }}</td>
                   <td>{{ item.Subfield }}</td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+              </template>
+            </v-data-table>
+          </v-card>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
-  name: "macr21books-table",
-  data() {
-    return {
-      NumberbookID: "",
-      bookinfo:[],
-    };
-  },
+  name: "Informationbooks",
+  data: () => ({
+    BookInfo: [],
+    Marc21: [],
+    items: [],
+
+    headers_list: [
+      { text: "Barcode", value: "Barcode", align: "center" },
+      { text: "Copy", value: "Copy", align: "center" },
+      { text: "CallNo", value: "CallNo", align: "center" },
+      { text: "Status", value: "item_status", align: "center" },
+    ],
+
+    headers_Marc21: [
+      { text: "Field", value: "Field", align: "center" },
+      { text: "Indicator1", value: "Indicator1", align: "center" },
+      { text: "Indicator2", value: "Indicator2", align: "center" },
+      { text: "Subfield", value: "Subfield", align: "Subfield" },
+    ],
+  }),
   mounted() {
-    //this.bookID = this.$route.query.textSearch;
-    this.NumberbookID = this.$store.getters["numid"];
-    console.log("response: ",this.NumberbookID)
     axios
-      .get(`${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.NumberbookID}`)
-      .then(response => {
-        this.bookinfo = response.data;
-        //console.log("response: ",this.$config.apiUrl)
-      })
+      .get(
+        `${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.$store.getters["numid"]}`
+      )
+      .then((response) => {
+        //this.bookinfo = response.data;
+        this.BookInfo = response.data[0];
+        this.Marc21 = response.data[1];
+        this.items = response.data[2];
+      });
   },
-  // methods: {
-  //     test() {
-  //     axios.get(`${this.$config.apiUrl}/bibdata/allbib/001`).then((res) => {
-  //       (this.bibitem = res)
-  //       //console.log(res);
-  //     });
-  //     //this.bibitem = res.response;
-  //   },
-  // },
+
+  methods: {
+    //   Get_API_Databooks() {
+    //   const url = `${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.$store.getters["numid"]}`;
+    //   axios.get(url).then((response) => {
+    //       //this.bookinfo = response.data;
+    //       this.BookInfo = response.data[0];
+    //       this.Marc21 = response.data[1];
+    //       this.items = response.data[2];
+    //       console.log(this.items);
+    //     });
+    //   },
+    getColor(item_status) {
+      if (item_status == "Available") return "green";
+      else {
+        return "red";
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
-table {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
 
-table td,
-table th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-table tr:hover {
-  background-color: #ddd;
-}
-
-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #2671d3;
-  color: white;
-}
 </style>

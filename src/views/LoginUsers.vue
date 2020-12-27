@@ -57,7 +57,7 @@ export default {
     },
     methods:{
       submit(){
-        this.$router.push("/Librarian")
+        this.$router.push("/Librarian_Menu")
         // this.$router.push("/Admin")
         // this.$router.push("/Personnel")
         // this.$router.push("/Student")

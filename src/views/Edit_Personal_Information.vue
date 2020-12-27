@@ -4,12 +4,12 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Manage_Resources')" color="success">
+          <v-btn @click="$router.push('/Librarian_Menu')" color="success">
           <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
            <v-col>
-            <v-row class="justify-center"><h1>จัดการข้อมูลสารสนเทศ</h1></v-row>
+            <v-row class="justify-center"><h1>แก้ไขข้อมูลส่วนตัว</h1></v-row>
           </v-col>
           <v-row>
             <!-- รูปแบบระเบียนมีไว้ให้เลือกของ Marc21 -->
@@ -566,13 +566,12 @@ export default {
     dialoglookmarc21: false,
 
     editedIndex: -1,
-    codes: "$a",
+    codes: "\\a",
     FieldName: "",
     numField: "",
     imageURL: null,
     itemNo: "",
 
-   
     //ค่าจาก Modul
     inModul: {
       databib: [],
@@ -595,16 +594,16 @@ export default {
     },
 
     //Resource Type
-    select: { name: "Book", value: { "$a": "Book" } },
+    select: { name: "Book", value: { "\\a": "Book" } },
     resourcetype: [
-      { name: "Mixed", value: { "$a": "Mixed" } },
-      { name: "Article", value: { "$a": "Article" } },
-      { name: "Book", value: { "$a": "Book" } },
-      { name: "Computer File", value: { "$a": "Computer File" } },
-      { name: "Map", value: { "$a": "Map" } },
-      { name: "Music", value: { "$a": "Music" } },
-      { name: "Serial", value: { "$a": "Serial" } },
-      { name: "Visual", value: { "$a": "Visual" } },
+      { name: "Mixed", value: { "\\a": "Mixed" } },
+      { name: "Article", value: { "\\a": "Article" } },
+      { name: "Book", value: { "\\a": "Book" } },
+      { name: "Computer File", value: { "\\a": "Computer File" } },
+      { name: "Map", value: { "\\a": "Map" } },
+      { name: "Music", value: { "\\a": "Music" } },
+      { name: "Serial", value: { "\\a": "Serial" } },
+      { name: "Visual", value: { "\\a": "Visual" } },
     ],
 
     //Table on Page
@@ -722,12 +721,6 @@ export default {
 
   created() {
     this.initialize();
-    axios.get(`${process.env.VUE_APP_API_URL}}/tempbib/listTempSelect/}`)
-    .then((response) => 
-        {
-          console.log("temp : ",response);
-          this.template_Name = response.data[0];
-        });
   },
 
   methods: {
@@ -741,13 +734,13 @@ export default {
           Field: "960",
           Indicator1: "",
           Indicator2: "",
-          Subfield: { "$a": "Book" },
+          Subfield: { "\\a": "Book" },
         },
         {
           Field: "964",
           Indicator1: "",
           Indicator2: "",
-          Subfield: { "$a": "Book" },
+          Subfield: { "\\a": "Book" },
         },
       ];
     },
@@ -811,13 +804,10 @@ export default {
         this.editedAddmodul = Object.assign({}, item);
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${item.Field}`;
         axios.get(url).then((results) => {
-          console.log(results);
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
           this.FieldName = results.data[0].Name;
-          this.numField = results.data[0].Field;
-          
 
           if (this.Data_modul_3.length <= 0) {
             this.dialogspecial = true;
@@ -888,7 +878,9 @@ export default {
 
     //ไปหน้า Dialog เพิ่มฉบับ
     API_InfoBookclick(item) {
+      //console.log(item);
       this.numid = item.Bib_ID;
+      //console.log(this.numid);
       const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numid}`;
       axios.get(url).then((results) => {
         return (this.Data_modul_additemsNo = results.data);
@@ -928,7 +920,6 @@ export default {
           console.log("response: ", res);
           alert("เพิ่มฉบับเรียบร้อยแล้ว");
           this.Data_modul_additemsNo = [];
-          this.additemsNo='';
         });
 
         axios
