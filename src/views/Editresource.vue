@@ -8,8 +8,8 @@
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
-            <v-col>
-            <v-row class="justify-center" ><h1>แก้ไขบรรณานุกรม</h1></v-row>
+          <v-col>
+            <v-row class="justify-center"><h1>แก้ไขบรรณานุกรม</h1></v-row>
           </v-col>
           <v-row>
             <!-- ค้นหาบรรณานุกรม -->
@@ -107,7 +107,7 @@
             <v-col md="1" class="pt-10">
               <v-row>
                 <!-- Button modal -->
-                <v-btn color="primary" v-on:click.stop="Selectmarc21">
+                <v-btn color="primary" v-on:click="Selectmarc21">
                   ค้นหา
                 </v-btn>
                 <!-- ฟอร์มหน้า เพิ่มขอบเขต และ แก้ไข -->
@@ -225,7 +225,6 @@
                 ></v-img>
               </v-row>
             </v-col>
-
           </v-row>
 
           <!-- ปุ่มบันทึกข้อมูลทั้งหน้าก่อนส่ง -->
@@ -313,38 +312,6 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-
-                  <!--เขตข้อมูลกรณีพิเศษ-->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogspecial"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title>
-                        <span class="headline"
-                          >{{ formTitle }} {{ numField }} {{ FieldName }}
-                        </span>
-                      </v-card-title>
-                      <hr />
-                      <v-card class="mx-auto pa-5">
-                        <v-text-field
-                          v-model="editedAddmodul.Subfield[codes]"
-                          outlined
-                        ></v-text-field>
-                      </v-card>
-                      <br />
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" @click="close">
-                          ยกเลิก
-                        </v-btn>
-                        <v-btn color="success" @click="saveMudul">
-                          เพิ่ม
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
                 </template>
               </v-data-table>
             </v-col>
@@ -354,6 +321,33 @@
         </v-card>
       </v-col>
     </v-row>
+    <!--เขตข้อมูลกรณีพิเศษ-->
+    <v-dialog :retain-focus="false" v-model="dialogspecial" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline"
+            >{{ formTitle }} {{ numField }} {{ FieldName }}
+          </span>
+        </v-card-title>
+        <hr />
+        <v-card class="mx-auto pa-5">
+          <v-text-field
+            v-model="editedAddmodul.Subfield[codes]"
+            outlined
+          ></v-text-field>
+        </v-card>
+        <br />
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" @click="close">
+            ยกเลิก
+          </v-btn>
+          <v-btn color="success" @click="saveMudul">
+            เพิ่ม
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -361,7 +355,7 @@
 import axios from "axios";
 
 export default {
-  name: "AddBook",
+  name: "Editresource",
   data: () => ({
     template: [],
     marc21: "",
@@ -377,7 +371,31 @@ export default {
     FieldName: "",
     numField: "",
     imageURL: null,
- 
+
+    //อัพเดทรูป
+    async onFileSelected(event) {
+      let data = new FormData();
+      let file = event.target.files[0];
+
+      data.append("image", file);
+
+      var config = {
+        method: "post",
+        url: "https://api.imgur.com/3/image",
+        headers: {
+          Authorization: "Client-ID 546c25a59c58ad7",
+        },
+        data: data,
+      };
+
+      await axios(config).then((response) => {
+        alert("อัพโหลดรูปเรียบร้อยแล้ว");
+        console.log(response);
+        this.inModul.databib[0].Subfield.$a = response.data.data.link.split(
+          "/"
+        )[3];
+      });
+    },
 
     //ค่าจาก Modul
     inModul: {
@@ -399,7 +417,6 @@ export default {
       Indicator2: "",
       Subfield: {},
     },
-
 
     //Table on Page
     headers: [
@@ -529,15 +546,15 @@ export default {
         this.FieldName = "";
         this.dialogspecial = true;
       } else {
-        const url = `${process.env.VUE_APP_API_URL}/bibdata/subfObjDatabib/${this.marc21}`;
+        const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${this.marc21}`;
         axios.get(url).then((results) => {
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
           this.FieldName = results.data[0].Name;
           this.numField = results.data[0].Field;
-
           if (this.Data_modul_3.length <= 0) {
+            console.log(this.Data_modul_3.length);
             this.dialogspecial = true;
           } else {
             this.dialog = true;
@@ -673,13 +690,13 @@ export default {
       if (this.inModul.databib.length <= 0) {
         alert("กรุณากรอกข้อมูลให้ครบก่อนแก้ไข");
       } else {
-        this.inModul.databib.forEach(element => {
+        this.inModul.databib.forEach((element) => {
           delete element.createdAt;
           delete element.updatedAt;
         });
-      
+
         axios
-          .put(`${process.env.VUE_APP_API_URL}/bibdata/edit`, this.inModul )
+          .put(`${process.env.VUE_APP_API_URL}/bibdata/edit`, this.inModul)
           .then((response) => {
             console.log("response: ", response);
             alert("บันทึกข้อมูลเรียบร้อยแล้ว");

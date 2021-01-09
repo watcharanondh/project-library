@@ -49,11 +49,13 @@
               </v-toolbar>
             </template>
             <!-- table tr section -->
-            <template v-slot:item="{ item}">
-              <tr v-on:click="InfoBookclick(item)">
-                <td>
+            <template v-slot:item="{item}">
+              <tr >
+                <!-- v-on:click="InfoBookclick(item)" -->
+                <!-- <td>{{item.PicPath | imageUrl}} -->
+                  <td>
                   <v-img
-                    :src="item.PicPath"
+                    :src="item.PicPath | imageUrl"
                     aspect-ratio="1"
                     width="100"
                     height="100"
@@ -119,7 +121,8 @@ export default {
       });
       this.$router.push("/InformationBooks");
     },
-  },
+
+  }
 };
 </script>
 

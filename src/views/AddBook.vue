@@ -5,10 +5,10 @@
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
           <v-btn @click="$router.push('/Manage_Resources')" color="success">
-          <v-icon left>reply</v-icon>
+            <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
-           <v-col>
+          <v-col>
             <v-row class="justify-center"><h1>จัดการข้อมูลสารสนเทศ</h1></v-row>
           </v-col>
           <v-row>
@@ -16,10 +16,11 @@
             <v-col md="3">
               <h3>รูปแบบระเบียน</h3>
               <v-row class="no-gutters">
-                <v-autocomplete
-                  v-model="template"
+                <v-select
+                  v-model="Select_Template_Name"
                   :items="template"
-                  label="ค้นหา"
+                  item-text="temp_Name"
+                  item-value="temp_ID"
                   placeholder="รูปแบบระเบียน"
                   filled
                   dense
@@ -27,13 +28,16 @@
                   outlined
                   required
                 >
-                </v-autocomplete>
+                </v-select>
               </v-row>
             </v-col>
             <!-- ปุ่มค้นหารูปแบบระเบียน -->
             <v-col md="1" class="pt-10">
               <v-row>
-                <v-btn color="primary" v-on:click="API_Findtemp">
+                <v-btn
+                  color="primary"
+                  v-on:click="API_Findtemp(Select_Template_Name)"
+                >
                   ค้นหา
                 </v-btn>
               </v-row>
@@ -171,21 +175,16 @@
             </v-col>
 
             <!-- ช่องเพิ่มรูปปกหนังสือ -->
-            <v-col md="2" class="pt-7">
+            <v-col md="3" class="pt-11">
               <v-row class="no-gutters">
-                <v-file-input
+                <input
                   v-on:change="onFileSelected"
+                  type="file"
+                  name=""
+                  id=""
                   label="เพิ่มรูปปกหนังสือ"
                   clearable
-                ></v-file-input>
-
-                <v-img
-                  v-if="imageURL"
-                  :src="imageURL"
-                  height="500px"
-                  width="500px"
-                  class="mt-3"
-                ></v-img>
+                />
               </v-row>
             </v-col>
 
@@ -422,7 +421,7 @@
       :retain-focus="false"
       v-model="dialogAdditemsNo"
       persistent
-      max-width="900px"
+      max-width="1600px"
     >
       <v-card>
         <v-card-title>
@@ -435,7 +434,6 @@
               :headers="headers_modul_additemsNo"
               :items="Data_modul_additemsNo"
               class="elevation-1"
-              disable-pagination
             >
               <!-- table top section -->
               <template v-slot:top>
@@ -443,7 +441,7 @@
                   <v-toolbar-title>เพิ่มเล่มฉบับที่</v-toolbar-title>
                   <v-divider class="mx-2" inset vertical></v-divider>
                   <v-row>
-                    <v-col md="2" class="ma-4">
+                    <v-col md="1" class="ma-4">
                       <v-row>
                         <v-text-field
                           v-model="additemsNo"
@@ -456,7 +454,7 @@
                         ></v-text-field>
                       </v-row>
                     </v-col>
-                    <v-col cols="1" sm="1" md="2" class="mt-5">
+                    <v-col md="1" class="mt-5">
                       <v-row>
                         <v-btn
                           @click="API_AdditemsNo(Data_modul_additemsNo)"
@@ -482,17 +480,35 @@
                         </v-btn>
                       </v-row>
                     </v-col>
+                    <v-col class="mt-5">
+                      <v-row>
+                        <v-text-field
+                          v-model="ides"
+                          label="คำอธิบายที่มาตัดจำหน่าย"
+                          clearable
+                          single-line
+                          hide-details
+                          solo
+                        ></v-text-field>
+                      </v-row>
+                    </v-col>
                   </v-row>
                 </v-toolbar>
               </template>
               <!-- table tr section -->
               <template v-slot:item="{ item, index }">
-                <tr align="left">
+                <tr align="center">
                   <td align="center">{{ index + 1 }}</td>
                   <td>{{ item.Booknames }}</td>
                   <td align="center">{{ item.Copy }}</td>
                   <td>{{ item.CallNos }}</td>
                   <td>{{ item.Barcode }}</td>
+                  <td>{{ item.item_description }}</td>
+                  <td align="center">
+                    <v-icon @click="deleteItemNo(item)">
+                      delete
+                    </v-icon>
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -504,6 +520,7 @@
             color="red"
             @click="
               (additemsNo = ''),
+                (ides = ''),
                 (Data_modul_additemsNo = []),
                 (dialogAdditemsNo = false)
             "
@@ -544,6 +561,112 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- ตัดจำหน่ายที่มาที่ไป -->
+    <v-dialog
+      :retain-focus="false"
+      v-model="dialogdeleteItemNo"
+      persistent
+      max-width="900px"
+    >
+      <v-card>
+        <v-container>
+          <v-card class="grey lighten-4 mx-auto pa-5" outlined>
+            <v-row justify="center">
+              <v-card-title>
+                <span class="headline">ตัดจำหน่าย</span>
+              </v-card-title>
+            </v-row>
+
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ฉบับที่ :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="2">
+                <v-text-field v-model="itemNo.Copy" disabled> </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ชื่อทรัพยากร :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="6">
+                <v-text-field v-model="itemNo.Booknames" disabled>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>เลขเรียกทรัพยากร :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="3">
+                <v-text-field v-model="itemNo.CallNos" disabled> </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>Barcodes :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="3">
+                <v-text-field
+                  v-model="itemNo.Barcode"
+                  label="Barcodes"
+                  disabled
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ที่มาตัดจำหน่าย(เดิม) :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="6">
+                <v-text-field v-model="itemNo.item_description" disabled>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ตัดจำหน่าย(ใหม่) :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="6">
+                <v-text-field
+                  v-model="item_descriptionNEW"
+                  solo
+                  dense
+                  clearable
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" @click="dialogdeleteItemNo = false">
+                ยกเลิก
+              </v-btn>
+              <v-btn
+                color="success"
+                @click="deleteItemNoAPI(item_descriptionNEW)"
+              >
+                บันทึก
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -551,12 +674,14 @@
 import axios from "axios";
 
 export default {
-  name: "AddBook",
+  name: "AddBookandItem",
   data: () => ({
     template: [],
+    Select_Template_Name: "",
     marc21: "",
     additems: "",
     additemsNo: "",
+    ides: "",
     dialog: false,
     dialogspecial: false,
     dialogwarn: false,
@@ -564,15 +689,26 @@ export default {
     dialogAdditems: false,
     dialogAdditemsNo: false,
     dialoglookmarc21: false,
+    dialogdeleteItemNo: false,
 
     editedIndex: -1,
     codes: "$a",
     FieldName: "",
     numField: "",
-    imageURL: null,
-    itemNo: "",
 
-   
+    MaxBC: "",
+    item_descriptionNEW: "",
+    itemNo: {
+      Copy: null,
+      Barcode: "",
+      Bib_ID: "",
+      Booknames: "",
+      CallNos: "",
+      item_status: "",
+      libid_getitemin: null,
+      item_description: "",
+    },
+
     //ค่าจาก Modul
     inModul: {
       databib: [],
@@ -595,16 +731,16 @@ export default {
     },
 
     //Resource Type
-    select: { name: "Book", value: { "$a": "Book" } },
+    select: { name: "Book", value: { $a: "Book" } },
     resourcetype: [
-      { name: "Mixed", value: { "$a": "Mixed" } },
-      { name: "Article", value: { "$a": "Article" } },
-      { name: "Book", value: { "$a": "Book" } },
-      { name: "Computer File", value: { "$a": "Computer File" } },
-      { name: "Map", value: { "$a": "Map" } },
-      { name: "Music", value: { "$a": "Music" } },
-      { name: "Serial", value: { "$a": "Serial" } },
-      { name: "Visual", value: { "$a": "Visual" } },
+      { name: "Mixed", value: { $a: "Mixed" } },
+      { name: "Article", value: { $a: "Article" } },
+      { name: "Book", value: { $a: "Book" } },
+      { name: "Computer File", value: { $a: "Computer File" } },
+      { name: "Map", value: { $a: "Map" } },
+      { name: "Music", value: { $a: "Music" } },
+      { name: "Serial", value: { $a: "Serial" } },
+      { name: "Visual", value: { $a: "Visual" } },
     ],
 
     //Table on Page
@@ -693,6 +829,8 @@ export default {
       { text: "ฉบับที่", value: "Copy", align: "center" },
       { text: "เลขเรียกทรัพยากร", value: "CallNos", align: "center" },
       { text: "Barcodes", value: "Barcode", align: "center" },
+      { text: "คำอธิบาย", value: "item_description", align: "center" },
+      { text: "Actions", value: "actions", align: "center" },
     ],
 
     //Table look Marc21
@@ -719,20 +857,27 @@ export default {
       val || this.closeDelete();
     },
   },
-
-  created() {
+  async created() {
     this.initialize();
-    axios.get(`${process.env.VUE_APP_API_URL}}/tempbib/listTempSelect/}`)
-    .then((response) => 
-        {
-          console.log("temp : ",response);
-          this.template_Name = response.data[0];
+    let uri = `${process.env.VUE_APP_API_URL}/tempbib/listTempSelect`;
+    await axios.get(uri).then((response) => {
+      this.mArray = response.data;
+      var _this = this;
+      this.mArray.forEach(function(value) {
+        _this.template.push({
+          temp_Name: `${value.Name}`,
+          temp_ID: `${value.template_ID}`,
         });
+      });
+    });
   },
 
   methods: {
     setSelectedtype() {
-      this.inModul.databib[0].Subfield = this.select.value;
+      // if(this.inModul.databib.Field == '964'){
+      this.inModul.databib[1].Subfield = this.select.value;
+      //}
+      
     },
 
     initialize() {
@@ -741,27 +886,52 @@ export default {
           Field: "960",
           Indicator1: "",
           Indicator2: "",
-          Subfield: { "$a": "Book" },
+          Subfield: { $a: ""},
         },
         {
           Field: "964",
           Indicator1: "",
           Indicator2: "",
-          Subfield: { "$a": "Book" },
+          Subfield: { $a: "Book" },
         },
       ];
     },
 
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        // for preview
-        this.imageURL = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
 
-      //for upload
-      this.inModul.databib[0].image = event.target.files[0];
+    //อัพเดทรูป
+  async onFileSelected(event) {
+
+      let data = new FormData();
+      let file = event.target.files[0];
+      
+      data.append('image', file)
+
+  var config = {
+    method: 'post',
+    url: 'https://api.imgur.com/3/image',
+    headers: { 
+      'Authorization': 'Client-ID 546c25a59c58ad7', 
+    },
+    data : data
+  };
+    
+  await axios(config).then((response ) => {
+          alert('อัพโหลดรูปเรียบร้อยแล้ว')
+          console.log(response);
+          this.inModul.databib[0].Subfield.$a = response.data.data.link.split('/')[3];
+        });
+      },
+
+    //Template
+    API_Findtemp(Select_Template_Name) {
+      const url = `${process.env.VUE_APP_API_URL}/tempbib/listtemplatebib/${Select_Template_Name}`;
+      axios.get(url).then((results) => {
+        let temp = results.data[0].temp_databibs;
+        for (const element of temp) {
+          this.inModul.databib.push(element);
+        }
+        console.log(results.data);
+      });
     },
 
     // เขตข้อมูล Marc21
@@ -784,6 +954,7 @@ export default {
       } else {
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${this.marc21}`;
         axios.get(url).then((results) => {
+          //console.log(results);
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
@@ -811,13 +982,11 @@ export default {
         this.editedAddmodul = Object.assign({}, item);
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${item.Field}`;
         axios.get(url).then((results) => {
-          console.log(results);
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
           this.FieldName = results.data[0].Name;
           this.numField = results.data[0].Field;
-          
 
           if (this.Data_modul_3.length <= 0) {
             this.dialogspecial = true;
@@ -836,6 +1005,40 @@ export default {
         this.editedAddmodul = Object.assign({}, item);
         this.dialogDelete = true;
       }
+    },
+    //ฟังชั่นตัดจำหน่าย
+    deleteItemNo(item) {
+      this.itemNo = {
+        Copy: item.Copy,
+        Barcode: item.Barcode,
+        Bib_ID: item.Bib_ID,
+        Booknames: item.Booknames,
+        CallNos: item.CallNos,
+        libid_getitemin: item.libid_getitemin,
+        item_description: item.item_description,
+      };
+      this.dialogdeleteItemNo = true;
+    },
+
+    async deleteItemNoAPI() {
+      this.updateDel = {
+        brcd: this.itemNo.Barcode,
+        libid: this.itemNo.libid_getitemin,
+        ides: this.item_descriptionNEW,
+      };
+      const url = `${process.env.VUE_APP_API_URL}/bibdata/edititemdes`;
+      await axios.put(url, this.updateDel).then((res) => {
+        alert("ลบทรัพยากรเรียบร้อยแล้ว", res);
+        this.item_descriptionNEW = "";
+        this.dialogdeleteItemNo = false;
+      });
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.itemNo.Bib_ID}`
+        )
+        .then((results) => {
+          return (this.Data_modul_additemsNo = results.data.data);
+        });
     },
 
     deleteItemConfirm() {
@@ -891,13 +1094,16 @@ export default {
       this.numid = item.Bib_ID;
       const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numid}`;
       axios.get(url).then((results) => {
-        return (this.Data_modul_additemsNo = results.data);
+        console.log(results.data);
+        this.Data_modul_additemsNo = results.data.data;
+        this.MaxBC = results.data.maxBarcode;
       });
       this.dialogAdditemsNo = true;
     },
 
     //ฟังกชั่นเพิ่มฉบับ
     async API_AdditemsNo(Data_modul_additemsNo) {
+      console.log(Data_modul_additemsNo);
       if (this.additemsNo == 0) {
         alert("กรุณากรอกหมายเลขฉบับที่ต้องการเพิ่ม");
       } else {
@@ -905,36 +1111,29 @@ export default {
         this.index_max = Data_modul_additemsNo.length - 1;
         this.bib_id = this.Data_modul_additemsNo[this.index_max].Bib_ID;
         this.str1 = this.bib_id.substr(0, 6);
-        this.barcords = this.Data_modul_additemsNo[this.index_max].Barcode;
+        this.barcords = this.MaxBC;
         this.int1 = (parseInt(this.barcords.substr(6, 12)) + 1).toString();
         this.str2 = this.int1.padStart(6, "0");
         this.brcd_id = this.str1 + this.str2;
-
         this.all = {
           brcd: this.brcd_id,
           bbid: this.bib_id,
           copy: this.additemsNo,
           lbin: this.lib_id,
+          ides: this.ides,
         };
-
-        // console.log(this.lib_id);
-        // console.log(this.bib_id);
-        // console.log(this.brcd_id);
-        // console.log(this.additemsNo);
-        // console.log(this.all);
-
         const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
         await axios.post(url, this.all).then((res) => {
           console.log("response: ", res);
           alert("เพิ่มฉบับเรียบร้อยแล้ว");
           this.Data_modul_additemsNo = [];
-          this.additemsNo='';
+          this.additemsNo = "";
         });
-
         axios
           .get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.bib_id}`)
           .then((results) => {
-            return (this.Data_modul_additemsNo = results.data);
+            console.log(results);
+            return (this.Data_modul_additemsNo = results.data.data);
           });
       }
     },
@@ -986,17 +1185,6 @@ export default {
           });
       }
     },
-
-    // async submit() {
-    //     let formData = new FormData();
-    //     const { Field, Indicator1, Indicator2, Subfield} =this.editedAddmodul;
-    //     formData.append("Field",Field);
-    //     formData.append("Indicator1",Indicator1);
-    //     formData.append("Indicator2",Indicator2);
-    //     formData.append("Subfield",Subfield);
-    //     await api.addbook(FormData);
-    // },
-    // alert(JSON.stringify(this.inModul))
   },
 };
 </script>

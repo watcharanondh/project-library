@@ -92,7 +92,7 @@
               <v-col cols="12" md="1" class="pt-4">
                 <v-row class="no-gutters">
                   <!-- ปุ่มค้นหา Button modal -->
-                  <v-btn color="primary" v-on:click.stop="Selectmarc21">
+                  <v-btn color="primary" v-on:click="Selectmarc21">
                     ค้นหา
                   </v-btn>
                   <!-- ฟอร์มหน้า เพิ่มขอบเขต และ แก้ไข -->
@@ -197,7 +197,7 @@
             <v-col cols="12">
               <v-data-table
                 :headers="headers"
-                :items="inModul.temp_databibs"
+                :items="inModul.datatemp"
                 hide-default-footer
                 disable-pagination
                 class="elevation-1"
@@ -245,59 +245,6 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-
-                  <!-- dialogwarn แจ้งเตือนไม่ให้ลบ -->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogwarn"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title class="headline"
-                        >Field
-                        นี้จำเป็นต้องมีไม่สามารถแก้ไขหรือลบได้</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" @click="dialogwarn = false"
-                          >ยกเลิก</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-
-                  <!--เขตข้อมูลกรณีพิเศษ-->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogspecial"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title>
-                        <span class="headline"
-                          >{{ formTitle }} {{ numField }} {{ FieldName }}
-                        </span>
-                      </v-card-title>
-                      <hr />
-                      <v-card class="mx-auto pa-5">
-                        <v-text-field
-                          v-model="editedAddmodul.Subfield[codes]"
-                          outlined
-                        ></v-text-field>
-                      </v-card>
-                      <br />
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" @click="close">
-                          ยกเลิก
-                        </v-btn>
-                        <v-btn color="success" @click="saveMudul">
-                          เพิ่ม
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
                 </template>
               </v-data-table>
             </v-col>
@@ -305,6 +252,34 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!--เขตข้อมูลกรณีพิเศษ-->
+    <v-dialog :retain-focus="false" v-model="dialogspecial" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline"
+            >{{ formTitle }} {{ numField }} {{ FieldName }}
+          </span>
+        </v-card-title>
+        <hr />
+        <v-card class="mx-auto pa-5">
+          <v-text-field
+            v-model="editedAddmodul.Subfield[codes]"
+            outlined
+          ></v-text-field>
+        </v-card>
+        <br />
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" @click="close">
+            ยกเลิก
+          </v-btn>
+          <v-btn color="success" @click="saveMudul">
+            เพิ่ม
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -312,15 +287,15 @@
 import axios from "axios";
 
 export default {
-  name: "AddBook",
+  name: "CreateTemplate",
   data: () => ({
+    template: [],
     Template_Name: "",
     Resourcetype_Name: "",
     Additionaldescription_Name: "",
     marc21: "",
     dialog: false,
     dialogspecial: false,
-    dialogwarn: false,
     dialogDelete: false,
     dialogFindbibliography: false,
 
@@ -329,11 +304,10 @@ export default {
     FieldName: "",
     numField: "",
 
-    
-
     //ค่าจาก Modul
     inModul: {
-      temp_databibs: [],
+      template: [],
+      datatemp: [],
     },
 
     //แก้ไขใน modul
@@ -428,11 +402,11 @@ export default {
 
   methods: {
     setSelectedtype() {
-      this.inModul.temp_databibs[0].Subfield = this.select.value;
+      this.inModul.datatemp[0].Subfield = this.select.value;
     },
 
     initialize() {
-      this.inModul.temp_databibs = [];
+      this.inModul.datatemp = [];
     },
 
     // เขตข้อมูล Marc21
@@ -460,7 +434,6 @@ export default {
           this.Data_modul_3 = results.data[0].subfields;
           this.FieldName = results.data[0].Name;
           this.numField = results.data[0].Field;
-
           if (this.Data_modul_3.length <= 0) {
             this.dialogspecial = true;
           } else {
@@ -471,14 +444,12 @@ export default {
     },
 
     editItem(item) {
-      if (item.Field == "964" || item.Field == "960") {
-        this.dialogwarn = true;
-      } else if (item.Field == "Leader") {
-        this.editedIndex = this.inModul.temp_databibs.indexOf(item);
+      if (item.Field == "Leader") {
+        this.editedIndex = this.inModul.datatemp.indexOf(item);
         this.editedAddmodul = Object.assign({}, item);
         this.dialogspecial = true;
       } else {
-        this.editedIndex = this.inModul.temp_databibs.indexOf(item);
+        this.editedIndex = this.inModul.datatemp.indexOf(item);
         this.editedAddmodul = Object.assign({}, item);
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${item.Field}`;
         axios.get(url).then((results) => {
@@ -486,6 +457,7 @@ export default {
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
           this.FieldName = results.data[0].Name;
+          this.numField = results.data[0].Field;
 
           if (this.Data_modul_3.length <= 0) {
             this.dialogspecial = true;
@@ -497,17 +469,13 @@ export default {
     },
 
     deleteItem(item) {
-      if (item.Field == "964" || item.Field == "960") {
-        this.dialogwarn = true;
-      } else {
-        this.editedIndex = this.inModul.temp_databibs.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        this.dialogDelete = true;
-      }
+      this.editedIndex = this.inModul.datatemp.indexOf(item);
+      this.editedAddmodul = Object.assign({}, item);
+      this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.inModul.temp_databibs.splice(this.editedIndex, 1);
+      this.inModul.datatemp.splice(this.editedIndex, 1);
       this.closeDelete();
     },
 
@@ -553,19 +521,19 @@ export default {
       if (this.editedIndex > -1) {
         this.editedAddmodul.Subfield = object1;
         Object.assign(
-          this.inModul.temp_databibs[this.editedIndex],
+          this.inModul.datatemp[this.editedIndex],
           this.editedAddmodul
         );
       } else {
         this.editedAddmodul.Subfield = object1;
-        this.inModul.temp_databibs.push(this.editedAddmodul);
+        this.inModul.datatemp.push(this.editedAddmodul);
       }
 
       this.close();
     },
 
     submit() {
-      this.table = this.inModul.temp_databibs.length;
+      this.table = this.inModul.datatemp.length;
       if (
         this.table <= 0 ||
         this.Template_Name == "" ||
@@ -574,14 +542,23 @@ export default {
       ) {
         alert("กรุณากรอกข้อมูลให้ครบ");
       } else {
-        // axios
-        //   .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
-        //   .then((res) => {
-        //     //console.log("response: ", res);
-        //     alert(res);
-        //     alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-        //     window.location.reload();
-        //   });
+        this.inModul.template.push({
+          Name: `${this.Template_Name}`,
+          Type: `${this.Resourcetype_Name}`,
+          Description: `${this.Additionaldescription_Name}`,
+        });
+        console.log(this.inModul);
+        axios
+          .post(
+            `${process.env.VUE_APP_API_URL}/tempbib/addtempbib`,
+            this.inModul
+          )
+          .then((res) => {
+            //console.log("response: ", res);
+            alert(res);
+            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            window.location.reload();
+          });
       }
     },
   },
