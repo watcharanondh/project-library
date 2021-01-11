@@ -4,7 +4,7 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Librarian_Menu')" color="success">
+          <v-btn @click="$router.push(redir_path)" color="success">
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -169,6 +169,7 @@ export default {
   data: () => ({
     Position:localStorage.getItem("Position"),
     imageURL:localStorage.getItem("profile_img"),
+    redir_path:'',
 
     items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
 
@@ -190,6 +191,16 @@ export default {
         },
 
  async mounted() {
+      let Position = localStorage.getItem("Position");
+
+       if(Position == 'admin'){
+            this.redir_path = '/Admin_Menu'
+          }else if(Position == 'librarian'){
+            this.redir_path = '/Librarian_Menu'
+          }else{
+            this.redir_path = '/Student_Personnel_Menu'
+          }
+
        var config = {
         method: 'get',
         url: `${process.env.VUE_APP_API_URL}/allmember/listedituser/${localStorage.getItem("member_ID")}`,
@@ -242,10 +253,13 @@ export default {
     submit(){
         axios.put(`${process.env.VUE_APP_API_URL}/allmember/edituserbyuser`,this.Put_Users).then((res) => {
                 alert("บันทึกข้อมูลและแก้ไขเรียบร้อยแล้ว", res.data.msg);
+
                 this.reset();
             });  
       }
   },
+
+
 };
 </script>
 

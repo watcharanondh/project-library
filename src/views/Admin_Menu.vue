@@ -57,6 +57,7 @@
                 fab
                 rounded
                 x-large
+                @click="$router.push('/Edit_Personal_Information')"
               >
                 <v-img
                   contain
