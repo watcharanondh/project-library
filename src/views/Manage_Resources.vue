@@ -87,6 +87,17 @@
 
 <script>
 export default {
+  
+  /////// check access permission /////////////  
+   mounted() {
+     let Position = localStorage.getItem("Position");
+           if(Position !== 'librarian') {
+          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
+          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+       }
+  },
+  /////////////////////////////////////////////////
+
   data: () => ({}),
 };
 </script>
