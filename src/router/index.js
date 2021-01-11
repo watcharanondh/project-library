@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import DashBoard from "@/views/Dashboard.vue";
+import DashBoard from "@/views/DashBoard.vue";
 import LoginUsers from "@/views/LoginUsers.vue";
 import Librarian_Menu from "@/views/Librarian_Menu.vue";
 import Admin_Menu from "@/views/Admin_Menu.vue";

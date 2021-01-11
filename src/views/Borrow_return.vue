@@ -88,9 +88,9 @@
               <v-row class="no-gutters">
                 <h3>รหัสหนังสือ</h3>
                 <v-text-field
-                  v-model="marc21"
+                  v-model="BCcode"
                   label="กรุณากรอกรหัสหนังสือ"
-                  v-on:keyup.enter="API_Bookcode"
+                  v-on:keyup.enter="API_BCcode"
                   dense
                   solo
                   outlined
@@ -103,7 +103,7 @@
             <v-col md="1" class="pt-10">
               <v-row>
                 <!-- Button modal -->
-                <v-btn color="primary" v-on:click.stop="Selectmarc21">
+                <v-btn color="primary" v-on:click.stop="API_BCcode">
                   ค้นหา
                 </v-btn>
               </v-row>
@@ -234,19 +234,36 @@
             </v-col>
           </v-row>
           <v-expand-transition>
-            <v-card v-show="Expand_Borrow" height="200" width="2000">
+            <v-card v-show="Expand_Borrow" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Borrow"
                 :items="Data_Expand_Borrow"
                 :items-per-page="5"
-                class="elevation-1"
+                class="elevation-1" 
               >
+          <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.Barcode }}</td>
+              <td>{{ item.namebooks }}</td>
+              <td>{{ item.Copy}}</td>
+              <td>{{ item.Item_status}}</td>
+            </tr>
+          </template>
+              
+        <template v-slot:no-data>
+      <v-btn
+        color="primary"
+        @click="initialize"
+      >
+        Reset
+      </v-btn>
+    </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
 
           <v-expand-transition>
-            <v-card v-show="Expand_Return" height="200" width="2000">
+            <v-card v-show="Expand_Return" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Return"
                 :items="items_Borrowbooks"
@@ -258,37 +275,65 @@
           </v-expand-transition>
 
           <v-expand-transition>
-            <v-card v-show="Expand_Backlog" height="200" width="2000">
+            <v-card v-show="Expand_Backlog" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Backlog"
                 :items="Data_Expand_Backlog"
                 :items-per-page="5"
                 class="elevation-1"
               >
+            <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.Barcode }}</td>
+              <td>{{ item.nameBooks }}</td>
+              <td>{{ item.Borrow | formatDate }}</td>
+              <td>{{ item.Due | formatDate}}</td>
+              <td>{{ item.datediff | formatDate}}</td>
+            </tr>
+          </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
 
           <v-expand-transition>
-            <v-card v-show="Expand_Borrow_history" height="200" width="2000">
+            <v-card v-show="Expand_Borrow_history" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Borrow_history"
                 :items="Data_Expand_Borrow_history"
                 :items-per-page="5"
-                class="elevation-1"
               >
+          <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.Barcode }}</td>
+              <td>{{ item.nameBooks }}</td>
+              <td>{{ item.Borrow | formatDate }}</td>
+              <td>{{ item.Due | formatDate}}</td>
+              <td>{{ item.Returns | formatDate}}</td>
+            </tr>
+          </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
 
           <v-expand-transition>
-            <v-card v-show="Expand_Fines" height="200" width="2000">
+            <v-card v-show="Expand_Fines" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Fines"
                 :items="Data_Expand_Fines"
                 :items-per-page="5"
                 class="elevation-1"
               >
+            <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.namebooks }}</td>
+              <td>{{ item.Returns | formatDate}}</td>
+              <td>{{ item.Due | formatDate}}</td>
+              <td>{{ item.fine_type }}</td>
+              <td>{{ item.datediff }}</td>
+              <td>{{ item.Amount }}</td>
+              <td>{{ item.IsPaid }}</td>
+            </tr>
+          </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
@@ -321,10 +366,10 @@ export default {
 
   name: "Borrow-return",
   data: () => ({
-    searchUser:'',
     value: 1,
+    searchUser:'',
     Member_ID: "",
-    Book_code: "",
+    BCcode: "",
     Getusers_search: "",
 
     card_ID: "",
@@ -353,13 +398,15 @@ export default {
 
     //Table Expand_Borrow
     Data_Expand_Borrow: [],
-    header_Expand_Borrow: [
+    header_Expand_Borrow: [ 
       {
-        text: "ลำดับ",
+        text: "Barcode",
         align: "start",
-        value: "index",
+        value: "Barcode",
       },
-      { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
+      { text: "ชื่อทรัพยากร", value: "namebooks", align: "start" },
+      { text: "ฉบับที่", value: "Copy", align: "start" },
+      { text: "สถานะ", value: "Item_status", align: "start" },
     ],
     //Table Expand_Return
     Data_Expand_Return: [],
@@ -375,14 +422,14 @@ export default {
     Data_Expand_Backlog: [],
     header_Expand_Backlog: [
       {
-        text: "ลำดับ",
+        text: "Barcode",
         align: "start",
-        value: "index",
+        value: "Barcode", 
       },
-      { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
+      { text: "ชื่อทรัพยากร", value: "nameBooks", align: "start" },
       { text: "วันที่ยืม", value: "Borrow", align: "start" },
-      { text: "กำหนดคืน", value: "Resource_name", align: "start" },
-      { text: "เกินกำหนด(วัน)", value: "Resource_name", align: "start" },
+      { text: "กำหนดคืน", value: "Due", align: "start" },
+      { text: "เกินกำหนด(วัน)", value: "datediff", align: "start" },
     ],
     //Table Expand_Borrow_history
     Data_Expand_Borrow_history: [],
@@ -392,27 +439,31 @@ export default {
         align: "start",
         value: "Barcode",
       },
-      { text: "ชื่อ", value: "Barcode", align: "start" },
-      { text: "วันที่ยืม", value: "Barcode", align: "start" },
+      { text: "ชื่อทรัพยากร", value: "nameBooks", align: "start" },
+      { text: "วันที่ยืม", value: "Borrow", align: "start" },
       { text: "กำหนดคืน", value: "Due", align: "start" },
-      { text: "วันที่คือ", value: "Resource_name", align: "start" },
+      { text: "วันที่คืน", value: "Returns", align: "start" },
     ],
     //Table Expand_Fines
     Data_Expand_Fines: [],
     header_Expand_Fines: [
       {
-        text: "ลำดับ",
+        text: "ชื่อทรัพยากร",
         align: "start",
-        value: "index",
+        value: "namebooks",
       },
-      { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
-      { text: "จำนวนค่าปรับ", value: "Resource_name", align: "start" },
-      { text: "ประเภทค่าปรับ", value: "Resource_name", align: "start" },
+      { text: "กำหนดคืน", value: "Returns", align: "start" },
+      { text: "วันที่คืน", value: "Due", align: "start" },
+      { text: "ประเภท", value: "fine_type", align: "start" },
+      { text: "วันที่เกิน", value: "datediff", align: "start" },
+      { text: "จำนวนค่าปรับ", value: "Amount", align: "start" },
+      { text: "สถานะ", value: "IsPaid", align: "start" },
     ],
 
   }),
 
   methods: {
+    //เรียกรายชื่อผู้ใช้
     API_GetusersALL() {
       this.dialogUsersData = true;
       const url = `${process.env.VUE_APP_API_URL}/allmember/listalluser`;
@@ -420,19 +471,15 @@ export default {
         this.Data_modul_selectUser = results.data;
       });
     },
-
-    API_Getusers_search() {
-      const url = `${process.env.VUE_APP_API_URL}/bnr/listuserbnr/${this.Getusers_search}`;
-      axios.get(url).then((results) => {
-          this.card_ID = results.data[0].member_ID,
-          this.card_IDC = results.data[0].mem_Citizenid,
-          this.card_Position = results.data[0].Position,
-          this.card_Fname = results.data[0].FName,
-          this.card_Lname = results.data[0].LName
+    //ใส่รหัสโค้ดยืมหนังสือ
+    API_BCcode(){
+      const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
+       axios.get(url).then((results) => {
+         console.log(results.data);
+        this.Data_Expand_Borrow.push( results.data[0])
       });
+     
     },
-
-    
 
     close() {
       this.dialog = false;
@@ -448,16 +495,7 @@ export default {
       });
     },
 
-    removeEmpty(object1) {
-      Object.keys(object1).forEach(function(key) {
-        (object1[key] && typeof object1[key] === "object") ||
-          ((object1[key] === "" || object1[key] === null) &&
-            delete object1[key]);
-      });
-      return object1;
-    },
-
-    //เลือกผู้ใช้งาน
+    //เลือกผู้ใช้งานและแสดงข้อมูล
     API_SelectUserclick(item) {
       this.card_ID = item.member_ID,
       this.card_IDC = item.mem_Citizenid,
@@ -468,7 +506,9 @@ export default {
       const url = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${this.card_ID}`;
       axios.get(url).then((results) => {
          console.log(results.data);
-         console.log(results.data.bnr_history);
+         this.Data_Expand_Borrow_history = results.data.bnr_history;
+         this.Data_Expand_Fines = results.data.finebooks;
+         this.Data_Expand_Backlog = results.data.databorrow;
       });
       
       this.dialogUsersData=false

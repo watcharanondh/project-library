@@ -1062,7 +1062,7 @@ export default {
     async deleteItemNoAPI() {
       this.updateDel = {
         brcd: this.itemNo.Barcode,
-        libid: this.itemNo.libid_getitemin,
+        libid: localStorage.getItem("member_ID"),
         ides: this.item_descriptionNEW,
       };
       const url = `${process.env.VUE_APP_API_URL}/bibdata/edititemdes`;
@@ -1146,7 +1146,7 @@ export default {
       if (this.additemsNo == 0) {
         alert("กรุณากรอกหมายเลขฉบับที่ต้องการเพิ่ม");
       } else {
-        this.lib_id = "132";
+        this.lib_id = localStorage.getItem("member_ID");
         this.index_max = Data_modul_additemsNo.length - 1;
         this.bib_id = this.Data_modul_additemsNo[this.index_max].Bib_ID;
         this.str1 = this.bib_id.substr(0, 6);

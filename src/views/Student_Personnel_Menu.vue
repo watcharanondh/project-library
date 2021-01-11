@@ -97,7 +97,7 @@
 <script>
 export default {
   data: () => ({
-     Position:localStorage.getItem("Position"),
+    Position:localStorage.getItem("Position"),
     FName:localStorage.getItem("FName"),
     LName:localStorage.getItem("LName"),
     imageURL:localStorage.getItem("profile_img"),
