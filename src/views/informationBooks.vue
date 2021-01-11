@@ -36,13 +36,13 @@
           color="grey lighten-3"
         >
           <div>
-            <v-img
+             <v-img
               :src="item.PicPath"
               alt=""
               class="my-3"
               contain
               height="350"
-            />
+              ></v-img>
           </div>
         </v-card>
       </v-col>
@@ -185,16 +185,6 @@ export default {
   },
 
   methods: {
-    //   Get_API_Databooks() {
-    //   const url = `${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.$store.getters["numid"]}`;
-    //   axios.get(url).then((response) => {
-    //       //this.bookinfo = response.data;
-    //       this.BookInfo = response.data[0];
-    //       this.Marc21 = response.data[1];
-    //       this.items = response.data[2];
-    //       console.log(this.items);
-    //     });
-    //   },
     getColor(item_status) {
       if (item_status == "Available") return "green";
       else {

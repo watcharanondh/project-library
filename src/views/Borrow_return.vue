@@ -12,70 +12,76 @@
             <v-row class="justify-center"><h1>รายงานการยืม-คืน</h1></v-row>
           </v-col>
           <v-row>
-            <!-- รหัสสมาชิก -->
-            <v-col md="3">
-              <h3>ค้นหาสมาชิก</h3>
-              <v-row class="no-gutters">
-                <v-text-field
-                  v-model="Getusers_search"
-                  label="กรุณากรอกขื่อสมาชิก"
-                  v-on:keyup.enter="API_Getusers_search"
-                  dense
-                  solo
-                  outlined
-                  clearable
-                  required
-                ></v-text-field>
-              </v-row>
-            </v-col>
-            <!-- ปุ่มค้นหาสมาชิก -->
-            <v-col md="" class="pt-10">
-              <v-row>
-                <v-btn color="primary" v-on:click="API_Getusers_search">
-                  ค้นหา
-                </v-btn>
-              </v-row>
-            </v-col>
             <!-- ปุ่มค้นหาสมาชิกรวม -->
-            <v-col md="" class="pt-10">
-              <v-row>
+            <v-col md="2" class="pt-10">
+             
                 <v-btn color="primary" v-on:click="API_GetusersALL">
                   ค้นหาสมาชิกทั้งหมด
                 </v-btn>
-              </v-row>
+            
             </v-col>
-            <!-- ดู สมาชิกรวม -->
-            <v-dialog
-              :retain-focus="false"
-              v-model="dialogUsersData"
-              persistent
-              max-width="1500px"
-            >
-              <v-card>
-                <v-data-table
-                  :headers="headers_UsersDataALL"
-                  :items="item"
-                  :items-per-page="5"
-                  class="elevation-1"
+              <!-- dialog dialogUsersData-->
+                <v-dialog
+                  :retain-focus="false"
+                  v-model="dialogUsersData"
+                  persistent
+                  max-width="900px"
                 >
-                  <template v-slot:item="{ item }">
-                    <tr>
-                      <td align="center">{{ item.member_ID }}</td>
-                      <td align="center">{{ item.mem_Citizenid }}</td>
-                      <td align="center">{{ item.FName }}</td>
-                      <td align="center">{{ item.LName }}</td>
-                      <td align="center">{{ item.Position }}</td>
-                    </tr>
-                  </template>
-                </v-data-table>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="red" @click="dialogUsersData = false">
-                    ยกเลิก
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">รายชื่อผู้ใช้งาน</span>
+                    </v-card-title>
+                    <hr />
+                    <v-card-text>
+                      <v-container>
+                        <v-data-table
+                          :headers="headers_modul_selectUser"
+                          :items="Data_modul_selectUser"
+                          :search="searchUser"
+                          :items-per-page="5"
+                        >
+                      <!-- table top section -->
+                        <template v-slot:top>
+                          <v-toolbar flat color="green lighten-3">
+                            <v-toolbar-title>ค้นหารายชื่อที่ต้องการหรือรหัส</v-toolbar-title>
+                            <v-divider class="mx-4" inset vertical></v-divider>
+                            <v-col md="5">
+                              <v-row>
+                                <v-text-field
+                                  v-model="searchUser"
+                                  clearable
+                                  
+                                  single-line
+                                  hide-details
+                                ></v-text-field>
+                              </v-row>
+                            </v-col>
+                          </v-toolbar>
+                        </template>
+                          <!-- table tr section -->
+                          <template v-slot:item="{ item }">
+                            <tr v-on:click="API_SelectUserclick(item)" align="left">
+                                  <td align="center">{{ item.member_ID }}</td>
+                                  <td align="center">{{ item.mem_Citizenid }}</td>
+                                  <td align="center">{{ item.FName }}</td>
+                                  <td align="center">{{ item.LName }}</td>
+                                  <td align="center">{{ item.Position }}</td>
+                            </tr>
+                          </template>
+                        </v-data-table>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="error"
+                        @click="dialogUsersData = false">
+                        ยกเลิก
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+
 
             <!-- รหัสหนังสือ -->
             <v-col md="3">
@@ -104,7 +110,7 @@
             </v-col>
           </v-row>
 
-          <v-card color="grey lighten-2" elevation="1" tile>
+          <v-card v-if="card_ID" color="grey lighten-2" elevation="1" tile>
             <v-subheader><h3>รายละเอียดสมาชิก</h3></v-subheader>
             <v-col>
               <v-row>
@@ -298,6 +304,7 @@ import axios from "axios";
 export default {
   name: "Borrow-return",
   data: () => ({
+    searchUser:'',
     value: 1,
     Member_ID: "",
     Book_code: "",
@@ -317,17 +324,14 @@ export default {
     Expand_Fines: false,
 
     //Table User All
-    Data_UserALL:[],
-    headers_UsersDataALL:[
-      {
-        text: "รหัส",
-        align: "start",
-        value: "member_ID",
-      },
-      { text: "รหัสบัตรประชาชน", value: "mem_Citizenid", align: "start" },
-      { text: "ชื่อ", value: "FName", align: "start" },
-      { text: "นามสกุล", value: "LName", align: "start" },
-      { text: "Position", value: "Position", align: "start" },
+    Data_modul_selectUser: [],
+    headers_modul_selectUser: [
+      {text: "รหัส",align: "center",value: "member_ID",},
+      {text: "รหัสบัตรประชาชน", align: "center", value: "mem_Citizenid",},
+      {text: "ชื่อ", align: "center", value: "FName",},
+      {text: "นามสกุล", align: "center", value: "LName",},
+      {text: "Position", align: "center", value: "Position",},
+
     ],
 
     //Table Expand_Borrow
@@ -359,7 +363,7 @@ export default {
         value: "index",
       },
       { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
-      { text: "วันที่ยืม", value: "Resource_name", align: "start" },
+      { text: "วันที่ยืม", value: "Borrow", align: "start" },
       { text: "กำหนดคืน", value: "Resource_name", align: "start" },
       { text: "เกินกำหนด(วัน)", value: "Resource_name", align: "start" },
     ],
@@ -367,14 +371,14 @@ export default {
     Data_Expand_Borrow_history: [],
     header_Expand_Borrow_history: [
       {
-        text: "ลำดับ",
+        text: "Barcode",
         align: "start",
-        value: "index",
+        value: "Barcode",
       },
-      { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
-      { text: "วันที่ยืม", value: "Resource_name", align: "start" },
-      { text: "กำหนดคืน", value: "Resource_name", align: "start" },
-      { text: "สถานะค่าปรับ", value: "Resource_name", align: "start" },
+      { text: "ชื่อ", value: "Barcode", align: "start" },
+      { text: "วันที่ยืม", value: "Barcode", align: "start" },
+      { text: "กำหนดคืน", value: "Due", align: "start" },
+      { text: "วันที่คือ", value: "Resource_name", align: "start" },
     ],
     //Table Expand_Fines
     Data_Expand_Fines: [],
@@ -389,46 +393,6 @@ export default {
       { text: "ประเภทค่าปรับ", value: "Resource_name", align: "start" },
     ],
 
-    //ค่าจากการ API ใน Modul
-    Data_modul_1: [],
-    Data_modul_2: [],
-    Data_modul_3: [],
-    headers1: [
-      { text: "Field", value: "Field" },
-      { text: "Indicator1", value: "Indicator1" },
-      { text: "Indicator2", value: "Indicator2" },
-      { text: "Subfield", value: "Subfield" },
-      { text: "Action", value: "action" },
-    ],
-    headers_modul_1: [
-      {
-        text: "ตำแหน่งที่ 1",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อตัวบ่งชี้", value: "Description" },
-      { text: "ข้อมูลตัวบ่งชี้", value: "" },
-    ],
-
-    headers_modul_2: [
-      {
-        text: "ตำแหน่งที่ 2",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อตัวบ่งชี้", value: "Description" },
-      { text: "ข้อมูลตัวบ่งชี้", value: "" },
-    ],
-
-    headers_modul_3: [
-      {
-        text: "รหัส",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อเขตข้อมูลย่อย", value: "Name_Eng" },
-      { text: "ข้อมูลเขตข้อมูลย่อย", value: "" },
-    ],
   }),
 
   methods: {
@@ -436,23 +400,22 @@ export default {
       this.dialogUsersData = true;
       const url = `${process.env.VUE_APP_API_URL}/allmember/listalluser`;
       axios.get(url).then((results) => {
-        this.headers_UsersDataALL = results.data;
-        console.log(results.data);
+        this.Data_modul_selectUser = results.data;
       });
     },
+
     API_Getusers_search() {
       const url = `${process.env.VUE_APP_API_URL}/bnr/listuserbnr/${this.Getusers_search}`;
       axios.get(url).then((results) => {
-        console.log(results);
-        (this.card_ID = results.data[0].member_ID),
-          (this.card_IDC = results.data[0].mem_Citizenid),
-          (this.card_Position = results.data[0].Position),
-          (this.card_Fname = results.data[0].FName),
-          (this.card_Lname = results.data[0].LName),
-          console.log(results);
-        console.log(results.data.mem_Citizenid);
+          this.card_ID = results.data[0].member_ID,
+          this.card_IDC = results.data[0].mem_Citizenid,
+          this.card_Position = results.data[0].Position,
+          this.card_Fname = results.data[0].FName,
+          this.card_Lname = results.data[0].LName
       });
     },
+
+    
 
     close() {
       this.dialog = false;
@@ -477,16 +440,22 @@ export default {
       return object1;
     },
 
-    //ไปหน้า Dialog เพิ่มฉบับ
-    API_InfoBookclick(item) {
-      //console.log(item);
-      this.numid = item.Bib_ID;
-      //console.log(this.numid);
-      const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numid}`;
+    //เลือกผู้ใช้งาน
+    API_SelectUserclick(item) {
+      this.card_ID = item.member_ID,
+      this.card_IDC = item.mem_Citizenid,
+      this.card_Position = item.Position,
+      this.card_Fname = item.FName,
+      this.card_Lname = item.LName
+
+      const url = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${this.card_ID}`;
       axios.get(url).then((results) => {
-        return (this.Data_modul_additemsNo = results.data);
+         console.log(results.data);
+         console.log(results.data.bnr_history);
       });
-      this.dialogAdditemsNo = true;
+      
+      this.dialogUsersData=false
+      
     },
 
     reset() {

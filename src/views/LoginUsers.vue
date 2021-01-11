@@ -5,7 +5,7 @@
         <v-img
           class="white--text align-end"
           src="@/assets/logo.jpg"
-          height="200px"
+          height="10rem"
         >
           <v-card-title primary-title>
             ระบบสมาชิก
@@ -57,10 +57,6 @@ export default {
     },
     methods:{
       submit(){
-        this.$router.push("/Librarian_Menu")
-        // this.$router.push("/Admin")
-        // this.$router.push("/Personnel")
-        // this.$router.push("/Student")
         this.$store.dispatch({
           type:"doLogin",
           username: this.account.username,

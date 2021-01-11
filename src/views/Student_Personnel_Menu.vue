@@ -9,20 +9,20 @@
         <v-col cols="12" sm="3">
           <v-row class=" pa-6 ma-2"> </v-row>
           <v-row justify="center">
-            <h1>Student&Personnel</h1>
+            <h1>{{Position | capitalize }}</h1>
           </v-row>
           <v-row justify="center">
             <v-sheet class="" rounded="xl" min-height="10">
               <v-img
                 contain
-                :src="require('@/assets/lib/person.jpg')"
+                :src="imageURL"
                 max-height="200"
                 max-width="200"
               ></v-img>
             </v-sheet>
           </v-row>
           <v-row justify="center">
-            <h2>ครู จุ่ม นักเรียน ก</h2>
+            <h2>{{FName}} {{LName}}</h2>
           </v-row>
         </v-col>
 
@@ -62,7 +62,7 @@
                   max-height="70"
                   max-width="70"
                 ></v-img>
-                <h3>การออกรายงาน</h3>
+                <h3>รายการค่าปรับ</h3>
               </v-btn>
             </v-row>
 
@@ -93,7 +93,20 @@
 
 <script>
 export default {
-  data: () => ({}),
+  data: () => ({
+     Position:localStorage.getItem("Position"),
+    FName:localStorage.getItem("FName"),
+    LName:localStorage.getItem("LName"),
+    imageURL:localStorage.getItem("profile_img"),
+  }),
+
+   mounted() {
+     let Position = localStorage.getItem("Position");
+       if(Position !== "student" && Position !== "personnel" ) {
+          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
+          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Librarian_Menu")
+       }
+  },
 };
 </script>
 

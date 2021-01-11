@@ -17,33 +17,36 @@
               <v-row class=" pa-6 ma-2"> </v-row>
               <v-row class=" pa-6 ma-2"> </v-row>
               <v-row justify="center">
-              แสดงชื่อtype
+              <h2>{{Position | capitalize }}</h2>
               </v-row>
 
               <v-row justify="center">
                 <v-sheet min-height="10">
-                  <v-img
-                    contain
-                    :src="require('@/assets/lib/person.jpg')"
-                    max-height="150"
-                    max-width="150"
-                  ></v-img>
+                      <v-img
+                      contain
+                      v-if="imageURL"
+                      :src="imageURL"
+                      max-height="150"
+                      max-width="150"
+                    ></v-img>
                 </v-sheet>
               </v-row>
               <v-row justify="center">
                 <v-col cols="7">
-                <v-file-input
-                  v-model="image"
-                  label="เพิ่มรู้ประจำตัว"
-                  clearable
-                ></v-file-input>
+                  <input
+                      v-on:change="onFileSelected"
+                      type="file"
+                      name=""
+                      id=""
+                      label="เพิ่มรูปโปรไฟล์"
+                      clearable
+                    />
                 </v-col>
               </v-row>
                
             </v-col>
-            <!-- ซ้าย จบ-->
 
-            <!-- ขวา-->
+
             <v-col>
               <v-row>
                 <v-col cols="3">
@@ -51,12 +54,12 @@
                     <v-subheader><h4>รหัส :</h4></v-subheader>
                   </v-row>
                 </v-col>
-                <v-col md="3">
+                <v-col md="2">
                   <v-text-field
-                    v-model="editedAddmodul.Identification_code"
-                    value="123456789"
+                    v-model="Put_Users.member_ID"
                     solo
                     dense
+                    disabled
                   >
                   </v-text-field>
                 </v-col>
@@ -70,8 +73,7 @@
                 </v-col>
                 <v-col md="4">
                   <v-text-field
-                    v-model="editedAddmodul.ID_card_number"
-                    value="1509901566182"
+                    v-model="Put_Users.mem_Citizenid"
                     solo
                     dense
                   ></v-text-field>
@@ -86,8 +88,7 @@
                 </v-col>
                 <v-col md="3">
                   <v-text-field
-                    v-model="editedAddmodul.fullname.Firstname"
-                    value="วัทนพร"
+                    v-model="Put_Users.FName"
                     solo
                     dense
                   ></v-text-field>
@@ -99,8 +100,7 @@
                  </v-col>
                 <v-col md="3">
                   <v-text-field
-                    v-model="editedAddmodul.fullname.Lastname"
-                    value="ปันทะโชติ"
+                    v-model="Put_Users.LName"
                     solo
                     dense
                   ></v-text-field>
@@ -115,11 +115,8 @@
                 </v-col>
                 <v-col md="4">
                   <v-autocomplete
-                    v-model="select"
-                    :items="editedAddmodul.Grade_Level"
-                    item-text="name"
-                    item-value="value"
-                    label="Admin"
+                    v-model="Put_Users.Class"
+                    :items="items_Grade"
                     return-object
                     filled
                     dense
@@ -138,8 +135,7 @@
                 </v-col>
                 <v-col md="3">
                   <v-text-field
-                    v-model="editedAddmodul.classroom"
-                    value="ห้องปกครอง"
+                    v-model="Put_Users.Classroom"
                     solo
                     dense
                   >
@@ -149,19 +145,15 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                 <v-btn color="yellow" @click="API_Gat_update_users">
-                  แก้ไข
-                </v-btn>
-                <v-btn color="red" @click="API_Gat_update_users">
+                <v-btn color="error" @click="reset">
                   ยกเลิก
                 </v-btn>
-                <v-btn color="success" @click="API_Gat_update_users">
+                <v-btn color="success" @click="submit">
                   บันทึก
                 </v-btn>
               </v-card-actions>
             </v-col>
 
-            <!-- ขวา จบ-->
           </v-row>
         </v-card>
       </v-col>
@@ -175,121 +167,84 @@ import axios from "axios";
 export default {
   name: "Edit",
   data: () => ({
-   
+    Position:localStorage.getItem("Position"),
+    imageURL:localStorage.getItem("profile_img"),
 
+    items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
 
-    //Resource Type
-    select: { name: "Book", value: { "\\a": "Book" } },
-    resourcetype: [
-      { name: "Mixed", value: { "\\a": "Mixed" } },
-      { name: "Article", value: { "\\a": "Article" } },
-      { name: "Book", value: { "\\a": "Book" } },
-      { name: "Computer File", value: { "\\a": "Computer File" } },
-      { name: "Map", value: { "\\a": "Map" } },
-      { name: "Music", value: { "\\a": "Music" } },
-      { name: "Serial", value: { "\\a": "Serial" } },
-      { name: "Visual", value: { "\\a": "Visual" } },
-    ],
-
-    editedAddmodul: {
-      Type_users: [
-        { name: "Admin", value: "Admin" },
-        { name: "librarian", value: "librarian" },
-        { name: "personnel", value: "personnel" },
-        { name: "student", value: "student" },
-      ],
-
-      Identification_code: "",
-      ID_card_number: "",
-      fullname: { Firstname: "", Lastname: "" },
-      Grade_Level: [
-        { name: "มัธยมศึกษาปีที่ 1", value: "มัธยมศึกษาปีที่ 1" },
-        { name: "มัธยมศึกษาปีที่ 2", value: "มัธยมศึกษาปีที่ 2" },
-        { name: "มัธยมศึกษาปีที่ 3", value: "มัธยมศึกษาปีที่ 3" },
-        { name: "มัธยมศึกษาปีที่ 4", value: "มัธยมศึกษาปีที่ 4" },
-        { name: "มัธยมศึกษาปีที่ 5", value: "มัธยมศึกษาปีที่ 5" },
-        { name: "มัธยมศึกษาปีที่ 6", value: "มัธยมศึกษาปีที่ 6" },
-      ],
-      classroom: "",
-      image: null,
+    //แก้ไข Users in Modul
+    Put_Users: {
+      member_ID: "",
+      mem_Citizenid: "",
+      FName: "",
+      LName: "",
+      Class: "",
+      Classroom: "",
+      profile_img: "",
     },
+
   }),
 
+  headers: {
+          'Authorization': 'Basic abcd1234', 
+        },
+
+ async mounted() {
+       var config = {
+        method: 'get',
+        url: `${process.env.VUE_APP_API_URL}/allmember/listedituser/${localStorage.getItem("member_ID")}`,
+        headers: {
+          'Authorization': 'Basic abcd1234', 
+        },
+      };
+
+   await axios(config)
+          .then((res) => {
+            console.log(res.data);
+            this.Put_Users = res.data;
+            this.imageURL = res.data.profile_img
+          });
+  },
 
   methods: {
+      //อัพเดทรูป โปรไฟล์
+      async onFileSelected(event) {
+          const reader = new FileReader();
+          reader.onload = event => {
+            // for preview
+            this.imageURL = event.target.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+          let data = new FormData();
+          let file = event.target.files[0];
+          data.append('image', file)
 
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        // for preview
-        this.imageURL = event.target.result;
+      var config = {
+        method: 'post',
+        url: 'https://api.imgur.com/3/image',
+        headers: {
+          'Authorization': 'Client-ID 546c25a59c58ad7', 
+        },
+        data : data
       };
-      reader.readAsDataURL(event.target.files[0]);
 
-      //for upload
-      this.inModul.databib[0].image = event.target.files[0];
-    },
-
-   
-
-    editItem(item) {
-      if (item.Field == "964" || item.Field == "960") {
-        this.dialogwarn = true;
-      } else if (item.Field == "Leader") {
-        this.editedIndex = this.inModul.databib.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        this.dialogspecial = true;
-      } else {
-        this.editedIndex = this.inModul.databib.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${item.Field}`;
-        axios.get(url).then((results) => {
-          this.Data_modul_1 = results.data[0].indicator1;
-          this.Data_modul_2 = results.data[0].indicator2;
-          this.Data_modul_3 = results.data[0].subfields;
-          this.FieldName = results.data[0].Name;
-
-          if (this.Data_modul_3.length <= 0) {
-            this.dialogspecial = true;
-          } else {
-            this.dialog = true;
-          }
-        });
-      }
-    },
-
-    close() {
-      this.dialog = false;
-      this.dialogspecial = false;
-      this.$nextTick(() => {
-        this.editedAddmodul = Object.assign({}, this.defaultItem);
-        this.marc21 = "";
-        this.Data_modul_1 = [];
-        this.Data_modul_2 = [];
-        this.Data_modul_3 = [];
-        this.editedAddmodul.Subfield = {};
-        this.editedIndex = -1;
-      });
-    },
+      await axios(config).then((response ) => {
+      alert('อัพโหลดรูปเรียบร้อยแล้ว')
+      this.Put_Users.profile_img = response.data.data.link;
+      console.log(this.Put_Users.profile_img);
+    });
+  },
 
     reset() {
       window.location.reload();
     },
 
-    submit() {
-      if (this.inModul.length <= 1) {
-        alert("กรุณากรอกข้อมูลให้ครบ");
-      } else {
-        axios
-          .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
-          .then((res) => {
-            //console.log("response: ", res);
-            alert(res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-            window.location.reload();
-          });
+    submit(){
+        axios.put(`${process.env.VUE_APP_API_URL}/allmember/edituserbyuser`,this.Put_Users).then((res) => {
+                alert("บันทึกข้อมูลและแก้ไขเรียบร้อยแล้ว", res.data.msg);
+                this.reset();
+            });  
       }
-    },
   },
 };
 </script>

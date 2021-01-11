@@ -135,20 +135,25 @@
 
                   <v-row justify="center">
                     <v-sheet min-height="10">
-                      <v-img
-                        contain
-                        :src="require('@/assets/lib/person.jpg')"
-                        max-height="150"
-                        max-width="150"
-                      ></v-img>
+                    <v-img
+                      contain
+                      v-if="imageURL"
+                      :src="imageURL"
+                      max-height="150"
+                      max-width="150"
+                    ></v-img>
                     </v-sheet>
                   </v-row>
                   <v-row justify="start">
-                    <v-file-input
-                      v-model="image"
-                      label="เพิ่มรูปประจำตัว"
+                    <br/>
+                    <input
+                      v-on:change="onFileSelected"
+                      type="file"
+                      name=""
+                      id=""
+                      label="เพิ่มรูปโปรไฟล์"
                       clearable
-                    ></v-file-input>
+                    />
                   </v-row>
                 </v-col>
 
@@ -287,6 +292,7 @@ export default {
     searchUsers: "",
     dialogAddusers: false,
     formTitle:'',
+    imageURL: "https://i.imgur.com/A44vyNC.png",
 
     items_Type: ['personnel', 'student'],
     items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
@@ -298,9 +304,9 @@ export default {
       mem_Citizenid: "",
       FName: "",
       LName: "",
-      Class: "-",
+      Class: "",
       Classroom: "",
-      image: null,
+      profile_img: "",
     },
 
     //เซ็ตค่าเดิม
@@ -311,7 +317,7 @@ export default {
       LName: "",
       Class: "",
       Classroom: "",
-      image: null,
+      profile_img: "",
     },
 
     //Table on Page
@@ -341,11 +347,44 @@ export default {
   },
 
   methods: {
+  //อัพเดทรูป โปรไฟล์
+  async onFileSelected(event) {
+
+          const reader = new FileReader();
+          reader.onload = event => {
+            // for preview
+            this.imageURL = event.target.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+
+
+          let data = new FormData();
+          let file = event.target.files[0];
+          
+          data.append('image', file)
+
+      var config = {
+        method: 'post',
+        url: 'https://api.imgur.com/3/image',
+        headers: {
+          'Authorization': 'Client-ID 546c25a59c58ad7', 
+        },
+        data : data
+      };
+
+      await axios(config).then((response ) => {
+      alert('อัพโหลดรูปเรียบร้อยแล้ว')
+      this.Put_Users.profile_img = response.data.data.link;
+      console.log(this.Put_Users.profile_img);
+    });
+  },
+  
     editItem(item) {
       this.edited_ID = item.member_ID;
-      axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${this.edited_ID}`)
+      axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${this.edited_ID} `,{ headers: {'Authorization': 'Basic abcd1234'}})
         .then((res) => {
           this.edited_item = res.data;
+          this.imageURL = res.data.profile_img
           Object.assign(this.Put_Users, this.edited_item);
           this.dialogAddusers = true;
         });
@@ -364,25 +403,29 @@ export default {
     },
 
     close() {
-      this.dialogAddusers = false;
       this.$nextTick(() => {
         this.Put_Users = Object.assign({}, this.Edit_Item);
       });
+      window.location.reload();
+      this.dialogAddusers = false;
     },
 
-    saveMudul() {
-      axios.get(`${process.env.VUE_APP_API_URL}/allmember/checkmemberexist/${this.Put_Users.member_ID}`)
+ async saveMudul() {
+      console.log(this.Put_Users);
+    await  axios.get(`${process.env.VUE_APP_API_URL}/allmember/checkmemberexist/${this.Put_Users.member_ID}`)
         .then((res) => {
           this.check_ID = res.data.IsMemberId;
+
           if(this.check_ID == true){
-             axios.put(`${process.env.VUE_APP_API_URL}/allmember/edituserbylib`,this.Put_Users).then((res) => {
+           axios.put(`${process.env.VUE_APP_API_URL}/allmember/edituserbylib`,this.Put_Users).then((res) => {
                 alert("แก้ไขข้อมูลเรียบร้อยแล้ว", res.data.msg);
-                window.location.reload();
+                this.close();
+                
             });
           }else{
-            axios.post(`${process.env.VUE_APP_API_URL}/allmember/adduser`,this.Put_Users).then((res) => {
+           axios.post(`${process.env.VUE_APP_API_URL}/allmember/adduser`,this.Put_Users).then((res) => {
                 alert("บันทึกข้อมูลเรียบร้อยแล้ว", res.data.msg);
-                window.location.reload();
+                this.close();
             }); 
           }
         });

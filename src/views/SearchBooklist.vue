@@ -50,12 +50,10 @@
             </template>
             <!-- table tr section -->
             <template v-slot:item="{item}">
-              <tr >
-                <!-- v-on:click="InfoBookclick(item)" -->
-                <!-- <td>{{item.PicPath | imageUrl}} -->
+              <tr v-on:click="InfoBookclick(item)">
                   <td>
                   <v-img
-                    :src="item.PicPath | imageUrl"
+                    :src="item.PicPath"
                     aspect-ratio="1"
                     width="100"
                     height="100"

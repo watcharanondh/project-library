@@ -1,7 +1,16 @@
 <template>
   <v-container class="grey lighten-3">
     <v-row class="justify-center">
+        <v-col md="3">
+          <v-img
+            v-if="imageURL"
+            :src="imageURL"
+            height="auto"
+            width="auto"
+          ></v-img>
+        </v-col>
       <v-col cols="9">
+        
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
           <v-btn @click="$router.push('/Manage_Resources')" color="success">
@@ -60,14 +69,16 @@
               </v-row>
             </v-col>
 
+            
+
             <v-col md="1" class="pt-10">
+             
               <v-row>
                 <!-- Button modal -->
                 <v-btn color="primary" v-on:click.stop="Selectmarc21">
                   ค้นหา
                 </v-btn>
                 <!-- dialog เพิ่มขอบเขต และ แก้ไข -->
-
                 <v-dialog
                   :retain-focus="false"
                   v-model="dialog"
@@ -175,7 +186,8 @@
             </v-col>
 
             <!-- ช่องเพิ่มรูปปกหนังสือ -->
-            <v-col md="3" class="pt-11">
+            <v-col md="3" class="pt-4">
+              <h3>เพิ่มรูปปกหนังสือ</h3>
               <v-row class="no-gutters">
                 <input
                   v-on:change="onFileSelected"
@@ -185,6 +197,7 @@
                   label="เพิ่มรูปปกหนังสือ"
                   clearable
                 />
+                 <br />
               </v-row>
             </v-col>
 
@@ -695,6 +708,7 @@ export default {
     codes: "$a",
     FieldName: "",
     numField: "",
+    imageURL:"https://dl.acm.org/specs/products/acm/releasedAssets/images/cover-default--book.svg",
 
     MaxBC: "",
     item_descriptionNEW: "",
@@ -877,7 +891,6 @@ export default {
       // if(this.inModul.databib.Field == '964'){
       this.inModul.databib[1].Subfield = this.select.value;
       //}
-      
     },
 
     initialize() {
@@ -901,6 +914,14 @@ export default {
     //อัพเดทรูป
   async onFileSelected(event) {
 
+      const reader = new FileReader();
+      reader.onload = event => {
+        // for preview
+        this.imageURL = event.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+
+
       let data = new FormData();
       let file = event.target.files[0];
       
@@ -909,18 +930,19 @@ export default {
   var config = {
     method: 'post',
     url: 'https://api.imgur.com/3/image',
-    headers: { 
+    headers: {
       'Authorization': 'Client-ID 546c25a59c58ad7', 
     },
     data : data
   };
     
   await axios(config).then((response ) => {
-          alert('อัพโหลดรูปเรียบร้อยแล้ว')
-          console.log(response);
-          this.inModul.databib[0].Subfield.$a = response.data.data.link.split('/')[3];
-        });
-      },
+      // alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
+      console.log(response.data.data);
+
+      this.inModul.databib[0].Subfield.$a = response.data.data.link;
+    });
+  },
 
     //Template
     API_Findtemp(Select_Template_Name) {

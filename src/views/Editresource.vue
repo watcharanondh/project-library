@@ -1,6 +1,14 @@
 <template>
   <v-container class="grey lighten-3">
     <v-row class="justify-center">
+      <v-col md="3">
+        <v-img
+          v-if="imageURL"
+          :src="imageURL"
+          height="auto"
+          width="auto"
+        ></v-img>
+      </v-col>
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
@@ -209,20 +217,18 @@
             </v-col>
 
             <!-- ช่องเพิ่มรูปปกหนังสือ -->
-            <v-col md="3" class="pt-7">
+            <v-col md="3" class="pt-4">
+              <h3>เพิ่มรูปปกหนังสือ</h3>
               <v-row class="no-gutters">
-                <v-file-input
+                <input
+                  v-if="this.inModul.databib[0]"
                   v-on:change="onFileSelected"
+                  type="file"
+                  name=""
+                  id=""
                   label="เพิ่มรูปปกหนังสือ"
                   clearable
-                ></v-file-input>
-                <v-img
-                  v-if="imageURL"
-                  :src="imageURL"
-                  height="500px"
-                  width="500px"
-                  class="mt-3"
-                ></v-img>
+                />
               </v-row>
             </v-col>
           </v-row>
@@ -316,8 +322,6 @@
               </v-data-table>
             </v-col>
           </v-card>
-          <!-- <span>{{ inModuldefault }}</span> -->
-          <!-- <span>{{ inModul }}</span> -->
         </v-card>
       </v-col>
     </v-row>
@@ -370,32 +374,7 @@ export default {
     codes: "$a",
     FieldName: "",
     numField: "",
-    imageURL: null,
-
-    //อัพเดทรูป
-    async onFileSelected(event) {
-      let data = new FormData();
-      let file = event.target.files[0];
-
-      data.append("image", file);
-
-      var config = {
-        method: "post",
-        url: "https://api.imgur.com/3/image",
-        headers: {
-          Authorization: "Client-ID 546c25a59c58ad7",
-        },
-        data: data,
-      };
-
-      await axios(config).then((response) => {
-        alert("อัพโหลดรูปเรียบร้อยแล้ว");
-        console.log(response);
-        this.inModul.databib[0].Subfield.$a = response.data.data.link.split(
-          "/"
-        )[3];
-      });
-    },
+    imageURL:"https://dl.acm.org/specs/products/acm/releasedAssets/images/cover-default--book.svg",
 
     //ค่าจาก Modul
     inModul: {
@@ -516,7 +495,8 @@ export default {
       this.inModul.databib = [];
     },
 
-    onFileSelected(event) {
+    //อัพเดทรูป
+    async onFileSelected(event) {
       const reader = new FileReader();
       reader.onload = (event) => {
         // for preview
@@ -524,8 +504,25 @@ export default {
       };
       reader.readAsDataURL(event.target.files[0]);
 
-      //for upload
-      this.inModul.databib[0].image = event.target.files[0];
+      let data = new FormData();
+      let file = event.target.files[0];
+
+      data.append("image", file);
+
+      var config = {
+        method: "post",
+        url: "https://api.imgur.com/3/image",
+        headers: {
+          Authorization: "Client-ID 546c25a59c58ad7",
+        },
+        data: data,
+      };
+      await axios(config).then((response) => {
+        // alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
+        console.log(response.data.data);
+        console.log(this.inModul.databib);
+        this.inModul.databib[this.field960Key].Subfield.$a = response.data.data.link;
+      });
     },
 
     // เขตข้อมูล Marc21
@@ -579,15 +576,15 @@ export default {
       this.Editmarc21 = item.Bib_ID;
       const url = `${process.env.VUE_APP_API_URL}/bibdata/subfObjDatabib/${this.Editmarc21}`;
       axios.get(url).then((results) => {
-        //console.log(results);
         let Marc21s = results.data;
-        for (const element of Marc21s) {
-          // this.inModul.databib = element;
+        for (const [key, element] of Marc21s.entries()) {
+          if (element.Field == "960") {
+            this.field960Key = key;
+            this.imageURL = element.Subfield.$a
+          }
           this.inModul.databib.push(element);
-          //console.log( this.inModul.databib);
         }
       });
-
       this.dialogFindbibliography = false;
     },
 
