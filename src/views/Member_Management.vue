@@ -5,7 +5,7 @@
         <v-col cols="9">
           <v-card class="mx-auto pa-5" outlined>
             <!-- ปุ่มย้อนกลับ -->
-            <v-btn @click="$router.push('/Librarian_Menu')" color="success">
+            <v-btn @click="$router.push(redir_path)" color="btnBack" rounded>
               <v-icon left>reply</v-icon>
               <span>ย้อนกลับ</span>
             </v-btn>
@@ -15,6 +15,9 @@
             <v-row justify="start">
               <v-col class="shrink">
                 <v-bottom-navigation color="primary" horizontal>
+                  <v-btn v-if="Position == 'admin'" @click="searchUsers = 'librarian'">
+                    <h2>บรรณารักษ์</h2>
+                  </v-btn>
                   <v-btn @click="searchUsers = 'personnel'">
                     <h2>บุคลากร</h2>
                   </v-btn>
@@ -24,7 +27,8 @@
                 </v-bottom-navigation>
               </v-col>
 
-              <v-col md="8" class="pa-6 ma-2"></v-col>
+              <v-col v-if="Position != 'admin'" md="1"></v-col>
+              <v-col md="7" class="pa-6 ma-2"></v-col>
 
               <v-col md="1">
                 <v-btn color="primary" v-on:click="dialogAddusers=true">
@@ -265,7 +269,7 @@
                     </v-row>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" @click="close">
+                      <v-btn color="error" @click="close">
                         ยกเลิก
                       </v-btn>
                       <v-btn color="success" @click="saveMudul">
@@ -289,10 +293,12 @@ import axios from "axios";
 export default {
   name: "Member_Management",
   data: () => ({
+    Position:localStorage.getItem("Position"),
     searchUsers: "",
     dialogAddusers: false,
     formTitle:'',
     imageURL: "https://i.imgur.com/A44vyNC.png",
+    redir_path:'',
 
     items_Type: ['personnel', 'student'],
     items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
@@ -339,8 +345,32 @@ export default {
 
   }),
 
+    /////// check access permission /////////////  
+   mounted() {
+     let Position = localStorage.getItem("Position");
+           if(Position !== 'librarian' && Position !== 'admin') {
+          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
+          if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
+          // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+       }
+
+        if(Position == 'admin'){
+            this.redir_path = '/Admin_Menu'
+        }else if(Position == 'librarian'){
+            this.redir_path = '/Librarian_Menu'
+        }else{
+            this.redir_path = '/Student_Personnel_Menu'
+          }
+  },
+  /////////////////////////////////////////////////
+
   created() {
-    let uri = `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
+    let uri = localStorage.getItem("Position") == 'admin' ? `${process.env.VUE_APP_API_URL}/allmember/listalluseradmin/`: `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
+    // let uri = `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
     axios.get(uri).then((response) => {
       this.Data_Users = response.data;
     });

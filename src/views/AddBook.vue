@@ -13,7 +13,7 @@
         
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Manage_Resources')" color="success">
+          <v-btn @click="$router.push('/Manage_Resources')" color="btnBack" rounded>
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -164,7 +164,7 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" @click="close">
+                      <v-btn color="error" @click="close">
                         ยกเลิก
                       </v-btn>
                       <v-btn color="success" @click="saveMudul">
@@ -179,7 +179,7 @@
             <!-- ปุ่มเพิ่มฉบับหนังสือหลายเล่ม -->
             <v-col cols="12" md="2" class="pt-10">
               <v-row>
-                <v-btn color="success" v-on:click="dialogAdditems = true">
+                <v-btn color="accent" v-on:click="dialogAdditems = true">
                   เพิ่มรายการ(item)
                 </v-btn>
               </v-row>
@@ -224,7 +224,7 @@
 
           <!-- ปุ่มบันทึกข้อมูลทั้งหน้าก่อนส่ง -->
           <v-row class="justify-center">
-            <v-btn class="mr-4" @click="reset">
+            <v-btn color="error" class="mr-4" @click="reset">
               ยกเลิก
             </v-btn>
 
@@ -272,7 +272,7 @@
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
+                        <v-btn color="error" text @click="closeDelete"
                           >ยกเลิก</v-btn
                         >
                         <v-btn
@@ -299,7 +299,7 @@
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" @click="dialogwarn = false"
+                        <v-btn color="error" @click="dialogwarn = false"
                           >ยกเลิก</v-btn
                         >
                         <v-spacer></v-spacer>
@@ -329,7 +329,7 @@
                       <br />
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" @click="close">
+                        <v-btn color="error" @click="close">
                           ยกเลิก
                         </v-btn>
                         <v-btn color="success" @click="saveMudul">
@@ -416,7 +416,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="red"
+            color="error"
             @click="
               (additems = ''),
                 (Data_modul_additems = []),
@@ -530,7 +530,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="red"
+            color="error"
             @click="
               (additemsNo = ''),
                 (ides = ''),
@@ -568,7 +568,7 @@
         </v-data-table>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" @click="dialoglookmarc21 = false">
+          <v-btn color="error" @click="dialoglookmarc21 = false">
             ยกเลิก
           </v-btn>
         </v-card-actions>
@@ -666,7 +666,7 @@
             </v-row>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="red" @click="dialogdeleteItemNo = false">
+              <v-btn color="error" @click="dialogdeleteItemNo = false">
                 ยกเลิก
               </v-btn>
               <v-btn
@@ -687,6 +687,23 @@
 import axios from "axios";
 
 export default {
+
+  /////// check access permission /////////////  
+   mounted() {
+     let Position = localStorage.getItem("Position");
+           if(Position !== 'librarian') {
+          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
+          if (Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+          } else if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
+       }
+  },
+  /////////////////////////////////////////////////
+
   name: "AddBookandItem",
   data: () => ({
     template: [],

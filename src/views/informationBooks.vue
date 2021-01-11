@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="6" md="4">
         <v-card class="pa-2" outlined tile color="grey lighten-3">
-          <v-btn @click="$router.push('/SearchBooklist')" color="amber">
+          <v-btn @click="$router.push('/SearchBooklist')" color="btnBack" rounded>
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -100,7 +100,8 @@
               <v-data-table
                 :headers="headers_list"
                 :items="items"
-                :items-per-page="5"
+                disable-pagination
+                hide-default-footer
                 class="elevation-1"
               >
                 <template v-slot:item="{ item }">
@@ -128,7 +129,8 @@
             <v-data-table
               :headers="headers_Marc21"
               :items="Marc21"
-              :items-per-page="5"
+              disable-pagination
+              hide-default-footer
               class="elevation-1"
             >
               <template v-slot:item="{ item }">

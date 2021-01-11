@@ -4,7 +4,7 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Manage_Resources')" color="success">
+          <v-btn @click="$router.push('/Manage_Resources')" color="btnBack" rounded>
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -58,7 +58,7 @@
 
           <!-- ปุ่มบันทึกข้อมูลทั้งหน้าก่อนส่ง -->
           <v-row class="justify-center">
-            <v-btn class="mr-4" @click="reset">
+            <v-btn color="error" class="mr-4" @click="reset">
               ยกเลิก
             </v-btn>
 
@@ -181,7 +181,7 @@
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" @click="close">
+                        <v-btn color="error" @click="close">
                           ยกเลิก
                         </v-btn>
                         <v-btn color="success" @click="saveMudul">
@@ -232,7 +232,7 @@
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
+                        <v-btn color="error" text @click="closeDelete"
                           >ยกเลิก</v-btn
                         >
                         <v-btn
@@ -271,7 +271,7 @@
         <br />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" @click="close">
+          <v-btn color="error" @click="close">
             ยกเลิก
           </v-btn>
           <v-btn color="success" @click="saveMudul">
@@ -293,7 +293,13 @@ export default {
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+          if (Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+          } else if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
        }
   },
   /////////////////////////////////////////////////

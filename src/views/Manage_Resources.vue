@@ -5,9 +5,10 @@
         <v-col sm="1">
           <v-btn
             block
+            rounded
             elevation="5"
             @click="$router.push('/Librarian_Menu')"
-            color="amber"
+            color="btnBack"
             x-large
           >
             <v-icon left>reply</v-icon>
@@ -93,7 +94,14 @@ export default {
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+          if (Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+          } else if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
+          // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
        }
   },
   /////////////////////////////////////////////////

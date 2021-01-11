@@ -38,6 +38,7 @@
                 fab
                 rounded
                 x-large
+                @click="$router.push('/Member_Management')"
               >
                 <v-img
                   contain
@@ -86,10 +87,15 @@ export default {
   
   mounted() {
        let Position = localStorage.getItem("Position");
-     //console.log(Position);
        if(Position !== 'admin') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          this.$router.push(Position == 'librarian'?"/Librarian_Menu":"/Student_Personnel_Menu")
+          if (Position == 'librarian') {
+          this.$router.push("/Librarian_Menu")
+          } else if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
        }
      
   },

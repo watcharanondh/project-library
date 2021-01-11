@@ -4,7 +4,7 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Librarian_Menu')" color="success">
+          <v-btn @click="$router.push('/Librarian_Menu')" color="btnBack" rounded>
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -308,7 +308,13 @@ export default {
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+          if (Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+          } else if(Position == 'student' && Position !== "personnel"){
+          this.$router.push("/Student_Personnel_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
        }
   },
   /////////////////////////////////////////////////

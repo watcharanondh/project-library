@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import DashBoard from "@/views/DashBoard.vue";
+import DashBoard from "@/views/Dashboard.vue";
 import LoginUsers from "@/views/LoginUsers.vue";
 import Librarian_Menu from "@/views/Librarian_Menu.vue";
 import Admin_Menu from "@/views/Admin_Menu.vue";
@@ -15,7 +15,7 @@ import Edit_Personal_Information from "@/views/Edit_Personal_Information.vue";
 import Borrow_return from "@/views/Borrow_return.vue";
 
 import SearchBooklist from "@/views/SearchBooklist.vue";
-import InformationBooks from "@/views/InformationBooks.vue";
+import InformationBooks from "@/views/informationBooks.vue";
 
 Vue.use(VueRouter);
 

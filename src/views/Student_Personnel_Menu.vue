@@ -37,6 +37,7 @@
                 fab
                 rounded
                 x-large
+                @click="$router.push('/')"
               >
                 <v-img
                   contain
@@ -55,7 +56,7 @@
                 fab
                 rounded
                 x-large
-                
+                @click="$router.push('/')"
               >
                 <v-img
                   contain
@@ -105,9 +106,15 @@ export default {
    mounted() {
      let Position = localStorage.getItem("Position");
        if(Position !== "student" && Position !== "personnel" ) {
-
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          this.$router.push(Position == 'admin'?"/Admin_Menu":"/Librarian_Menu")
+          if (Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+          } else if(Position == 'librarian'){
+          this.$router.push("/Librarian_Menu")
+          }else{
+          this.$router.push("/LoginUsers")
+          }
+          // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Librarian_Menu")
        }
   },
 };

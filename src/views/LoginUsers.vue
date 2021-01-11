@@ -44,6 +44,20 @@
 
 <script>
 export default {
+
+    /////// check access permission /////////////  
+   mounted() {
+     let Position = localStorage.getItem("Position");
+        if(Position == 'admin') {
+          this.$router.push("/Admin_Menu")
+       }else if (Position == 'librarian') {
+          this.$router.push("/Librarian_Menu")
+       }else if (Position == 'student' || Position == 'personnel' ) {
+          this.$router.push("/Student_Personnel_Menu")
+       }
+  },
+  /////////////////////////////////////////////////
+
     data(){
         return {
             isShowPassword:false,

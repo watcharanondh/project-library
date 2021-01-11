@@ -4,7 +4,7 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push(redir_path)" color="success">
+          <v-btn @click="$router.push(redir_path)" color="btnBack" rounded>
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
