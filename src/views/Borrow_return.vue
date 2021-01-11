@@ -173,7 +173,7 @@
 
           <v-row justify="start" style="min-height: 1px;">
             <v-col class="shrink">
-              <v-bottom-navigation :value="value" color="primary">
+              <v-bottom-navigation :value="value" color="primary" class="rounded-t-xl">
                 <v-btn
                   color=""
                   @click="

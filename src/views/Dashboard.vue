@@ -1,5 +1,5 @@
 <template>
-  <v-container style="background:#E0E0E0;color:white">
+  <v-container style="background:#E0E0E0;color:white;height:100%">
     <v-img
       :src="require('@/assets/homepage/WC.jpg')"
       class="my-3"

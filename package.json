@@ -11,6 +11,7 @@
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "material-design-icons-iconfont": "^5.0.1",
+    "moment": "^2.29.1",
     "node-sass": "^5.0.0",
     "roboto-fontface": "*",
     "uuid": "^8.3.2",

@@ -37,7 +37,7 @@
                 fab
                 rounded
                 x-large
-                @click="$router.push('/')"
+                @click="$router.push('/Member_BorrowAndReturn')"
               >
                 <v-img
                   contain
@@ -56,7 +56,7 @@
                 fab
                 rounded
                 x-large
-                @click="$router.push('/')"
+                @click="$router.push('/Member_FineReceipt')"
               >
                 <v-img
                   contain
@@ -114,7 +114,6 @@ export default {
           }else{
           this.$router.push("/LoginUsers")
           }
-          // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Librarian_Menu")
        }
   },
 };

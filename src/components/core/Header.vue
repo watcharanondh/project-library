@@ -27,13 +27,13 @@
         <v-tab v-for="link in links" :key="link.text" router :to="link.route">
           <h4>{{ link.text }}</h4>
         </v-tab>
-      </v-tabs>
     
-          <div class="mt-3" v-if="$store.state.isLogged">
+          <div class="mt-5" v-if="$store.state.isLogged">
             <h4 class="orange--text  justify-center">
-              {{ $store.getters["username"] | capitalize }}
+            สวัสดี : {{ fname | capitalize }}
             </h4>
           </div>
+      </v-tabs>
      
           <v-btn v-if="$store.state.isLogged" icon @click="onClickLogOff">
             <v-icon>logout</v-icon>
@@ -45,6 +45,7 @@
 <script>
 export default {
   name: "Header",
+  fname:"",
   computed: {
     version() {
       return process.env.VUE_APP_VERSION;
@@ -69,6 +70,7 @@ export default {
   },
 
   mounted() {
+   this.fname  = localStorage.getItem("FName");
     if (this.Position == "admin") {
       this.links.push({ text: "Admin", route: "/Admin_Menu" });
       this.links.splice(1, 1);

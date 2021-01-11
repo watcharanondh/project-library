@@ -1,5 +1,5 @@
 <template>
-  <v-container style="background:#E0E0E0;color:white">
+  <v-container style="background:#E0E0E0;color:white;height:100%">
     <v-row>
       <!--col1-->
       <v-col sm="2">

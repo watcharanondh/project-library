@@ -14,7 +14,7 @@
             </v-col>
             <v-row justify="start">
               <v-col class="shrink">
-                <v-bottom-navigation color="primary" horizontal>
+                <v-bottom-navigation color="primary" horizontal class="rounded-t-xl">
                   <v-btn v-if="Position == 'admin'" @click="searchUsers = 'librarian'">
                     <h2>บรรณารักษ์</h2>
                   </v-btn>

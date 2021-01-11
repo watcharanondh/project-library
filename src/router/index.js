@@ -13,6 +13,8 @@ import Member_Management from "@/views/Member_Management.vue";
 import Report from "@/views/Report.vue";
 import Edit_Personal_Information from "@/views/Edit_Personal_Information.vue";
 import Borrow_return from "@/views/Borrow_return.vue";
+import Member_BorrowAndReturn from "@/views/Member_BorrowAndReturn.vue";
+import Member_FineReceipt from "@/views/Member_FineReceipt.vue";
 
 import SearchBooklist from "@/views/SearchBooklist.vue";
 import InformationBooks from "@/views/informationBooks.vue";
@@ -112,11 +114,23 @@ const routes = [
     component: Edit_Personal_Information,
   },
 
-  //รายการยืมคืน
+  //สร้างรายการยืมคืนของ lib
   {
     path: "/Borrow_return",
     name: "Borrow_return",
     component: Borrow_return,
+  },
+
+  //รายการยืมคืนและค่าปรับของสมาชิก
+  {
+    path: "/Member_BorrowAndReturn",
+    name: "Member_BorrowAndReturn",
+    component: Member_BorrowAndReturn,
+  },
+  {
+    path: "/Member_FineReceipt",
+    name: "Member_FineReceipt",
+    component: Member_FineReceipt,
   },
 
   {
