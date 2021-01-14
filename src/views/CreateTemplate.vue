@@ -287,6 +287,7 @@
 import axios from "axios";
 
 export default {
+  name: "CreateTemplate",
 
   /////// check access permission /////////////  
    mounted() {
@@ -304,7 +305,6 @@ export default {
   },
   /////////////////////////////////////////////////
 
-  name: "CreateTemplate",
   data: () => ({
     template: [],
     Template_Name: "",
@@ -572,8 +572,7 @@ export default {
           )
           .then((res) => {
             //console.log("response: ", res);
-            alert(res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            alert("บันทึกข้อมูลเรียบร้อยแล้ว",res);
             window.location.reload();
           });
       }

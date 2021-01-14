@@ -9,7 +9,7 @@
         <v-col cols="12" sm="2">
            <v-row class=" pa-6 ma-2"> </v-row>
           <v-row justify="center">
-            <h1>{{Position | capitalize }}</h1>
+            <h1>{{PositionTH}}</h1>
           </v-row>
           <v-row justify="center">
             <v-sheet class="" rounded="xl" min-height="10">
@@ -148,13 +148,16 @@
 
 <script>
 export default {
+  name: "Librarian_Menu",
   data: () => ({
+    PositionTH:'',
     Position:localStorage.getItem("Position"),
     FName:localStorage.getItem("FName"),
     LName:localStorage.getItem("LName"),
     imageURL:localStorage.getItem("profile_img"),
   }),
    mounted() {
+
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
@@ -167,6 +170,15 @@ export default {
           }
           // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
        }
+              if (Position == 'admin') {
+          return this.PositionTH = 'แอดมิน'
+        }else if (Position == 'librarian'){
+          return this.PositionTH = 'บรรณารักษ์'
+        }else if (Position == 'personnel'){
+          return this.PositionTH = 'บุคลากร'
+        }else if (Position == 'student'){
+          return  this.PositionTH = 'นักเรียน'
+        }
   },
 };
 </script>

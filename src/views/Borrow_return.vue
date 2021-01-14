@@ -347,6 +347,7 @@
 import axios from "axios";
 
 export default {
+  name: "Borrow-return",
 
   /////// check access permission /////////////  
    mounted() {
@@ -364,7 +365,6 @@ export default {
   },
   /////////////////////////////////////////////////
 
-  name: "Borrow-return",
   data: () => ({
     value: 1,
     searchUser:'',

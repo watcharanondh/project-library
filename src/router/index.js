@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import DashBoard from "@/views/DashBoard.vue";
+import Dashboard from "@/views/Dashboard.vue";
 import LoginUsers from "@/views/LoginUsers.vue";
 import Librarian_Menu from "@/views/Librarian_Menu.vue";
 import Admin_Menu from "@/views/Admin_Menu.vue";
@@ -24,9 +24,9 @@ Vue.use(VueRouter);
 const routes = [
   // หน้าหลัก
   {
-    path: "/DashBoard",
-    name: "DashBoard",
-    component: DashBoard,
+    path: "/Dashboard",
+    name: "Dashboard",
+    component: Dashboard,
   },
 
   //หน้าค้นหาหนังสือ

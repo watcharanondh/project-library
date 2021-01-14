@@ -72,7 +72,7 @@ export default {
   mounted() {
    this.fname  = localStorage.getItem("FName");
     if (this.Position == "admin") {
-      this.links.push({ text: "Admin", route: "/Admin_Menu" });
+      this.links.push({ text: "แอดมิน", route: "/Admin_Menu" });
       this.links.splice(1, 1);
     } else if (this.Position == "librarian") {
       this.links.push({ text: "บรรณารักษ์", route: "/Librarian_Menu" });

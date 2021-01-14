@@ -342,8 +342,6 @@
               </v-data-table>
             </v-col>
           </v-card>
-          <!-- <span>{{ inModuldefault }}</span> -->
-          <!-- <span>{{ inModul }}</span> -->
         </v-card>
       </v-col>
     </v-row>
@@ -406,7 +404,7 @@
               <template v-slot:item="{ item, index }">
                 <tr v-on:click="API_InfoBookclick(item)" align="left">
                   <td align="center">{{ index + 1 }}</td>
-                  <td class="blue--text">{{ item.Title }}</td>
+                  <td class="primary--text">{{ item.Title }}</td>
                   <td>{{ item.ISBN }}</td>
                 </tr>
               </template>
@@ -470,7 +468,7 @@
                     <v-col md="1" class="mt-5">
                       <v-row>
                         <v-btn
-                          @click="API_AdditemsNo(Data_modul_additemsNo)"
+                          @click="API_AdditemsNo"
                           color="primary"
                           dark
                           class="mb-2"
@@ -515,7 +513,7 @@
                   <td>{{ item.Booknames }}</td>
                   <td align="center">{{ item.Copy }}</td>
                   <td>{{ item.CallNos }}</td>
-                  <td>{{ item.Barcode }}</td>
+                  <td class="primary--text" @click="printfBC(item.Barcode)">{{ item.Barcode }}</td>
                   <td>{{ item.item_description }}</td>
                   <td align="center">
                     <v-icon @click="deleteItemNo(item)">
@@ -687,6 +685,7 @@
 import axios from "axios";
 
 export default {
+  name: "AddBookandItem",
 
   /////// check access permission /////////////  
    mounted() {
@@ -704,7 +703,6 @@ export default {
   },
   /////////////////////////////////////////////////
 
-  name: "AddBookandItem",
   data: () => ({
     template: [],
     Select_Template_Name: "",
@@ -729,6 +727,7 @@ export default {
 
     MaxBC: "",
     item_descriptionNEW: "",
+    Bib_ID_New:"",
     itemNo: {
       Copy: null,
       Barcode: "",
@@ -904,12 +903,8 @@ export default {
   },
 
   methods: {
-    setSelectedtype() {
-      // if(this.inModul.databib.Field == '964'){
-      this.inModul.databib[1].Subfield = this.select.value;
-      //}
-    },
 
+    //ข้อมูล Filde ที่ห้ามลบและต้องมี ในการเพิ่มหนังสื่อใหม่ทุกครั้ง หน้าเพิ่มทรัพยากร
     initialize() {
       this.inModul.databib = [
         {
@@ -928,40 +923,7 @@ export default {
     },
 
 
-    //อัพเดทรูป
-  async onFileSelected(event) {
-
-      const reader = new FileReader();
-      reader.onload = event => {
-        // for preview
-        this.imageURL = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-
-
-      let data = new FormData();
-      let file = event.target.files[0];
-      
-      data.append('image', file)
-
-  var config = {
-    method: 'post',
-    url: 'https://api.imgur.com/3/image',
-    headers: {
-      'Authorization': 'Client-ID 546c25a59c58ad7', 
-    },
-    data : data
-  };
-    
-  await axios(config).then((response ) => {
-      // alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
-      console.log(response.data.data);
-
-      this.inModul.databib[0].Subfield.$a = response.data.data.link;
-    });
-  },
-
-    //Template
+    //เลือก Template ที่ใช้เป็นตัวอย่าง หน้าเพิ่มทรัพยากร
     API_Findtemp(Select_Template_Name) {
       const url = `${process.env.VUE_APP_API_URL}/tempbib/listtemplatebib/${Select_Template_Name}`;
       axios.get(url).then((results) => {
@@ -973,7 +935,13 @@ export default {
       });
     },
 
-    // เขตข้อมูล Marc21
+    //เลือกประเภททรัพยากร หน้าเพิ่มทรัพยากร
+    setSelectedtype() {
+      this.inModul.databib[1].Subfield = this.select.value;
+    },
+
+
+    // ค้นหาเขตข้อมูล Marc21 หน้าเพิ่มทรัพยากร
     Selectmarc21() {
       this.Data_modul_1 = [];
       this.Data_modul_2 = [];
@@ -993,7 +961,7 @@ export default {
       } else {
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${this.marc21}`;
         axios.get(url).then((results) => {
-          //console.log(results);
+          console.log(results);
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
@@ -1009,6 +977,9 @@ export default {
       }
     },
 
+///////////////////////////////////// เกี่ยวกับการแก้ไข ////////////////////////////////////////////////////////
+
+    //แก้ไขแต่ละ Field หน้าเพิ่มทรัพยากร
     editItem(item) {
       if (item.Field == "964" || item.Field == "960") {
         this.dialogwarn = true;
@@ -1036,6 +1007,11 @@ export default {
       }
     },
 
+
+ //////////////////////// ฟังก์ชันเกี่ยวกับการลบ //////////////////////////////////
+
+
+    //ลบแต่ละ Field หน้าเพิ่มทรัพยากร
     deleteItem(item) {
       if (item.Field == "964" || item.Field == "960") {
         this.dialogwarn = true;
@@ -1045,46 +1021,14 @@ export default {
         this.dialogDelete = true;
       }
     },
-    //ฟังชั่นตัดจำหน่าย
-    deleteItemNo(item) {
-      this.itemNo = {
-        Copy: item.Copy,
-        Barcode: item.Barcode,
-        Bib_ID: item.Bib_ID,
-        Booknames: item.Booknames,
-        CallNos: item.CallNos,
-        libid_getitemin: item.libid_getitemin,
-        item_description: item.item_description,
-      };
-      this.dialogdeleteItemNo = true;
-    },
 
-    async deleteItemNoAPI() {
-      this.updateDel = {
-        brcd: this.itemNo.Barcode,
-        libid: localStorage.getItem("member_ID"),
-        ides: this.item_descriptionNEW,
-      };
-      const url = `${process.env.VUE_APP_API_URL}/bibdata/edititemdes`;
-      await axios.put(url, this.updateDel).then((res) => {
-        alert("ลบทรัพยากรเรียบร้อยแล้ว", res);
-        this.item_descriptionNEW = "";
-        this.dialogdeleteItemNo = false;
-      });
-      axios
-        .get(
-          `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.itemNo.Bib_ID}`
-        )
-        .then((results) => {
-          return (this.Data_modul_additemsNo = results.data.data);
-        });
-    },
-
+    //ยืนยันกการลบ Filde หน้าเพิ่มทรัพยากร
     deleteItemConfirm() {
       this.inModul.databib.splice(this.editedIndex, 1);
       this.closeDelete();
     },
 
+    //ยกเลิกการลบ Filde หน้าเพิ่มทรัพยากร
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
@@ -1093,6 +1037,7 @@ export default {
       });
     },
 
+    //Clear ค่าต่างๆเมื่อ กดปิดหรือ หยังจากทำ การยิง api เสร็จ หน้าและใน Modul หน้าเพิ่มทรัพยากร
     close() {
       this.dialog = false;
       this.dialogspecial = false;
@@ -1107,6 +1052,7 @@ export default {
       });
     },
 
+    //ฟังก์ชันลบค่าว่างใน Subfilde หน้าเพิ่มทรัพยากร
     removeEmpty(object1) {
       Object.keys(object1).forEach(function(key) {
         (object1[key] && typeof object1[key] === "object") ||
@@ -1116,7 +1062,85 @@ export default {
       return object1;
     },
 
-    //เพิ่มรายการ (Items)
+    //รีเฟรชหน้าเว็บ ทุกหน้าที่เรียกใช้
+    reset() {
+      window.location.reload();
+    },
+
+    //ฟังชั่นตัดจำหน่าย
+    //เก็บตัวแปรก่อนลบทรัพยากร หน้าเพิ่มฉบับ
+    deleteItemNo(item) {
+      this.itemNo = {
+        Copy: item.Copy,
+        Barcode: item.Barcode,
+        Bib_ID: item.Bib_ID,
+        Booknames: item.Booknames,
+        CallNos: item.CallNos,
+        libid_getitemin: item.libid_getitemin,
+        item_description: item.item_description,
+      };
+      this.dialogdeleteItemNo = true;
+    },
+
+    //ยิง api เพื่อลบทรัพยากร หน้าเพิ่มฉบับ
+    async deleteItemNoAPI() {
+    if (this.item_descriptionNEW ==''){
+        alert('กรุณากรอกคำอธิบายตัดจำหน่าย')
+    }else{
+      this.updateDel = {
+        brcd: this.itemNo.Barcode,
+        libid: localStorage.getItem("member_ID"),
+        ides: this.itemNo.item_description + '||' + this.item_descriptionNEW,
+      }
+      const url = `${process.env.VUE_APP_API_URL}/bibdata/edititemdes`;
+      await axios.put(url, this.updateDel).then((res) => {
+        alert("ลบทรัพยากรเรียบร้อยแล้ว", res);
+        this.item_descriptionNEW = "";
+        this.dialogdeleteItemNo = false;
+      });
+    }
+      axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.itemNo.Bib_ID}`).then((results) => {
+                return (this.Data_modul_additemsNo = results.data.data);
+        });
+    },
+
+
+  ///////////////////////////////////////API รับ/ส่ง ข้อมูล///////////////////////////////////////////////////////
+
+      //อัพเดทรูป หน้าเพิ่มทรัยากร
+    async onFileSelected(event) {
+
+      const reader = new FileReader();
+      reader.onload = event => {
+        // for preview
+        this.imageURL = event.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+
+
+      let data = new FormData();
+      let file = event.target.files[0];
+      
+      data.append('image', file)
+
+      var config = {
+        method: 'post',
+        url: 'https://api.imgur.com/3/image',
+        headers: {
+          'Authorization': 'Client-ID 546c25a59c58ad7', 
+        },
+        data : data
+      };
+    
+    await axios(config).then((response ) => {
+        alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
+        console.log(response.data.data);
+
+        this.inModul.databib[0].Subfield.$a = response.data.data.link;
+      });
+  },
+
+    //เพิ่มรายการ (Items)  หน้าเพิ่มฉบับ
     API_Additems() {
       if (this.additems.trim() == 0) {
         alert("กรุณากรอกข้อมูลหนังสือบรรณานุกรมที่ต้องการค้นหา");
@@ -1128,56 +1152,78 @@ export default {
       }
     },
 
-    //ไปหน้า Dialog เพิ่มฉบับ
+    //ไปหน้า Dialog เพิ่มฉบับ หน้าเพิ่มฉบับ
     API_InfoBookclick(item) {
-      this.numid = item.Bib_ID;
-      const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numid}`;
+      
+      this.Bib_ID_New = item.Bib_ID;
+      this.numID = item.Bib_ID;
+      
+      const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numID}`;
       axios.get(url).then((results) => {
-        console.log(results.data);
+        //console.log(results.data);
         this.Data_modul_additemsNo = results.data.data;
         this.MaxBC = results.data.maxBarcode;
       });
       this.dialogAdditemsNo = true;
     },
 
-    //ฟังกชั่นเพิ่มฉบับ
-    async API_AdditemsNo(Data_modul_additemsNo) {
-      console.log(Data_modul_additemsNo);
-      if (this.additemsNo == 0) {
-        alert("กรุณากรอกหมายเลขฉบับที่ต้องการเพิ่ม");
+    //ฟังกชั่นเพิ่มฉบับ หน้าเพิ่มฉบับ
+    async API_AdditemsNo() {
+      this.lib_id = localStorage.getItem("member_ID");
+
+      if (this.additemsNo == ''){
+        alert("ไม่ได้ใส่หมายเลขฉบับที่");
       } else {
-        this.lib_id = localStorage.getItem("member_ID");
-        this.index_max = Data_modul_additemsNo.length - 1;
-        this.bib_id = this.Data_modul_additemsNo[this.index_max].Bib_ID;
-        this.str1 = this.bib_id.substr(0, 6);
-        this.barcords = this.MaxBC;
-        this.int1 = (parseInt(this.barcords.substr(6, 12)) + 1).toString();
-        this.str2 = this.int1.padStart(6, "0");
-        this.brcd_id = this.str1 + this.str2;
-        this.all = {
+        //Apiเช็ค item ?
+  await axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
+            this.Ck_item= results.data.maxBarcode;
+            console.log(this.Ck_item);
+        if(this.Ck_item !== null ){
+          //กรณีที่มีฉบับแล้ว
+            this.str1 = this.Bib_ID_New.substr(0, 6);
+            this.barcords = this.MaxBC;
+            this.int1 = (parseInt(this.barcords.substr(6, 12)) + 1).toString();
+            this.str2 = this.int1.padStart(6, "0");
+            this.brcd_id = this.str1 + this.str2;
+        }else{
+          //กรณีที่ไม่มีสร้างฉบับใหม่
+            this.str1 = this.Bib_ID_New.substr(0, 6);
+            this.barcords = '1';
+            this.str2 = this.barcords.padStart(6, "0");
+            this.brcd_id = this.str1 + this.str2;
+        }
+
+         this.all = {
           brcd: this.brcd_id,
-          bbid: this.bib_id,
+          bbid: this.Bib_ID_New,
           copy: this.additemsNo,
           lbin: this.lib_id,
           ides: this.ides,
         };
+
         const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
-        await axios.post(url, this.all).then((res) => {
-          console.log("response: ", res);
-          alert("เพิ่มฉบับเรียบร้อยแล้ว");
+         axios.post(url, this.all).then((res) => {
+          alert("เพิ่มฉบับเรียบร้อยแล้ว" , res);
+          console.log(res);
           this.Data_modul_additemsNo = [];
           this.additemsNo = "";
-        });
-        axios
-          .get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.bib_id}`)
-          .then((results) => {
-            console.log(results);
-            return (this.Data_modul_additemsNo = results.data.data);
+          this.ides ='';
+
+          axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
+            return this.Data_modul_additemsNo = results.data.data;
+            });
+
+
           });
+        });  
+
+
+
+
       }
     },
 
-    //ฟังกชั่นดู Marc21
+    //ฟังกชั่นดู Marc21  หน้าเพิ่มฉบับ
     API_Marc21(Data_modul_additemsNo) {
       this.lookmarc21 = Data_modul_additemsNo[0].Bib_ID;
       this.dialoglookmarc21 = true;
@@ -1188,10 +1234,15 @@ export default {
         });
     },
 
-    reset() {
-      window.location.reload();
-    },
+//////////////////////////////////////พิมพ์ บาร์โค้ด////////////////////////////////////////////////////
+      printfBC(){
 
+      },
+
+
+//////////////////////////////// ปุ่มการบันทึกข้อมูล///////////////////////////////////////////
+    
+    //บันทึกข้อมูลใน Modul เอามาลงในตารางก่อนบันทึกจริง หน้าเพิ่มทรัพยากร
     saveMudul() {
       this.editedAddmodul.Field = this.numField;
       let object1 = this.editedAddmodul.Subfield;
@@ -1210,6 +1261,7 @@ export default {
       this.close();
     },
 
+    //บันทึกทั้งหมดตอนสุดท้าย หน้าเพิ่มทรัพยากร
     submit() {
       if (this.inModul.length <= 1) {
         alert("กรุณากรอกข้อมูลให้ครบ");
@@ -1218,8 +1270,7 @@ export default {
           .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
           .then((res) => {
             //console.log("response: ", res);
-            alert(res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            alert("บันทึกข้อมูลเรียบร้อยแล้ว",res);
             window.location.reload();
           });
       }

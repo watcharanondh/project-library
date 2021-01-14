@@ -46,7 +46,6 @@
                   :headers="header_Users"
                   :items="Data_Users"
                   :items-per-page="10"
-                  
                   class="elevation-1"
                 >
                   <!-- table top section -->
@@ -78,7 +77,7 @@
                       <td>{{ item.mem_Citizenid }}</td>
                       <td>{{ item.FName }}</td>
                       <td>{{ item.LName }}</td>
-                      <td>{{ item.Position }}</td>
+                      <td>{{ item.Position | ChangeName}}</td>
                       <td>{{ item.Class }}</td>
                       <td>{{ item.Classroom }}</td>
                       <td>
@@ -99,7 +98,7 @@
         </v-col>
       </v-row>
 
-      <!-- เพิ่ม/แก้ไข สมาชิกผู้ใช้งาน -->
+      <!-- เพิ่ม สมาชิกผู้ใช้งาน -->
       <v-dialog
         :retain-focus="false"
         v-model="dialogAddusers"
@@ -111,7 +110,7 @@
             <v-card class="grey lighten-4 mx-auto pa-5" outlined>
               <v-row justify="center">
                 <v-card-title>
-                  <span class="headline">เพิ่มและแก้ไขผู้ใช้งาน</span>
+                  <span class="headline">เพิ่มผู้ใช้งาน</span>
                 </v-card-title>
               </v-row>
               <v-row>
@@ -125,13 +124,19 @@
                   <v-row justify="center">
                     <v-row class="no-gutters">
                       <v-select
-                        v-model="Put_Users.Position"
+                        v-model="select"
                         :items="items_Type"
+                        item-text="name"
+                        item-value="value"
+                        v-on:change="setSelectedtype"
                         label="เลือกประเภทผู้ใช้งาน"
+                        return-object
+                        single-line
                         filled
                         dense
                         solo
                         outlined
+                        clearable
                       >
                       </v-select>
                     </v-row>
@@ -272,7 +277,200 @@
                       <v-btn color="error" @click="close">
                         ยกเลิก
                       </v-btn>
-                      <v-btn color="success" @click="saveMudul">
+                      <v-btn color="success" @click="saveMudul_Add">
+                        บันทึก
+                      </v-btn>
+                    </v-card-actions>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
+      <!--แก้ไขสมาชิกผู้ใช้งาน -->
+      <v-dialog
+        :retain-focus="false"
+        v-model="dialogEditusers"
+        persistent
+        max-width="900px"
+      >
+        <v-card>
+          <v-container>
+            <v-card class="grey lighten-4 mx-auto pa-5" outlined>
+              <v-row justify="center">
+                <v-card-title>
+                  <span class="headline">แก้ไขผู้ใช้งาน</span>
+                </v-card-title>
+              </v-row>
+              <v-row>
+                <v-col sm="1">
+                  <v-sheet color="grey lighten-4"> </v-sheet>
+                </v-col>
+
+                <v-col sm="2">
+                  <v-row class=" pa-6 ma-2"> </v-row>
+                  <v-row class=" pa-6 ma-2"> </v-row>
+                  <v-row justify="center">
+                    <v-row class="no-gutters">
+                      <v-select
+                        v-model="select"
+                        :items="items_Type"
+                        item-text="name"
+                        item-value="value"
+                        v-on:change="setSelectedtype"
+                        label="เลือกประเภทผู้ใช้งาน"
+                        return-object
+                        single-line
+                        filled
+                        dense
+                        solo
+                        outlined
+                        clearable
+                      >
+                      </v-select>
+                    </v-row>
+                  </v-row>
+
+                  <v-row justify="center">
+                    <v-sheet min-height="10">
+                    <v-img
+                      contain
+                      v-if="imageURL"
+                      :src="imageURL"
+                      max-height="150"
+                      max-width="150"
+                    ></v-img>
+                    </v-sheet>
+                  </v-row>
+                  <v-row justify="start">
+                    <br/>
+                    <input
+                      v-on:change="onFileSelected"
+                      type="file"
+                      name=""
+                      id=""
+                      label="เพิ่มรูปโปรไฟล์"
+                      clearable
+                    />
+                  </v-row>
+                </v-col>
+
+                <v-col sm="9">
+                  <v-sheet
+                    class="grey lighten-4"
+                    rounded="lg"
+                    min-height="56vh"
+                  >
+                    <v-row>
+                      <v-col cols="4">
+                        <v-row justify="end">
+                          <v-subheader><h4>รหัส :</h4></v-subheader>
+                        </v-row>
+                      </v-col>
+                      <v-col md="3">
+                        <v-text-field
+                          v-model="Put_Users.member_ID"
+                          label="รหัส"
+                          solo
+                          dense
+                          disabled
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col cols="4">
+                        <v-row justify="end">
+                          <v-subheader
+                            ><h4>รหัสประจำตัวประชาชน :</h4></v-subheader
+                          >
+                        </v-row>
+                      </v-col>
+                      <v-col md="4">
+                        <v-text-field
+                          v-model="Put_Users.mem_Citizenid"
+                          label="รหัสประจำตัวประชาชน"
+                          solo
+                          dense
+                          disabled
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col cols="4">
+                        <v-row justify="end">
+                          <v-subheader><h4>ชื่อ :</h4></v-subheader>
+                        </v-row>
+                      </v-col>
+                      <v-col md="3">
+                        <v-text-field
+                          v-model="Put_Users.FName"
+                          label="ชื่อ"
+                          value="วัทนพร"
+                          solo
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-row justify="center" class=" mt-3">
+                        <v-subheader><h4>นาม-สกุล :</h4></v-subheader>
+                      </v-row>
+                      <v-col md="3">
+                        <v-text-field
+                          v-model="Put_Users.LName"
+                          label="นาม-สกุล"
+                          value="ปันทะโชติ"
+                          solo
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col cols="4">
+                        <v-row justify="end">
+                          <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                        </v-row>
+                      </v-col>
+                      <v-col md="4">
+                        <v-select
+                          v-model="Put_Users.Class"
+                          :items="items_Grade" 
+                          label="เลือกระดับชั้นเรียน"
+                          return-object
+                          filled
+                          dense
+                          solo
+                          outlined
+                        >
+                        </v-select>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="4">
+                        <v-row justify="end">
+                          <v-subheader><h4>ห้อง :</h4></v-subheader>
+                        </v-row>
+                      </v-col>
+                      <v-col sm="6" md="3">
+                        <v-text-field
+                          v-model="Put_Users.Classroom"
+                          label="ห้อง"
+                          value="ห้องปกครอง"
+                          solo
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="error" @click="close">
+                        ยกเลิก
+                      </v-btn>
+                      <v-btn color="success" @click="saveMudul_Edit">
                         บันทึก
                       </v-btn>
                     </v-card-actions>
@@ -296,34 +494,43 @@ export default {
     Position:localStorage.getItem("Position"),
     searchUsers: "",
     dialogAddusers: false,
+    dialogEditusers: false,
     formTitle:'',
     imageURL: "https://i.imgur.com/A44vyNC.png",
     redir_path:'',
+    
 
-    items_Type: ['personnel', 'student'],
+    select:'',
+    items_Type: [
+      { name: "บุคคลากร", value: "personnel" },
+      { name: "นักเรียน", value: "student" },
+    ],
     items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
 
+    Oldmem_ID: null,
 
     //เพิ่ม Users in Modul
     Put_Users: {
       member_ID: "",
       mem_Citizenid: "",
+      Position:"",
       FName: "",
       LName: "",
       Class: "",
       Classroom: "",
-      profile_img: "",
+      profile_img: 'https://i.imgur.com/A44vyNC.png',
     },
 
     //เซ็ตค่าเดิม
     Edit_Item: {
       member_ID: "",
       mem_Citizenid: "",
+      Position:"",
       FName: "",
       LName: "",
       Class: "",
       Classroom: "",
-      profile_img: "",
+      profile_img: null,
     },
 
     //Table on Page
@@ -360,6 +567,8 @@ export default {
 
         if(Position == 'admin'){
             this.redir_path = '/Admin_Menu'
+            this.items_Type.push({ name: "บรรณารักษ์", value: "librarian" });
+            
         }else if(Position == 'librarian'){
             this.redir_path = '/Librarian_Menu'
         }else{
@@ -377,6 +586,13 @@ export default {
   },
 
   methods: {
+
+  setSelectedtype() {
+      this.Put_Users.Position = this.select.value;
+    },
+
+
+
   //อัพเดทรูป โปรไฟล์
   async onFileSelected(event) {
 
@@ -405,18 +621,19 @@ export default {
       await axios(config).then((response ) => {
       alert('อัพโหลดรูปเรียบร้อยแล้ว')
       this.Put_Users.profile_img = response.data.data.link;
-      console.log(this.Put_Users.profile_img);
     });
   },
   
     editItem(item) {
       this.edited_ID = item.member_ID;
+      console.log(this.edited_ID);
       axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${this.edited_ID} `,{ headers: {'Authorization': 'Basic abcd1234'}})
         .then((res) => {
-          this.edited_item = res.data;
+          this.Put_Users = res.data;
+          this.select = res.data.Position;
           this.imageURL = res.data.profile_img
-          Object.assign(this.Put_Users, this.edited_item);
-          this.dialogAddusers = true;
+         //Object.assign(this.Put_Users, this.edited_item);
+          this.dialogEditusers = true;
         });
     },
 
@@ -438,28 +655,41 @@ export default {
       });
       window.location.reload();
       this.dialogAddusers = false;
+      this.dialogEditusers = false;
+
     },
+      saveMudul_Add(){
+        console.log(this.Put_Users);
+        if(this.Put_Users.member_ID == ''){
+          alert('ยังไม่ได้ใส่รหัสประจำตัว กรุณากรอกรหัสประจำตัวที่ไม่ซํ้ากับผู้ใช้งานอื่น')
+        }else if(this.Put_Users.mem_Citizenid == '') {
+          alert('ยังไม่ได้ใส่รหัสประบัตรประชาชน กรุณากรอกรหัสประบัตรประชาชน')
+        }else if(this.Put_Users.Position == ''){
+          alert('ยังไม่ได้ใส่รหัสตำแหน่ง กรุณากรอกตำแหน่ง')
+        }else if(this.Put_Users.FName == ''){
+          alert('ยังไม่ได้ใส่ชื่อจริง กรุณากรอกชื่อจริง')
+        }else if(this.Put_Users.LName == ''){
+          alert('ยังไม่ได้ใส่นามสกุล กรุณากรอกนามสกุล')
+        }else if(this.Put_Users.Class == ''){
+          alert("ยังไม่ได้ใส่เลือกระดับชั้น หากไม่มีให้เลือก 'ไม่มี' ")
+        }else if(this.Put_Users.Classroom == ''){
+          alert('ยังไม่ได้ใส่ห้อง กรุณากรอกห้อง')
+        }else{
+          
+          
+        axios.post(`${process.env.VUE_APP_API_URL}/allmember/adduser`,this.Put_Users).then((res) => {
+                      alert("บันทึกข้อมูลเรียบร้อยแล้ว", res.data.msg);
+                      this.close();
+                  }); 
+        }
+      },
 
- async saveMudul() {
-      console.log(this.Put_Users);
-    await  axios.get(`${process.env.VUE_APP_API_URL}/allmember/checkmemberexist/${this.Put_Users.member_ID}`)
-        .then((res) => {
-          this.check_ID = res.data.IsMemberId;
-
-          if(this.check_ID == true){
+      saveMudul_Edit() {
            axios.put(`${process.env.VUE_APP_API_URL}/allmember/edituserbylib`,this.Put_Users).then((res) => {
                 alert("แก้ไขข้อมูลเรียบร้อยแล้ว", res.data.msg);
-                this.close();
-                
+                  this.close();
             });
-          }else{
-           axios.post(`${process.env.VUE_APP_API_URL}/allmember/adduser`,this.Put_Users).then((res) => {
-                alert("บันทึกข้อมูลเรียบร้อยแล้ว", res.data.msg);
-                this.close();
-            }); 
-          }
-        });
-    },
+        },
   },
 };
 </script>

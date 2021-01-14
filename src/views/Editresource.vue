@@ -359,6 +359,7 @@
 import axios from "axios";
 
 export default {
+  name: "Editresource",
 
   /////// check access permission /////////////  
    mounted() {
@@ -377,7 +378,6 @@ export default {
   },
   /////////////////////////////////////////////////
 
-  name: "Editresource",
   data: () => ({
     template: [],
     marc21: "",

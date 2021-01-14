@@ -88,7 +88,7 @@
 
 <script>
 export default {
-  
+  name: "Manage_Resources",
   /////// check access permission /////////////  
    mounted() {
      let Position = localStorage.getItem("Position");

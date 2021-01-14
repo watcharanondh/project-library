@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: "DashBoard",
+  name: "Dashboard",
   data() {
     return {
       searchBook: "",

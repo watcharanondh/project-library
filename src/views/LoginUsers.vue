@@ -44,7 +44,7 @@
 
 <script>
 export default {
-
+  name: "LoginUsers",
     /////// check access permission /////////////  
    mounted() {
      let Position = localStorage.getItem("Position");

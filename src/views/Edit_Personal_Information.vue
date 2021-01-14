@@ -17,7 +17,7 @@
               <v-row class=" pa-6 ma-2"> </v-row>
               <v-row class=" pa-6 ma-2"> </v-row>
               <v-row justify="center">
-              <h2>{{Position | capitalize }}</h2>
+              <h2>{{PositionTH}}</h2>
               </v-row>
 
               <v-row justify="center">
@@ -76,6 +76,7 @@
                     v-model="Put_Users.mem_Citizenid"
                     solo
                     dense
+                    disabled
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -165,8 +166,9 @@
 import axios from "axios";
 
 export default {
-  name: "Edit",
+  name: "Edit_Profile_Information",
   data: () => ({
+    PositionTH:'',
     Position:localStorage.getItem("Position"),
     imageURL:localStorage.getItem("profile_img"),
     redir_path:'',
@@ -186,13 +188,16 @@ export default {
 
   }),
 
-  headers: {
-          'Authorization': 'Basic abcd1234', 
-        },
-
- async mounted() {
+  mounted() {
       let Position = localStorage.getItem("Position");
 
+      let Member_ID = localStorage.getItem("member_ID");
+    axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${Member_ID}`,{ headers: {'Authorization': 'Basic abcd1234'}})
+            .then((res) => {
+            this.Put_Users = res.data;
+            this.imageURL = res.data.profile_img
+          });
+      
        if(Position == 'admin'){
             this.redir_path = '/Admin_Menu'
           }else if(Position == 'librarian'){
@@ -201,20 +206,16 @@ export default {
             this.redir_path = '/Student_Personnel_Menu'
           }
 
-       var config = {
-        method: 'get',
-        url: `${process.env.VUE_APP_API_URL}/allmember/listedituser/${localStorage.getItem("member_ID")}`,
-        headers: {
-          'Authorization': 'Basic abcd1234', 
-        },
-      };
-
-   await axios(config)
-          .then((res) => {
-            console.log(res.data);
-            this.Put_Users = res.data;
-            this.imageURL = res.data.profile_img
-          });
+        if (Position == 'admin') {
+          return this.PositionTH = 'แอดมิน'
+        }else if (Position == 'librarian'){
+          return this.PositionTH = 'บรรณารักษ์'
+        }else if (Position == 'personnel'){
+          return this.PositionTH = 'บุคลากร'
+        }else if (Position == 'student'){
+          return  this.PositionTH = 'นักเรียน'
+        }
+      
   },
 
   methods: {

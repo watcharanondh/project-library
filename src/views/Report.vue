@@ -4,229 +4,94 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Librarian_Menu')" color="btnBack" rounded>
-          <v-icon left>reply</v-icon>
+          <v-btn
+            @click="$router.push('/Librarian_Menu')"
+            color="btnBack"
+            rounded
+          >
+            <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
-           <v-col>
-            <v-row class="justify-center"><h1>ออกรายงาน</h1></v-row>
+          <v-col>
+            <v-row class="justify-center"><h1>ทำรายการออกรายงาน(Report)</h1></v-row>
           </v-col>
           <v-row>
-            <!-- รูปแบบระเบียนมีไว้ให้เลือกของ Marc21 -->
+            <v-col md="2">
+              <v-row justify="end">
+                <h3>ประเภทการออกรายงาน :</h3>
+                <br /><br /><br /><br />
+                <h3>วันที่ :</h3>
+              </v-row>
+            </v-col>
+            <!-- ออกรายงาน -->
             <v-col md="3">
-              <h3>รูปแบบระเบียน</h3>
               <v-row class="no-gutters">
-                <v-autocomplete
-                  v-model="template"
-                  :items="template"
-                  label="ค้นหา"
-                  placeholder="รูปแบบระเบียน"
+                <v-select
+                  v-model="selectReporttype"
+                  :items="Item_Reporttype"
+                  item-text="name"
+                  item-value="value"
+                  placeholder="เลือกประเภทการออกรายงาน"
+                  v-on:change="API_Reporttype"
+                  return-object
+                  single-line
                   filled
                   dense
                   solo
                   outlined
-                  required
-                >
-                </v-autocomplete>
-              </v-row>
-            </v-col>
-            <!-- ปุ่มค้นหารูปแบบระเบียน -->
-            <v-col md="1" class="pt-10">
-              <v-row>
-                <v-btn color="primary" v-on:click="API_Findtemp">
-                  ค้นหา
-                </v-btn>
-              </v-row>
-            </v-col>
-
-            <!-- ช่องกรอก Marc21 -->
-            <v-col md="2">
-              <v-row class="no-gutters">
-                <h3>เขตข้อมูล</h3>
-                <v-text-field
-                  v-model="marc21"
-                  label="ค้นหาเขตข้อมูล"
-                  v-on:keyup.enter="Selectmarc21"
-                  dense
-                  solo
-                  outlined
                   clearable
-                  required
-                ></v-text-field>
-              </v-row>
-            </v-col>
-
-            <v-col md="1" class="pt-10">
-              <v-row>
-                <!-- Button modal -->
-                <v-btn color="primary" v-on:click.stop="Selectmarc21">
-                  ค้นหา
-                </v-btn>
-                <!-- dialog เพิ่มขอบเขต และ แก้ไข -->
-
-                <v-dialog
-                  :retain-focus="false"
-                  v-model="dialog"
-                  persistent
-                  max-width="900px"
                 >
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline"
-                        >{{ formTitle }} {{ numField }} {{ FieldName }}</span
-                      >
-                    </v-card-title>
-                    <hr />
-                    <v-card-text>
-                      <v-container>
-                        <v-data-table
-                          :headers="headers_modul_1"
-                          :items="Data_modul_1"
-                          hide-default-footer
-                          class="elevation-1"
-                          disable-pagination
-                        >
-                          <!-- table Indicator1-->
-                          <template v-slot:item="{ item }">
-                            <tr align="center">
-                              <td>{{ item.Code }}</td>
-                              <td align="left">{{ item.Description }}</td>
-                              <td>
-                                <v-checkbox
-                                  v-model="editedAddmodul.Indicator1"
-                                  :value="item.Code"
-                                ></v-checkbox>
-                              </td>
-                            </tr>
-                          </template>
-                        </v-data-table>
-                        <br />
-                        <v-data-table
-                          :headers="headers_modul_2"
-                          :items="Data_modul_2"
-                          hide-default-footer
-                          class="elevation-1"
-                          disable-pagination
-                        >
-                          <!-- table Indicator2-->
-                          <template v-slot:item="{ item }">
-                            <tr align="center">
-                              <td>{{ item.Code }}</td>
-                              <td align="left">{{ item.Description }}</td>
-                              <td>
-                                <v-checkbox
-                                  v-model="editedAddmodul.Indicator2"
-                                  :value="item.Code"
-                                ></v-checkbox>
-                              </td>
-                            </tr>
-                          </template>
-                        </v-data-table>
-                        <br />
-                        <v-data-table
-                          :headers="headers_modul_3"
-                          :items="Data_modul_3"
-                          hide-default-footer
-                          class="elevation-1"
-                          disable-pagination
-                        >
-                          <!-- table Subfield-->
-                          <template v-slot:item="{ item }">
-                            <tr>
-                              <td align="center">{{ item.Code }}</td>
-                              <td align="left">{{ item.Name_Eng }}</td>
-                              <td>
-                                <v-text-field
-                                  v-model="editedAddmodul.Subfield[item.Code]"
-                                  outlined
-                                ></v-text-field>
-                              </td>
-                            </tr>
-                          </template>
-                        </v-data-table>
-                        <br />
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="error" @click="close">
-                        ยกเลิก
-                      </v-btn>
-                      <v-btn color="success" @click="saveMudul">
-                        เพิ่ม
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
+                </v-select>
               </v-row>
-            </v-col>
 
-            <!-- ปุ่มเพิ่มฉบับหนังสือหลายเล่ม -->
-            <v-col cols="12" md="2" class="pt-10">
-              <v-row>
-                <v-btn color="success" v-on:click="dialogAdditems = true">
-                  เพิ่มรายการ(item)
-                </v-btn>
-              </v-row>
-            </v-col>
-
-            <!-- ช่องเพิ่มรูปปกหนังสือ -->
-            <v-col md="2" class="pt-7">
-              <v-row class="no-gutters">
-                <v-file-input
-                  v-on:change="onFileSelected"
-                  label="เพิ่มรูปปกหนังสือ"
-                  clearable
-                ></v-file-input>
-
-                <v-img
-                  v-if="imageURL"
-                  :src="imageURL"
-                  height="500px"
-                  width="500px"
-                  class="mt-3"
-                ></v-img>
-              </v-row>
-            </v-col>
-
-            <!-- ประเภททรัพยากร -->
-            <v-col cols="12" md="3" class="pt-1">
-              <h3>ประเภททรัพยากร</h3>
-              <v-select
-                v-model="select"
-                :items="resourcetype"
-                item-text="name"
-                item-value="value"
-                v-on:change="setSelectedtype"
-                return-object
-                single-line
-                filled
-                dense
-                solo
-                outlined
-                clearable
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
               >
-              </v-select>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="setDate"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  ref="picker"
+                  v-model="setDate"
+                  :max="new Date().toISOString().substr(0, 10)"
+                  min="1950-01-01"
+                  @change="save"
+                ></v-date-picker>
+              </v-menu>
+
+            <v-btn color="primary" class="mr-4" @click="Gat_API_Report_Data">
+              แสดงค่า
+            </v-btn>
+            <v-btn color="error" @click="reset">
+              Reset
+            </v-btn>
             </v-col>
           </v-row>
-
-          <!-- ปุ่มบันทึกข้อมูลทั้งหน้าก่อนส่ง -->
-          <v-row class="justify-center">
-            <v-btn color="error" class="mr-4" @click="reset">
-              ยกเลิก
-            </v-btn>
-
-            <v-btn color="success" @click="submit">
-              บันทึก
-            </v-btn>
+          <!-- ปุ่มพิพม์ -->
+          <v-row justify="center">
+   
           </v-row>
+           <br />
+          <v-divider></v-divider>
           <br />
-          <!-- table data on page // ตารางรวมข้อมูลทั้งหมดก่อนกดส่ง -->
+          
+          <!-- table data on page // ตารางโชว์ข้อมูล -->
           <v-card class="mx-auto pa-5" outlined>
             <v-col cols="12">
               <v-data-table
                 :headers="headers"
-                :items="inModul.databib"
+                :items="Gat_item_API"
                 hide-default-footer
                 disable-pagination
                 class="elevation-1"
@@ -238,312 +103,15 @@
                     <td>{{ item.Indicator1 }}</td>
                     <td>{{ item.Indicator2 }}</td>
                     <td>{{ item.Subfield }}</td>
-                    <td>
-                      <v-icon class="mr-2" @click="editItem(item)">
-                        edit
-                      </v-icon>
-                      <span class="ma-1"></span>
-                      <v-icon @click="deleteItem(item)">
-                        delete
-                      </v-icon>
-                    </td>
                   </tr>
-                  <!-- dialogDelete ยืนยันการลบ -->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogDelete"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title class="headline"
-                        >คุณแน่ใจที่ต้องการลบบรรทัดนี้ ?</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="error" text @click="closeDelete"
-                          >ยกเลิก</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="deleteItemConfirm"
-                          >ยืนยัน</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-
-                  <!-- dialogwarn แจ้งเตือนไม่ให้ลบ -->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogwarn"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title class="headline"
-                        >Field
-                        นี้จำเป็นต้องมีไม่สามารถแก้ไขหรือลบได้</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="error" @click="dialogwarn = false"
-                          >ยกเลิก</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-
-                  <!--เขตข้อมูลกรณีพิเศษ-->
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="dialogspecial"
-                    max-width="500px"
-                  >
-                    <v-card>
-                      <v-card-title>
-                        <span class="headline"
-                          >{{ formTitle }} {{ numField }} {{ FieldName }}
-                        </span>
-                      </v-card-title>
-                      <hr />
-                      <v-card class="mx-auto pa-5">
-                        <v-text-field
-                          v-model="editedAddmodul.Subfield[codes]"
-                          outlined
-                        ></v-text-field>
-                      </v-card>
-                      <br />
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="error" @click="close">
-                          ยกเลิก
-                        </v-btn>
-                        <v-btn color="success" @click="saveMudul">
-                          เพิ่ม
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
                 </template>
               </v-data-table>
             </v-col>
           </v-card>
-          <!-- <span>{{ inModuldefault }}</span> -->
           <!-- <span>{{ inModul }}</span> -->
         </v-card>
       </v-col>
     </v-row>
-    <!-- dialog เพิ่มรายการ(items)-->
-    <v-dialog
-      :retain-focus="false"
-      v-model="dialogAdditems"
-      persistent
-      max-width="900px"
-    >
-      <v-card>
-        <v-card-title>
-          <span class="headline">เพิ่มItem</span>
-        </v-card-title>
-        <hr />
-        <v-card-text>
-          <v-container>
-            <v-data-table
-              :headers="headers_modul_additems"
-              :items="Data_modul_additems"
-              :search="additems"
-              :items-per-page="5"
-              class="elevation-1"
-              disable-pagination
-            >
-              <!-- table top section -->
-              <template v-slot:top>
-                <v-toolbar flat color="green lighten-3">
-                  <v-toolbar-title>ค้นหาบรรณานุกรม</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-col cols="1" sm="1" md="3" class="">
-                    <v-row>
-                      <v-text-field
-                        v-model="additems"
-                        v-on:keyup.enter="API_Additems"
-                        label="ค้นหา"
-                        clearable
-                        loading
-                        single-line
-                        hide-details
-                      ></v-text-field>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="1" sm="1" md="2" class="ma-2">
-                    <v-row>
-                      <v-btn
-                        @click="API_Additems"
-                        color="primary"
-                        dark
-                        class="mb-2"
-                      >
-                        <v-icon left>search</v-icon>
-                        <span>ค้นหา</span>
-                      </v-btn>
-                    </v-row>
-                  </v-col>
-                </v-toolbar>
-              </template>
-              <!-- table tr section -->
-              <template v-slot:item="{ item, index }">
-                <tr v-on:click="API_InfoBookclick(item)" align="left">
-                  <td align="center">{{ index + 1 }}</td>
-                  <td class="blue--text">{{ item.Title }}</td>
-                  <td>{{ item.ISBN }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            @click="
-              (additems = ''),
-                (Data_modul_additems = []),
-                (dialogAdditems = false)
-            "
-          >
-            ยกเลิก
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- เพิ่มรายการฉบับที่ No. -->
-    <v-dialog
-      :retain-focus="false"
-      v-model="dialogAdditemsNo"
-      persistent
-      max-width="900px"
-    >
-      <v-card>
-        <v-card-title>
-          <span class="headline">เพิ่ม Item (ฉบับ)</span>
-        </v-card-title>
-        <hr />
-        <v-card-text>
-          <v-container>
-            <v-data-table
-              :headers="headers_modul_additemsNo"
-              :items="Data_modul_additemsNo"
-              class="elevation-1"
-              disable-pagination
-            >
-              <!-- table top section -->
-              <template v-slot:top>
-                <v-toolbar flat color="green lighten-3">
-                  <v-toolbar-title>เพิ่มเล่มฉบับที่</v-toolbar-title>
-                  <v-divider class="mx-2" inset vertical></v-divider>
-                  <v-row>
-                    <v-col md="2" class="ma-4">
-                      <v-row>
-                        <v-text-field
-                          v-model="additemsNo"
-                          type="number"
-                          min="1"
-                          clearable
-                          single-line
-                          hide-details
-                          solo
-                        ></v-text-field>
-                      </v-row>
-                    </v-col>
-                    <v-col cols="1" sm="1" md="2" class="mt-5">
-                      <v-row>
-                        <v-btn
-                          @click="API_AdditemsNo(Data_modul_additemsNo)"
-                          color="primary"
-                          dark
-                          class="mb-2"
-                        >
-                          <v-icon left>add</v-icon>
-                          <span>เพิ่ม</span>
-                        </v-btn>
-                      </v-row>
-                    </v-col>
-
-                    <v-col cols="1" sm="1" md="2" class="mt-5">
-                      <v-row>
-                        <v-btn
-                          @click="API_Marc21(Data_modul_additemsNo)"
-                          color="primary"
-                          dark
-                          class="mb-2"
-                        >
-                          <span>ดู MARC21</span>
-                        </v-btn>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-toolbar>
-              </template>
-              <!-- table tr section -->
-              <template v-slot:item="{ item, index }">
-                <tr align="left">
-                  <td align="center">{{ index + 1 }}</td>
-                  <td>{{ item.Booknames }}</td>
-                  <td align="center">{{ item.Copy }}</td>
-                  <td>{{ item.CallNos }}</td>
-                  <td>{{ item.Barcode }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            @click="
-              (additemsNo = ''),
-                (Data_modul_additemsNo = []),
-                (dialogAdditemsNo = false)
-            "
-          >
-            ยกเลิก
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <!-- ดู Marc21 -->
-    <v-dialog
-      :retain-focus="false"
-      v-model="dialoglookmarc21"
-      persistent
-      max-width="900px"
-    >
-      <v-card>
-        <v-data-table
-          :headers="headers_Marc21"
-          :items="Marc21"
-          :items-per-page="5"
-          class="elevation-1"
-        >
-          <template v-slot:item="{ item }">
-            <tr>
-              <td align="center">{{ item.Field }}</td>
-              <td align="center">{{ item.Indicator1 }}</td>
-              <td align="center">{{ item.Indicator1 }}</td>
-              <td>{{ item.Subfield }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="dialoglookmarc21 = false">
-            ยกเลิก
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -551,461 +119,89 @@
 import axios from "axios";
 
 export default {
-  
-  /////// check access permission /////////////  
-   mounted() {
-     let Position = localStorage.getItem("Position");
-           if(Position !== 'librarian') {
-          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          if (Position == 'admin') {
-          this.$router.push("/Admin_Menu")
-          } else if(Position == 'student' && Position !== "personnel"){
-          this.$router.push("/Student_Personnel_Menu")
-          }else{
-          this.$router.push("/LoginUsers")
-          }
-          // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
-       }
+  name: "Report",
+  /////// check access permission /////////////
+  mounted() {
+    let Position = localStorage.getItem("Position");
+    if (Position !== "librarian") {
+      alert("ไม่สามารถเข้าใช้งานหน้านี้ได้");
+      if (Position == "admin") {
+        this.$router.push("/Admin_Menu");
+      } else if (Position == "student" && Position !== "personnel") {
+        this.$router.push("/Student_Personnel_Menu");
+      } else {
+        this.$router.push("/LoginUsers");
+      }
+      // this.$router.push(Position == 'admin'?"/Admin_Menu":"/Student_Personnel_Menu")
+    }
   },
   /////////////////////////////////////////////////
 
-  name: "AddBook",
   data: () => ({
-    template: [],
-    marc21: "",
-    additems: "",
-    additemsNo: "",
-    dialog: false,
-    dialogspecial: false,
-    dialogwarn: false,
-    dialogDelete: false,
-    dialogAdditems: false,
-    dialogAdditemsNo: false,
-    dialoglookmarc21: false,
-
-    editedIndex: -1,
-    codes: "\\a",
-    FieldName: "",
-    numField: "",
-    imageURL: null,
-    itemNo: "",
-
-    //ค่าจาก Modul
-    inModul: {
-      databib: [],
-    },
-
-    //แก้ไขใน modul
-    editedAddmodul: {
-      Field: "",
-      Indicator1: "",
-      Indicator2: "",
-      Subfield: {},
-    },
-
-    //เซ็ตค่าเดิม
-    defaultItem: {
-      Field: "",
-      Indicator1: "",
-      Indicator2: "",
-      Subfield: {},
-    },
-
-    //Resource Type
-    select: { name: "Book", value: { "\\a": "Book" } },
-    resourcetype: [
-      { name: "Mixed", value: { "\\a": "Mixed" } },
-      { name: "Article", value: { "\\a": "Article" } },
-      { name: "Book", value: { "\\a": "Book" } },
-      { name: "Computer File", value: { "\\a": "Computer File" } },
-      { name: "Map", value: { "\\a": "Map" } },
-      { name: "Music", value: { "\\a": "Music" } },
-      { name: "Serial", value: { "\\a": "Serial" } },
-      { name: "Visual", value: { "\\a": "Visual" } },
+    selectReporttype: "",
+    Item_Reporttype: [
+      { name: "รายงานข้อมูลสมาชิก", value: "1" },
+      { name: "รายงานข้อมูลหนังสือ", value: "2" },
+      { name: "รายงานสถิติข้อมูลการยืม-คืนหนังสือ", value: "bnrreport" },
+      { name: "รายงานสถิติการเข้าใช้ห้องสมุด", value: "3" },
+      { name: "รายงานค่าปรับ", value: "notreturnreport" },
+      { name: "รายงานการตัดจำหน่ายหนังสือ", value: "4" },
     ],
+    setDate:null,
+    menu: false,
 
-    //Table on Page
+    //ค่าที่จะส่ง
+    Report_type:'',
+    sentDate:{},
+
+    //Table สถิติการยืม
+    Gat_item_API: [],
     headers: [
       {
-        text: "Field",
-        align: "start",
-        value: "name",
-      },
-      { text: "Indicator1", value: "Indicator1", align: "left" },
-      { text: "Indicator2", value: "Indicator2", align: "left" },
-      { text: "Subfield", value: "Subfield", align: "left" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
-
-    //ค่าจากการ API ใน Modul
-    Data_modul_1: [],
-    Data_modul_2: [],
-    Data_modul_3: [],
-    headers1: [
-      { text: "Field", value: "Field" },
-      { text: "Indicator1", value: "Indicator1" },
-      { text: "Indicator2", value: "Indicator2" },
-      { text: "Subfield", value: "Subfield" },
-      { text: "Action", value: "action" },
-    ],
-    headers_modul_1: [
-      {
-        text: "ตำแหน่งที่ 1",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อตัวบ่งชี้", value: "Description" },
-      { text: "ข้อมูลตัวบ่งชี้", value: "" },
-    ],
-
-    headers_modul_2: [
-      {
-        text: "ตำแหน่งที่ 2",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อตัวบ่งชี้", value: "Description" },
-      { text: "ข้อมูลตัวบ่งชี้", value: "" },
-    ],
-
-    headers_modul_3: [
-      {
-        text: "รหัส",
-        align: "center",
-        value: "Code",
-      },
-      { text: "ชื่อเขตข้อมูลย่อย", value: "Name_Eng" },
-      { text: "ข้อมูลเขตข้อมูลย่อย", value: "" },
-    ],
-
-    //Table Additems
-    Data_modul_additems: [],
-    headers_modul_additems: [
-      {
         text: "ลำดับ",
         align: "center",
         value: "index",
       },
-      {
-        text: "ชื่อรายการทรัพยากร",
-        value: "Title",
-        align: "center",
-      },
-      { text: "ISBN", value: "ISBN", align: "center" },
-    ],
-
-    //Table AdditemsNo
-    Data_modul_additemsNo: [],
-    headers_modul_additemsNo: [
-      {
-        text: "ลำดับ",
-        align: "center",
-        value: "index",
-      },
-      {
-        text: "ชื่อรายการทรัพยากร",
-        value: "Booknames",
-        align: "center",
-      },
-      { text: "ฉบับที่", value: "Copy", align: "center" },
-      { text: "เลขเรียกทรัพยากร", value: "CallNos", align: "center" },
-      { text: "Barcodes", value: "Barcode", align: "center" },
-    ],
-
-    //Table look Marc21
-    Marc21: [],
-    headers_Marc21: [
-      { text: "Field", value: "Field", align: "center" },
-      { text: "Indicator1", value: "Indicator1", align: "center" },
-      { text: "Indicator2", value: "Indicator2", align: "center" },
-      { text: "Subfield", value: "Subfield", align: "Subfield" },
+      { text: "หมายเลข ISBN", value: "Indicator1", align: "center" },
+      { text: "ชื่อทรัพยากร", value: "Title", align: "center" },
+      { text: "ผู้ยืม", value: "Subfield", align: "center" },
+      { text: "ผู้ให้ยืม", value: "Subfield", align: "center" },
     ],
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "เขตข้อมูล" : "แก้ไขเขตข้อมูล";
-    },
-  },
-
   watch: {
-    dialog(val) {
-      val || this.close();
+    menu(val) {
+      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
-  created() {
-    this.initialize();
   },
 
   methods: {
-    setSelectedtype() {
-      this.inModul.databib[0].Subfield = this.select.value;
+    save(setDate) {
+      this.$refs.menu.save(setDate);
     },
 
-    initialize() {
-      this.inModul.databib = [
-        {
-          Field: "960",
-          Indicator1: "",
-          Indicator2: "",
-          Subfield: { "\\a": "Book" },
-        },
-        {
-          Field: "964",
-          Indicator1: "",
-          Indicator2: "",
-          Subfield: { "\\a": "Book" },
-        },
-      ];
-    },
-
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        // for preview
-        this.imageURL = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-
-      //for upload
-      this.inModul.databib[0].image = event.target.files[0];
-    },
-
-    // เขตข้อมูล Marc21
-    Selectmarc21() {
-      this.Data_modul_1 = [];
-      this.Data_modul_2 = [];
-      this.Data_modul_3 = [];
-      this.editedIndex = -1;
-      if (this.marc21.trim() == 0) {
-        alert("กรุณากรอกขอบเขตข้อมูลที่ต้องการค้นหา");
-      } else if (
-        (this.marc21.charAt(0).toUpperCase() + this.marc21.slice(1)).trim() ==
-        "Leader"
-      ) {
-        this.numField = (
-          this.marc21.charAt(0).toUpperCase() + this.marc21.slice(1)
-        ).trim();
-        this.FieldName = "";
-        this.dialogspecial = true;
-      } else {
-        const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${this.marc21}`;
-        axios.get(url).then((results) => {
-          this.Data_modul_1 = results.data[0].indicator1;
-          this.Data_modul_2 = results.data[0].indicator2;
-          this.Data_modul_3 = results.data[0].subfields;
-          this.FieldName = results.data[0].Name;
-          this.numField = results.data[0].Field;
-
-          if (this.Data_modul_3.length <= 0) {
-            this.dialogspecial = true;
-          } else {
-            this.dialog = true;
-          }
-        });
-      }
-    },
-
-    editItem(item) {
-      if (item.Field == "964" || item.Field == "960") {
-        this.dialogwarn = true;
-      } else if (item.Field == "Leader") {
-        this.editedIndex = this.inModul.databib.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        this.dialogspecial = true;
-      } else {
-        this.editedIndex = this.inModul.databib.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${item.Field}`;
-        axios.get(url).then((results) => {
-          this.Data_modul_1 = results.data[0].indicator1;
-          this.Data_modul_2 = results.data[0].indicator2;
-          this.Data_modul_3 = results.data[0].subfields;
-          this.FieldName = results.data[0].Name;
-
-          if (this.Data_modul_3.length <= 0) {
-            this.dialogspecial = true;
-          } else {
-            this.dialog = true;
-          }
-        });
-      }
-    },
-
-    deleteItem(item) {
-      if (item.Field == "964" || item.Field == "960") {
-        this.dialogwarn = true;
-      } else {
-        this.editedIndex = this.inModul.databib.indexOf(item);
-        this.editedAddmodul = Object.assign({}, item);
-        this.dialogDelete = true;
-      }
-    },
-
-    deleteItemConfirm() {
-      this.inModul.databib.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    close() {
-      this.dialog = false;
-      this.dialogspecial = false;
-      this.$nextTick(() => {
-        this.editedAddmodul = Object.assign({}, this.defaultItem);
-        this.marc21 = "";
-        this.Data_modul_1 = [];
-        this.Data_modul_2 = [];
-        this.Data_modul_3 = [];
-        this.editedAddmodul.Subfield = {};
-        this.editedIndex = -1;
-      });
-    },
-
-    removeEmpty(object1) {
-      Object.keys(object1).forEach(function(key) {
-        (object1[key] && typeof object1[key] === "object") ||
-          ((object1[key] === "" || object1[key] === null) &&
-            delete object1[key]);
-      });
-      return object1;
-    },
-
-    //เพิ่มรายการ (Items)
-    API_Additems() {
-      if (this.additems.trim() == 0) {
-        alert("กรุณากรอกข้อมูลหนังสือบรรณานุกรมที่ต้องการค้นหา");
-      } else {
-        const url = `${process.env.VUE_APP_API_URL}/bibdata/findbook/${this.additems}?StartPage=1&perPage=5`;
-        axios.get(url).then((results) => {
-          return (this.Data_modul_additems = results.data.Results);
-        });
-      }
-    },
-
-    //ไปหน้า Dialog เพิ่มฉบับ
-    API_InfoBookclick(item) {
-      //console.log(item);
-      this.numid = item.Bib_ID;
-      //console.log(this.numid);
-      const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numid}`;
-      axios.get(url).then((results) => {
-        return (this.Data_modul_additemsNo = results.data);
-      });
-      this.dialogAdditemsNo = true;
-    },
-
-    //ฟังกชั่นเพิ่มฉบับ
-    async API_AdditemsNo(Data_modul_additemsNo) {
-      if (this.additemsNo == 0) {
-        alert("กรุณากรอกหมายเลขฉบับที่ต้องการเพิ่ม");
-      } else {
-        this.lib_id = "132";
-        this.index_max = Data_modul_additemsNo.length - 1;
-        this.bib_id = this.Data_modul_additemsNo[this.index_max].Bib_ID;
-        this.str1 = this.bib_id.substr(0, 6);
-        this.barcords = this.Data_modul_additemsNo[this.index_max].Barcode;
-        this.int1 = (parseInt(this.barcords.substr(6, 12)) + 1).toString();
-        this.str2 = this.int1.padStart(6, "0");
-        this.brcd_id = this.str1 + this.str2;
-
-        this.all = {
-          brcd: this.brcd_id,
-          bbid: this.bib_id,
-          copy: this.additemsNo,
-          lbin: this.lib_id,
-        };
-
-        // console.log(this.lib_id);
-        // console.log(this.bib_id);
-        // console.log(this.brcd_id);
-        // console.log(this.additemsNo);
-        // console.log(this.all);
-
-        const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
-        await axios.post(url, this.all).then((res) => {
-          console.log("response: ", res);
-          alert("เพิ่มฉบับเรียบร้อยแล้ว");
-          this.Data_modul_additemsNo = [];
-        });
-
-        axios
-          .get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.bib_id}`)
-          .then((results) => {
-            return (this.Data_modul_additemsNo = results.data);
-          });
-      }
-    },
-
-    //ฟังกชั่นดู Marc21
-    API_Marc21(Data_modul_additemsNo) {
-      this.lookmarc21 = Data_modul_additemsNo[0].Bib_ID;
-      this.dialoglookmarc21 = true;
-      axios
-        .get(`${process.env.VUE_APP_API_URL}/bibdata/allbib/${this.lookmarc21}`)
-        .then((response) => {
-          this.Marc21 = response.data[1];
-        });
+    API_Reporttype() {
+      this.Report_type = this.selectReporttype.value;
     },
 
     reset() {
       window.location.reload();
     },
 
-    saveMudul() {
-      this.editedAddmodul.Field = this.numField;
-      let object1 = this.editedAddmodul.Subfield;
-      this.removeEmpty(object1);
-      if (this.editedIndex > -1) {
-        this.editedAddmodul.Subfield = object1;
-        Object.assign(
-          this.inModul.databib[this.editedIndex],
-          this.editedAddmodul
-        );
-      } else {
-        this.editedAddmodul.Subfield = object1;
-        this.inModul.databib.push(this.editedAddmodul);
+ async Gat_API_Report_Data(){
+
+   Object.assign(this.sentDate,{date:this.setDate});
+  
+    console.log('ประเภทการออกรายงาน: ',this.Report_type,'ปี/เดือน/วัน',this.sentDate);
+
+ const url = `${process.env.VUE_APP_API_URL}/report/${this.Report_type}`;
+        axios.post(url,this.sentDate).then((results) => {
+          console.log(results.data);
+          this.Gat_item_API = results.data
+        });
+  
+
       }
-
-      this.close();
-    },
-
-    submit() {
-      if (this.inModul.length <= 1) {
-        alert("กรุณากรอกข้อมูลให้ครบ");
-      } else {
-        axios
-          .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
-          .then((res) => {
-            //console.log("response: ", res);
-            alert(res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-            window.location.reload();
-          });
-      }
-    },
-
-    // async submit() {
-    //     let formData = new FormData();
-    //     const { Field, Indicator1, Indicator2, Subfield} =this.editedAddmodul;
-    //     formData.append("Field",Field);
-    //     formData.append("Indicator1",Indicator1);
-    //     formData.append("Indicator2",Indicator2);
-    //     formData.append("Subfield",Subfield);
-    //     await api.addbook(FormData);
-    // },
-    // alert(JSON.stringify(this.inModul))
   },
 };
 </script>

@@ -24,3 +24,15 @@ Vue.filter('formatDate', function(value) {
     }
 });
 
+Vue.filter('ChangeName', function(value) {
+  if (value == 'admin') {
+    return 'แอดมิน'
+  }else if (value == 'librarian'){
+    return 'บรรณารักษ์'
+  }else if (value == 'personnel'){
+    return 'บุคลากร'
+  }else if (value == 'student'){
+    return 'นักเรียน'
+  }
+});
+
