@@ -28,10 +28,18 @@
                     <tr>
                       <td align="center">{{ ++index }}</td>
                       <td>{{ item.namebooks }}</td>
-                      <td>{{ item.Returns | formatDate  }}</td>
+                      <td>{{ item.Returns }}</td>
                       <td>{{ item.datediff }}</td>
                       <td>{{ item.Amount }}</td>
-                      <td>{{ item.IsPaid }}</td>
+                      <!-- <td>{{ item.IsPaid }}</td> -->
+                      <td>
+                        <div v-if="item.IsPaid == 'ชำระแล้ว'" class="green--text text--darken-2">
+                        {{ item.IsPaid }}
+                      </div>
+                      <div v-else class="red--text text--darken-2">
+                        {{ item.IsPaid }}
+                      </div>
+                    </td>
                     </tr>
                   </template>
                 </v-data-table>
@@ -82,7 +90,7 @@ export default {
 
   /////////////////// API GET DATA ///////////////////////////
     let memberID = localStorage.getItem("member_ID");
-    let uri = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${memberID}`;
+    let uri = `${process.env.VUE_APP_API_URL}/bnr/listallfine/${memberID}`;
     axios.get(uri).then((response) => {
       this.Fines_Data = response.data.finebooks;
     });

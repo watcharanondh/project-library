@@ -37,8 +37,8 @@
               <tr>
                 <td align = "center">{{ index + 1 }}</td>
                 <td>{{ item.nameBooks }}</td>
-                <td>{{ item.Borrow | formatDate }}</td>
-                <td>{{ item.Returns | formatDate}}</td>
+                <td>{{ item.Borrow }}</td>
+                <td>{{ item.Returns}}</td>
                 <td>{{ item.datediff}}</td>
               </tr>
               </template>
@@ -57,8 +57,8 @@
               <tr>
                 <td align = "center">{{ index + 1 }}</td>
                 <td>{{ item.nameBooks }}</td>
-                <td>{{ item.Borrow | formatDate }}</td>
-                <td>{{ item.Due | formatDate}}</td>
+                <td>{{ item.Borrow }}</td>
+                <td>{{ item.Due}}</td>
                 <td>
                   <div v-if="item.databib_item == 'Available'" class="green--text text--darken-2">
                    {{ item.databib_item }}

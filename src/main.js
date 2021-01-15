@@ -5,7 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vue2Filters from 'vue2-filters'
-import moment from 'moment'
+// import moment from 'moment'
 
 Vue.config.productionTip = false
 
@@ -18,11 +18,11 @@ new Vue({
 
 Vue.use(Vue2Filters);
 
-Vue.filter('formatDate', function(value) {
-  if (value) {
-    return moment(String(value)).format('MM/DD/YYYY')
-    }
-});
+// Vue.filter('formatDate', function(value) {
+//   if (value) {
+//     return moment(String(value)).format('MM/DD/YYYY')
+//     }
+// });
 
 Vue.filter('ChangeName', function(value) {
   if (value == 'admin') {

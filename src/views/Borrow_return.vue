@@ -286,9 +286,9 @@
             <tr>
               <td>{{ item.Barcode }}</td>
               <td>{{ item.nameBooks }}</td>
-              <td>{{ item.Borrow | formatDate }}</td>
-              <td>{{ item.Due | formatDate}}</td>
-              <td>{{ item.datediff | formatDate}}</td>
+              <td>{{ item.Borrow }}</td>
+              <td>{{ item.Returns}}</td>
+              <td>{{ item.datediff}}</td>
             </tr>
           </template>
               </v-data-table>
@@ -306,9 +306,9 @@
             <tr>
               <td>{{ item.Barcode }}</td>
               <td>{{ item.nameBooks }}</td>
-              <td>{{ item.Borrow | formatDate }}</td>
-              <td>{{ item.Due | formatDate}}</td>
-              <td>{{ item.Returns | formatDate}}</td>
+              <td>{{ item.Borrow }}</td>
+              <td>{{ item.Due}}</td>
+              <td>{{ item.Returns}}</td>
             </tr>
           </template>
               </v-data-table>
@@ -326,12 +326,20 @@
             <template v-slot:item="{ item }">
             <tr>
               <td>{{ item.namebooks }}</td>
-              <td>{{ item.Returns | formatDate}}</td>
-              <td>{{ item.Due | formatDate}}</td>
+              <td>{{ item.Returns}}</td>
+              <td>{{ item.Due}}</td>
               <td>{{ item.fine_type }}</td>
               <td>{{ item.datediff }}</td>
               <td>{{ item.Amount }}</td>
-              <td>{{ item.IsPaid }}</td>
+              <!-- <td>{{ item.IsPaid }}</td> -->
+              <td>
+                  <div v-if="item.IsPaid == 'ชำระแล้ว'" class="green--text text--darken-2">
+                   {{ item.IsPaid }}
+                </div>
+                <div v-else class="red--text text--darken-2">
+                   {{ item.IsPaid }}
+                </div>
+              </td>
             </tr>
           </template>
               </v-data-table>
