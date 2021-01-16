@@ -848,6 +848,12 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@chenfengyuan/vue-barcode@xkeshi/vue-barcode":
+  version "1.0.1"
+  resolved "https://codeload.github.com/xkeshi/vue-barcode/tar.gz/ac7085721a637845bec8fe169180961dd0641c86"
+  dependencies:
+    jsbarcode "^3.11.0"
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -5107,6 +5113,11 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+jsbarcode@^3.11.0:
+  version "3.11.3"
+  resolved "https://registry.yarnpkg.com/jsbarcode/-/jsbarcode-3.11.3.tgz#1c8fb9b5c7d4452e571930801b00e12094a7051e"
+  integrity sha512-TsoeHL/0ASvKE3+sbLuTkT2cGvDV/MsQAQVuGf/1EWKe7SXNYlyzW/3TFeAmqJg/Fhz6pPgrci8o5hR+Ej59Jw==
 
 jsbn@~0.1.0:
   version "0.1.1"

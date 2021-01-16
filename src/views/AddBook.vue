@@ -10,7 +10,6 @@
           ></v-img>
         </v-col>
       <v-col cols="9">
-        
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
           <v-btn @click="$router.push('/Manage_Resources')" color="btnBack" rounded>
@@ -364,7 +363,7 @@
               :items="Data_modul_additems"
               :search="additems"
               :items-per-page="5"
-              class="elevation-1"
+              class=" pointer elevation-1"
               disable-pagination
             >
               <!-- table top section -->
@@ -404,7 +403,7 @@
               <template v-slot:item="{ item, index }">
                 <tr v-on:click="API_InfoBookclick(item)" align="left">
                   <td align="center">{{ index + 1 }}</td>
-                  <td class="primary--text">{{ item.Title }}</td>
+                  <td class="primary--text pointer">{{ item.Title }}</td>
                   <td>{{ item.ISBN }}</td>
                 </tr>
               </template>
@@ -513,7 +512,7 @@
                   <td>{{ item.Booknames }}</td>
                   <td align="center">{{ item.Copy }}</td>
                   <td>{{ item.CallNos }}</td>
-                  <td class="primary--text" @click="printfBC(item.Barcode)">{{ item.Barcode }}</td>
+                  <td class=" primary--text pointer" @click="showBC(item.Barcode)">{{item.Barcode}}</td>
                   <td>{{ item.item_description }}</td>
                   <td align="center">
                     <v-icon @click="deleteItemNo(item)">
@@ -529,13 +528,7 @@
           <v-spacer></v-spacer>
           <v-btn
             color="error"
-            @click="
-              (additemsNo = ''),
-                (ides = ''),
-                (Data_modul_additemsNo = []),
-                (dialogAdditemsNo = false)
-            "
-          >
+            @click=" additemsNo = '',ides = '',Data_modul_additemsNo = [],dialogAdditemsNo = false">
             ยกเลิก
           </v-btn>
         </v-card-actions>
@@ -678,17 +671,43 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <!--พิมพ์บาร์โค้ด-->
+        <v-dialog
+         :retain-focus="false"
+         v-model="dialogbarc"
+         max-width="400px">
+         
+        <v-card >
+          <v-card-title class="justify-center">
+            <span class="headline">บาร์โค้ด</span>
+              </v-card-title>
+                <v-row justify="center">
+                  <v-card  class="ma-auto  ">
+                      <barcode :value="this.Barcshow" :tag="tag"  :options="options"></barcode>
+                  </v-card>
+                  </v-row>
+                      <br />
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+              <v-btn color="error" @click="dialogbarc=false">ยกเลิก</v-btn>
+            <v-btn color="success" @click="printfBarc()">พิมพ์</v-btn>
+        </v-card-actions>
+      </v-card>
+     
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import axios from "axios";
 
+
 export default {
   name: "AddBookandItem",
 
   /////// check access permission /////////////  
    mounted() {
+     
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
@@ -710,6 +729,7 @@ export default {
     additems: "",
     additemsNo: "",
     ides: "",
+    Barcshow:'',
     dialog: false,
     dialogspecial: false,
     dialogwarn: false,
@@ -718,6 +738,7 @@ export default {
     dialogAdditemsNo: false,
     dialoglookmarc21: false,
     dialogdeleteItemNo: false,
+    dialogbarc: false,
 
     editedIndex: -1,
     codes: "$a",
@@ -737,6 +758,20 @@ export default {
       item_status: "",
       libid_getitemin: null,
       item_description: "",
+    },
+
+    value: '',
+    tag: 'svg',
+    options: {
+      lineColor: '#ff7069',
+      fontSize: 32,
+      font: 'Courier',
+      width: 3,
+      height: 10,
+      marginBottom: 60,
+      format: 'CODE128',
+      background: '#ccffff',
+      text:'soy',
     },
 
     //ค่าจาก Modul
@@ -903,7 +938,6 @@ export default {
   },
 
   methods: {
-
     //ข้อมูล Filde ที่ห้ามลบและต้องมี ในการเพิ่มหนังสื่อใหม่ทุกครั้ง หน้าเพิ่มทรัพยากร
     initialize() {
       this.inModul.databib = [
@@ -1216,10 +1250,6 @@ export default {
 
           });
         });  
-
-
-
-
       }
     },
 
@@ -1235,7 +1265,12 @@ export default {
     },
 
 //////////////////////////////////////พิมพ์ บาร์โค้ด////////////////////////////////////////////////////
-      printfBC(){
+      showBC(item){
+        console.log(item);
+        this.Barcshow = item
+        this.dialogbarc=true
+      },
+      printfBarc(){
 
       },
 
@@ -1279,4 +1314,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.pointer {cursor: pointer;}
+</style>

@@ -4,7 +4,11 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Manage_Resources')" color="btnBack" rounded>
+          <v-btn
+            @click="$router.push('/Manage_Resources')"
+            color="btnBack"
+            rounded
+          >
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -25,7 +29,6 @@
                 required
               ></v-text-field>
             </v-col>
-
             <!-- ประเภททรัพยากร -->
             <v-col cols="12" md="6">
               <h3>ประเภททรัพยากร</h3>
@@ -38,6 +41,27 @@
                 clearable
                 required
               ></v-text-field>
+            </v-col>
+            <!-- เทมเพลต -->
+            <v-col cols="12 " md="5">
+              <h3>เทมเพลต</h3>
+              <v-select
+                v-model="Select_Template_Name"
+                :items="Gat_template"
+                item-text="temp_Name"
+                item-value="temp_ID"
+                placeholder="รูปแบบระเบียน"
+                filled
+                dense
+                solo
+                outlined
+                required
+              >
+              </v-select>
+            </v-col>
+            <!-- ค้นหาเทมที่จะลบ -->
+            <v-col cols="12 mt-7" md="1">
+              <v-btn color="info" v-on:click="deleteTemp(Select_Template_Name)">ลบ</v-btn>
             </v-col>
             <!-- คำอธิบายเพิ่มเติม -->
             <v-col cols="12" md="6">
@@ -73,7 +97,6 @@
               <v-col cols="12" md="1" class="pt-5">
                 <v-row><h4>เพิ่มเขตข้อมูล</h4></v-row>
               </v-col>
-
               <v-col cols="12" md="2">
                 <v-row class="no-gutters">
                   <v-text-field
@@ -289,23 +312,36 @@ import axios from "axios";
 export default {
   name: "CreateTemplate",
 
-  /////// check access permission /////////////  
-   mounted() {
-     let Position = localStorage.getItem("Position");
-           if(Position !== 'librarian') {
-          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          if (Position == 'admin') {
-          this.$router.push("/Admin_Menu")
-          } else if(Position == 'student' && Position !== "personnel"){
-          this.$router.push("/Student_Personnel_Menu")
-          }else{
-          this.$router.push("/LoginUsers")
-          }
-       }
+  ////////////// check access permission //////////////
+  mounted() {
+      let uri = `${process.env.VUE_APP_API_URL}/tempbib/listTempSelect`;
+          axios.get(uri).then((response) => {
+          this.mArray = response.data;
+          var _this = this;
+          this.mArray.forEach(function(value) {_this.Gat_template.push({
+              temp_Name: `${value.Name}`,
+              temp_ID: `${value.template_ID}`,
+            });
+          });
+        });
+
+    let Position = localStorage.getItem("Position");
+    if (Position !== "librarian") {
+      alert("ไม่สามารถเข้าใช้งานหน้านี้ได้");
+      if (Position == "admin") {
+        this.$router.push("/Admin_Menu");
+      } else if (Position == "student" && Position !== "personnel") {
+        this.$router.push("/Student_Personnel_Menu");
+      } else {
+        this.$router.push("/LoginUsers");
+      }
+    }
   },
   /////////////////////////////////////////////////
 
   data: () => ({
+    Select_Template_Name: [],
+    Gat_template: [],
     template: [],
     Template_Name: "",
     Resourcetype_Name: "",
@@ -484,6 +520,14 @@ export default {
         });
       }
     },
+    deleteTemp(){
+        console.log(this.Select_Template_Name);
+       let uri = `${process.env.VUE_APP_API_URL}/tempbib/deltempbib/${this.Select_Template_Name}`;
+          axios.delete(uri).then((response) => {
+            alert('ลบเทมเพลตเรียบร้อยแล้ว',response)
+            this.reset();
+        });
+    },
 
     deleteItem(item) {
       this.editedIndex = this.inModul.datatemp.indexOf(item);
@@ -564,15 +608,9 @@ export default {
           Type: `${this.Resourcetype_Name}`,
           Description: `${this.Additionaldescription_Name}`,
         });
-        console.log(this.inModul);
-        axios
-          .post(
-            `${process.env.VUE_APP_API_URL}/tempbib/addtempbib`,
-            this.inModul
-          )
+        axios.post(`${process.env.VUE_APP_API_URL}/tempbib/addtempbib`,this.inModul)
           .then((res) => {
-            //console.log("response: ", res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว",res);
+            alert("บันทึกข้อมูลเรียบร้อยแล้ว", res);
             window.location.reload();
           });
       }

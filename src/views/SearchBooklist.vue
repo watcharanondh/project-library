@@ -14,7 +14,7 @@
             :headers="headers"
             :items="mDataArray"
             :items-per-page="5"
-            class="elevation-1"
+            class="elevation-1 pointer"
           >
             <!-- table top section -->
             <template v-slot:top>
@@ -49,20 +49,19 @@
               </v-toolbar>
             </template>
             <!-- table tr section -->
-            <template v-slot:item="{item}">
-              <tr v-on:click="InfoBookclick(item)">
-                  <td>
+            <template  v-slot:item="{item}">
+              <tr  v-on:click="InfoBookclick(item)" >
+                  <td  >
                   <v-img
                     :src="item.PicPath"
-                    aspect-ratio="1"
                     width="100"
                     height="100"
                   ></v-img>
                 </td>
-                <td>{{ item.Title }}</td>
-                <td>{{ item.Author }}</td>
-                <td>{{ item.Publish }}</td>
-                <td>{{ item.CallNo }}</td>
+                <td >{{ item.Title }}</td>
+                <td >{{ item.Author }}</td>
+                <td >{{ item.Publish }}</td>
+                <td >{{ item.CallNo }}</td>
               </tr>
             </template>
           </v-data-table>
@@ -124,4 +123,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.pointer {cursor: pointer;}
+</style>
