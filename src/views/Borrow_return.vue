@@ -4,7 +4,11 @@
       <v-col cols="9">
         <v-card class="mx-auto pa-5" outlined>
           <!-- ปุ่มย้อนกลับ -->
-          <v-btn @click="$router.push('/Librarian_Menu')" color="btnBack" rounded>
+          <v-btn
+            @click="$router.push('/Librarian_Menu')"
+            color="btnBack"
+            rounded
+          >
             <v-icon left>reply</v-icon>
             <span>ย้อนกลับ</span>
           </v-btn>
@@ -14,74 +18,71 @@
           <v-row>
             <!-- ปุ่มค้นหาสมาชิกรวม -->
             <v-col md="2" class="pt-10">
-             
-                <v-btn color="primary" v-on:click="API_GetusersALL">
-                  ค้นหาสมาชิกทั้งหมด
-                </v-btn>
-            
+              <v-btn color="primary" v-on:click="API_GetusersALL">
+                ค้นหาสมาชิกทั้งหมด
+              </v-btn>
             </v-col>
-              <!-- dialog dialogUsersData-->
-                <v-dialog
-                  :retain-focus="false"
-                  v-model="dialogUsersData"
-                  persistent
-                  max-width="900px"
-                >
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">รายชื่อผู้ใช้งาน</span>
-                    </v-card-title>
-                    <hr />
-                    <v-card-text>
-                      <v-container>
-                        <v-data-table
-                          :headers="headers_modul_selectUser"
-                          :items="Data_modul_selectUser"
-                          :search="searchUser"
-                          :items-per-page="5"
-                        >
+            <!-- dialog dialogUsersData-->
+            <v-dialog
+              :retain-focus="false"
+              v-model="dialogUsersData"
+              persistent
+              max-width="900px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">รายชื่อผู้ใช้งาน</span>
+                </v-card-title>
+                <hr />
+                <v-card-text>
+                  <v-container>
+                    <v-data-table
+                      :headers="headers_modul_selectUser"
+                      :items="Data_modul_selectUser"
+                      :search="searchUser"
+                      :items-per-page="5"
+                        class="pointer"
+                    >
                       <!-- table top section -->
-                        <template v-slot:top>
-                          <v-toolbar flat color="green lighten-3">
-                            <v-toolbar-title>ค้นหารายชื่อที่ต้องการหรือรหัส</v-toolbar-title>
-                            <v-divider class="mx-4" inset vertical></v-divider>
-                            <v-col md="5">
-                              <v-row>
-                                <v-text-field
-                                  v-model="searchUser"
-                                  clearable
-                                  
-                                  single-line
-                                  hide-details
-                                ></v-text-field>
-                              </v-row>
-                            </v-col>
-                          </v-toolbar>
-                        </template>
-                          <!-- table tr section -->
-                          <template v-slot:item="{ item }">
-                            <tr v-on:click="API_SelectUserclick(item)" align="left">
-                                  <td align="center">{{ item.member_ID }}</td>
-                                  <td align="center">{{ item.mem_Citizenid }}</td>
-                                  <td align="center">{{ item.FName }}</td>
-                                  <td align="center">{{ item.LName }}</td>
-                                  <td align="center">{{ item.Position }}</td>
-                            </tr>
-                          </template>
-                        </v-data-table>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="error"
-                        @click="dialogUsersData = false">
-                        ยกเลิก
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-
+                      <template v-slot:top>
+                        <v-toolbar flat color="green lighten-3">
+                          <v-toolbar-title
+                            >ค้นหารายชื่อที่ต้องการหรือรหัส</v-toolbar-title
+                          >
+                          <v-divider class="mx-4" inset vertical></v-divider>
+                          <v-col md="5">
+                            <v-row>
+                              <v-text-field
+                                v-model="searchUser"
+                                clearable
+                                single-line
+                                hide-details
+                              ></v-text-field>
+                            </v-row>
+                          </v-col>
+                        </v-toolbar>
+                      </template>
+                      <!-- table tr section -->
+                      <template v-slot:item="{ item }">
+                        <tr v-on:click="API_SelectUserclick(item)" align="left">
+                          <td align="center">{{ item.member_ID }}</td>
+                          <td align="center">{{ item.mem_Citizenid }}</td>
+                          <td align="center">{{ item.FName }}</td>
+                          <td align="center">{{ item.LName }}</td>
+                          <td align="center">{{ item.Position | ChangeName}}</td>
+                        </tr>
+                      </template>
+                    </v-data-table>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error" @click="dialogUsersData = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
 
             <!-- รหัสหนังสือ -->
             <v-col md="3">
@@ -140,7 +141,7 @@
                   </v-row>
                 </v-col>
                 <v-col md="2">
-                  <v-text-field v-model="card_Position" outlined readonly>
+                  <v-text-field v-model="Posit" outlined readonly>
                   </v-text-field>
                 </v-col>
               </v-row>
@@ -171,13 +172,13 @@
             </v-col>
           </v-card>
 
-          <v-row justify="start" style="min-height: 1px;">
+          <v-row justify="start">
             <v-col class="shrink">
-              <v-bottom-navigation :value="value" color="primary" class="rounded-t-xl">
+              <v-bottom-navigation color="primary" class="rounded-t-xl">
                 <v-btn
-                  color=""
                   @click="
-                    (Expand_Borrow = true),
+                    (switchBorrow_return = '1'),
+                      (Expand_Borrow = true),
                       (Expand_Return = false),
                       (Expand_Backlog = false),
                       (Expand_Borrow_history = false),
@@ -188,7 +189,8 @@
                 </v-btn>
                 <v-btn
                   @click="
-                    (Expand_Return = true),
+                    (switchBorrow_return = '2'),
+                      (Expand_Return = true),
                       (Expand_Borrow = false),
                       (Expand_Backlog = false),
                       (Expand_Borrow_history = false),
@@ -233,121 +235,195 @@
               </v-bottom-navigation>
             </v-col>
           </v-row>
+          <!-- ยืมหนังสือ -->
           <v-expand-transition>
-            <v-card v-show="Expand_Borrow" height="500" width="2000">
+            <v-card v-show="Expand_Borrow" height="1000" width="2000">
               <v-data-table
                 :headers="header_Expand_Borrow"
                 :items="Data_Expand_Borrow"
-                :items-per-page="5"
-                class="elevation-1" 
+                disable-pagination
+                hide-default-footer
               >
-          <template v-slot:item="{ item }">
-            <tr>
-              <td>{{ item.Barcode }}</td>
-              <td>{{ item.namebooks }}</td>
-              <td>{{ item.Copy}}</td>
-              <td>{{ item.Item_status}}</td>
-            </tr>
-          </template>
-              
-        <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.Barcode }}</td>
+                    <td>{{ item.namebooks }}</td>
+                    <td>{{ item.Copy }}</td>
+                    <td>{{ item.Item_status }}</td>
+                    <td align="center">
+                      <v-icon @click="deleteB(item)">delete</v-icon>
+                    </td>
+                  </tr>
+                </template>
               </v-data-table>
+              <v-card-actions>
+                <v-row justify="center">
+                  <v-btn
+                    class="mr-4"
+                    color="error"
+                    @click="Data_Expand_Borrow = []"
+                  >
+                    ลบทั้งหมด
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    @click="saveBorrow(Data_Expand_Borrow)"
+                  >
+                    บันทึก
+                  </v-btn>
+                </v-row>
+              </v-card-actions>
             </v-card>
           </v-expand-transition>
-
+          <!-- คืนหนังสือ -->
           <v-expand-transition>
-            <v-card v-show="Expand_Return" height="500" width="2000">
+            <v-card v-show="Expand_Return" height="1000" width="2000">
               <v-data-table
                 :headers="header_Expand_Return"
-                :items="items_Borrowbooks"
-                :items-per-page="5"
-                class="elevation-1"
+                :items="Data_Expand_Return"
+                disable-pagination
+                hide-default-footer
               >
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.Barcode }}</td>
+                    <td>{{ item.namebooks }}</td>
+                    <td>{{ item.Copy }}</td>
+                    <td>{{ item.Item_status }}</td>
+                    <td align="center">
+                      <v-icon @click="deleteR(item)">delete</v-icon>
+                    </td>
+                  </tr>
+                </template>
               </v-data-table>
+              <v-card-actions>
+                <v-row justify="center">
+                  <v-btn
+                    class="mr-4"
+                    color="error"
+                    @click="Data_Expand_Return = []"
+                  >
+                    ลบทั้งหมด
+                  </v-btn>
+                  <v-btn color="primary" @click="saveReturn">
+                    บันทึก
+                  </v-btn>
+                </v-row>
+              </v-card-actions>
             </v-card>
           </v-expand-transition>
 
+          <!-- หนังสือค้าง -->
           <v-expand-transition>
             <v-card v-show="Expand_Backlog" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Backlog"
                 :items="Data_Expand_Backlog"
-                :items-per-page="5"
-                class="elevation-1"
               >
-            <template v-slot:item="{ item }">
-            <tr>
-              <td>{{ item.Barcode }}</td>
-              <td>{{ item.nameBooks }}</td>
-              <td>{{ item.Borrow }}</td>
-              <td>{{ item.Returns}}</td>
-              <td>{{ item.datediff}}</td>
-            </tr>
-          </template>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.Barcode }}</td>
+                    <td>{{ item.nameBooks }}</td>
+                    <td>{{ item.Borrow }}</td>
+                    <td>{{ item.Returns }}</td>
+                    <td>{{ item.datediff }}</td>
+                  </tr>
+                </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
 
+          <!-- ประวัติการยืม -->
           <v-expand-transition>
             <v-card v-show="Expand_Borrow_history" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Borrow_history"
                 :items="Data_Expand_Borrow_history"
-                :items-per-page="5"
               >
-          <template v-slot:item="{ item }">
-            <tr>
-              <td>{{ item.Barcode }}</td>
-              <td>{{ item.nameBooks }}</td>
-              <td>{{ item.Borrow }}</td>
-              <td>{{ item.Due}}</td>
-              <td>{{ item.Returns}}</td>
-            </tr>
-          </template>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.Barcode }}</td>
+                    <td>{{ item.nameBooks }}</td>
+                    <td>{{ item.Borrow }}</td>
+                    <td>{{ item.Returns }}</td>
+                    <td>{{ item.Due }}</td>
+                  </tr>
+                </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
 
+          <!-- ค่าปรับค้าง -->
           <v-expand-transition>
             <v-card v-show="Expand_Fines" height="500" width="2000">
               <v-data-table
                 :headers="header_Expand_Fines"
                 :items="Data_Expand_Fines"
-                :items-per-page="5"
-                class="elevation-1"
               >
-            <template v-slot:item="{ item }">
-            <tr>
-              <td>{{ item.namebooks }}</td>
-              <td>{{ item.Returns}}</td>
-              <td>{{ item.Due}}</td>
-              <td>{{ item.fine_type }}</td>
-              <td>{{ item.datediff }}</td>
-              <td>{{ item.Amount }}</td>
-              <!-- <td>{{ item.IsPaid }}</td> -->
-              <td>
-                  <div v-if="item.IsPaid == 'ชำระแล้ว'" class="green--text text--darken-2">
-                   {{ item.IsPaid }}
-                </div>
-                <div v-else class="red--text text--darken-2">
-                   {{ item.IsPaid }}
-                </div>
-              </td>
-            </tr>
-          </template>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.namebooks }}</td>
+                    <td>{{ item.Returns }}</td>
+                    <td>{{ item.Due }}</td>
+                    <td>{{ item.fine_type }}</td>
+                    <td>{{ item.datediff }}</td>
+                    <td>{{ item.Amount }}</td>
+                    <!-- <td>{{ item.IsPaid }}</td> -->
+                    <td>
+                      <div
+                        v-if="item.IsPaid == 'ชำระแล้ว'"
+                        class="green--text text--darken-2"
+                      >
+                        {{ item.IsPaid }}
+                      </div>
+                      <div v-else class="red--text text--darken-2">
+                        {{ item.IsPaid }}
+                      </div>
+                    </td>
+                    <td align="center">
+                      <v-icon @click="dialogS=true">library_add_check</v-icon>
+                    </td>
+                  </tr>
+                </template>
               </v-data-table>
             </v-card>
           </v-expand-transition>
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- dialogจัดการค่าปรับ -->
+    <v-dialog
+         :retain-focus="false"
+         v-model="dialogS"
+         max-width="500px">
+        <v-card >
+          <v-card-title class="justify-center">
+            <span class="headline">จัดการค่าปรับ</span>
+              </v-card-title>
+              
+                <v-row justify="center">
+                  <v-col  justify="center" md="6">
+                <v-text-field
+                  v-model="managefines.Description"
+                  label="คำอธิบาย"
+                  v-on:keyup.enter="selectF"
+                  dense
+                  solo
+                  outlined
+                  clearable
+                  required
+                ></v-text-field>
+                  </v-col>
+                  </v-row>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+              <v-btn color="error" @click="dialogS=false">ยกเลิก</v-btn>
+            <v-btn color="success" @click="selectF">จัดการ</v-btn>
+        </v-card-actions>
+      </v-card>
+     
+    </v-dialog>
   </v-container>
 </template>
 
@@ -357,56 +433,66 @@ import axios from "axios";
 export default {
   name: "Borrow-return",
 
-  /////// check access permission /////////////  
-   mounted() {
-     let Position = localStorage.getItem("Position");
-           if(Position !== 'librarian') {
-          alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
-          if (Position == 'admin') {
-          this.$router.push("/Admin_Menu")
-          } else if(Position == 'student' && Position !== "personnel"){
-          this.$router.push("/Student_Personnel_Menu")
-          }else{
-          this.$router.push("/LoginUsers")
-          }
-       }
+  /////// check access permission /////////////
+  mounted() {
+    let Position = localStorage.getItem("Position");
+    if (Position !== "librarian") {
+      alert("ไม่สามารถเข้าใช้งานหน้านี้ได้");
+      if (Position == "admin") {
+        this.$router.push("/Admin_Menu");
+      } else if (Position == "student" && Position !== "personnel") {
+        this.$router.push("/Student_Personnel_Menu");
+      } else {
+        this.$router.push("/LoginUsers");
+      }
+    }
   },
   /////////////////////////////////////////////////
 
   data: () => ({
-    value: 1,
-    searchUser:'',
+    switchBorrow_return: "",
+    searchUser: "",
     Member_ID: "",
     BCcode: "",
     Getusers_search: "",
+    managefines:{
+      receipt_ID:null,
+      Description:'',
+      },
+    databorrow: [],
+    datareturn: [],
 
     card_ID: "",
     card_IDC: "",
     card_Position: "",
     card_Fname: "",
     card_Lname: "",
-
+    Posit:'',
+    editedIndex: -1,
+    
+    
+    dialogS:false,
     dialogUsersData: false,
     Expand_Borrow: false,
     Expand_Return: false,
     Expand_Backlog: false,
     Expand_Borrow_history: false,
     Expand_Fines: false,
+    
 
     //Table User All
     Data_modul_selectUser: [],
     headers_modul_selectUser: [
-      {text: "รหัส",align: "center",value: "member_ID",},
-      {text: "รหัสบัตรประชาชน", align: "center", value: "mem_Citizenid",},
-      {text: "ชื่อ", align: "center", value: "FName",},
-      {text: "นามสกุล", align: "center", value: "LName",},
-      {text: "Position", align: "center", value: "Position",},
-
+      { text: "รหัส", align: "center", value: "member_ID" },
+      { text: "รหัสบัตรประชาชน", align: "center", value: "mem_Citizenid" },
+      { text: "ชื่อ", align: "center", value: "FName" },
+      { text: "นามสกุล", align: "center", value: "LName" },
+      { text: "Position", align: "center", value: "Position" },
     ],
 
     //Table Expand_Borrow
     Data_Expand_Borrow: [],
-    header_Expand_Borrow: [ 
+    header_Expand_Borrow: [
       {
         text: "Barcode",
         align: "start",
@@ -415,16 +501,20 @@ export default {
       { text: "ชื่อทรัพยากร", value: "namebooks", align: "start" },
       { text: "ฉบับที่", value: "Copy", align: "start" },
       { text: "สถานะ", value: "Item_status", align: "start" },
+      { text: "Actions", value: "actions", align: "center" },
     ],
     //Table Expand_Return
     Data_Expand_Return: [],
     header_Expand_Return: [
       {
-        text: "ลำดับ",
+        text: "Barcode",
         align: "start",
-        value: "index",
+        value: "Barcode",
       },
-      { text: "ชื่อทรัพยากร", value: "Resource_name", align: "start" },
+      { text: "ชื่อทรัพยากร", value: "namebooks", align: "start" },
+      { text: "ฉบับที่", value: "Copy", align: "start" },
+      { text: "สถานะ", value: "Item_status", align: "start" },
+      { text: "Actions", value: "actions", align: "center" },
     ],
     //Table Expand_Backlog
     Data_Expand_Backlog: [],
@@ -432,7 +522,7 @@ export default {
       {
         text: "Barcode",
         align: "start",
-        value: "Barcode", 
+        value: "Barcode",
       },
       { text: "ชื่อทรัพยากร", value: "nameBooks", align: "start" },
       { text: "วันที่ยืม", value: "Borrow", align: "start" },
@@ -449,8 +539,8 @@ export default {
       },
       { text: "ชื่อทรัพยากร", value: "nameBooks", align: "start" },
       { text: "วันที่ยืม", value: "Borrow", align: "start" },
-      { text: "กำหนดคืน", value: "Due", align: "start" },
-      { text: "วันที่คืน", value: "Returns", align: "start" },
+      { text: "กำหนดคืน", value: "Returns", align: "start" },
+      { text: "วันที่คืน", value: "Due", align: "start" },
     ],
     //Table Expand_Fines
     Data_Expand_Fines: [],
@@ -466,8 +556,8 @@ export default {
       { text: "วันที่เกิน", value: "datediff", align: "start" },
       { text: "จำนวนค่าปรับ", value: "Amount", align: "start" },
       { text: "สถานะ", value: "IsPaid", align: "start" },
+      { text: "Actions", value: "actions", align: "center" },
     ],
-
   }),
 
   methods: {
@@ -476,18 +566,41 @@ export default {
       this.dialogUsersData = true;
       const url = `${process.env.VUE_APP_API_URL}/allmember/listalluser`;
       axios.get(url).then((results) => {
+        console.log(results.data.Position);
         this.Data_modul_selectUser = results.data;
       });
     },
-    //ใส่รหัสโค้ดยืมหนังสือ
-    API_BCcode(){
-      const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
-       axios.get(url).then((results) => {
-         console.log(results.data);
-        this.Data_Expand_Borrow.push( results.data[0])
-      });
-     
+    //ใส่รหัสโค้ดยืมหนังสือ และ คืนหนังสือ
+    API_BCcode() {
+      if (this.switchBorrow_return == "1") {
+        const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
+        axios.get(url).then((results) => {
+          return this.Data_Expand_Borrow.push(results.data[0]);
+        });
+      } else if (this.switchBorrow_return == "2") {
+        const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
+        axios.get(url).then((results) => {
+          return this.Data_Expand_Return.push(results.data[0]);
+        });
+      }
     },
+    deleteB(item) {
+      this.editedIndex = this.Data_Expand_Borrow.indexOf(item);
+      this.Data_Expand_Borrow.splice(this.editedIndex, 1);
+    },
+    deleteR(item) {
+      this.editedIndex = this.Data_Expand_Return.indexOf(item);
+      this.Data_Expand_Return.splice(this.editedIndex, 1);
+    },
+
+    Change_TH(card_Position) {
+       if (card_Position == 'personnel') {
+            return this.Posit='บุคลากร'
+          }else if (card_Position == 'student'){
+            return this.Posit='นักเรียน'
+          }
+    },
+    
 
     close() {
       this.dialog = false;
@@ -505,62 +618,67 @@ export default {
 
     //เลือกผู้ใช้งานและแสดงข้อมูล
     API_SelectUserclick(item) {
-      this.card_ID = item.member_ID,
-      this.card_IDC = item.mem_Citizenid,
-      this.card_Position = item.Position,
-      this.card_Fname = item.FName,
-      this.card_Lname = item.LName
+      (this.Data_modul_selectUser = []),
+        (this.card_ID = item.member_ID),
+        (this.card_IDC = item.mem_Citizenid),
+        (this.card_Position = item.Position),
+        (this.card_Fname = item.FName),
+        (this.card_Lname = item.LName);
 
+      this.Change_TH(item.Position)
       const url = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${this.card_ID}`;
       axios.get(url).then((results) => {
-         console.log(results.data);
-         this.Data_Expand_Borrow_history = results.data.bnr_history;
-         this.Data_Expand_Fines = results.data.finebooks;
-         this.Data_Expand_Backlog = results.data.databorrow;
+        //console.log(results.data);
+        this.Data_Expand_Backlog = results.data.databorrow;
+        this.Data_Expand_Borrow_history = results.data.bnr_history;
+        this.Data_Expand_Fines = results.data.finebooks;
+        
+        this.Data_Expand_Fines.forEach((element) => {
+
+          Object.assign(this.managefines,{'receipt_ID':element.receipt_ID}); 
+          });
       });
-      
-      this.dialogUsersData=false
-      
+
+      this.dialogUsersData = false;
     },
 
     reset() {
       window.location.reload();
     },
 
-    saveMudul() {
-      this.editedAddmodul.Field = this.numField;
-      let object1 = this.editedAddmodul.Subfield;
-      this.removeEmpty(object1);
-      if (this.editedIndex > -1) {
-        this.editedAddmodul.Subfield = object1;
-        Object.assign(
-          this.inModul.databib[this.editedIndex],
-          this.editedAddmodul
-        );
-      } else {
-        this.editedAddmodul.Subfield = object1;
-        this.inModul.databib.push(this.editedAddmodul);
-      }
 
-      this.close();
+    saveBorrow() {
+      (this.BCcode = ""), (this.databorrow = []);
+      this.Data_Expand_Borrow.forEach((element) => {
+        this.databorrow.push({
+          Librarian_ID: localStorage.getItem("member_ID"),
+          Member_ID: this.card_ID,
+          Barcode: element.Barcode,
+        });
+      });
+      const url = `${process.env.VUE_APP_API_URL}/bnr/addborrow`;
+      axios.post(url, { databorrow: this.databorrow }).then((results) => {
+        alert("บันทึกการยืมหนังสือเรียบร้อยแล้ว", results);
+        this.Data_Expand_Borrow = [];
+        window.location.reload();
+      });
     },
 
-    submit() {
-      if (this.inModul.length <= 1) {
-        alert("กรุณากรอกข้อมูลให้ครบ");
-      } else {
-        axios
-          .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
-          .then((res) => {
-            //console.log("response: ", res);
-            alert(res);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-            window.location.reload();
-          });
-      }
+    saveReturn() {
+      (this.BCcode = ""), (this.datareturn = []);
+      this.Data_Expand_Return.forEach((element) => {
+        this.datareturn.push(element.Barcode);
+      });
+      const url = `${process.env.VUE_APP_API_URL}/bnr/multiupdreturn`;
+      axios.put(url, { Barcode: this.datareturn }).then((results) => {
+        alert("บันทึกการคืนหนังสือเรียบร้อยแล้ว", results);
+        window.location.reload();
+      });
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.pointer {cursor: pointer;}
+</style>

@@ -682,9 +682,11 @@
             <span class="headline">บาร์โค้ด</span>
               </v-card-title>
                 <v-row justify="center">
-                  <v-card  class="ma-auto  ">
-                      <barcode :value="this.Barcshow" :tag="tag"  :options="options"></barcode>
+                   <div id="print">
+                  <v-card  class="ma-auto ">
+                        <barcode :value="this.Barcshow" :tag="tag"  :options="options"></barcode>
                   </v-card>
+                  </div>
                   </v-row>
                       <br />
                       <v-card-actions>
@@ -701,13 +703,12 @@
 <script>
 import axios from "axios";
 
-
 export default {
   name: "AddBookandItem",
 
   /////// check access permission /////////////  
    mounted() {
-     
+
      let Position = localStorage.getItem("Position");
            if(Position !== 'librarian') {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
@@ -760,19 +761,8 @@ export default {
       item_description: "",
     },
 
-    value: '',
     tag: 'svg',
-    options: {
-      lineColor: '#ff7069',
-      fontSize: 32,
-      font: 'Courier',
-      width: 3,
-      height: 10,
-      marginBottom: 60,
-      format: 'CODE128',
-      background: '#ccffff',
-      text:'soy',
-    },
+   
 
     //ค่าจาก Modul
     inModul: {
@@ -1266,12 +1256,12 @@ export default {
 
 //////////////////////////////////////พิมพ์ บาร์โค้ด////////////////////////////////////////////////////
       showBC(item){
-        console.log(item);
-        this.Barcshow = item
-        this.dialogbarc=true
-      },
+         console.log(item);
+         this.Barcshow = item
+         this.dialogbarc=true
+       },
       printfBarc(){
-
+          this.$htmlToPaper('print');
       },
 
 

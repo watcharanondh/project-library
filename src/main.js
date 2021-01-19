@@ -6,6 +6,20 @@ import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vue2Filters from 'vue2-filters'
 import VueBarcode from 'vue-barcode'
+import VueHtmlToPaper from 'vue-html-to-paper';
+
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    'https://unpkg.com/kidlat-css/css/kidlat.css'
+  ]
+}
 
 
 Vue.config.productionTip = false
@@ -18,7 +32,10 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(Vue2Filters);
-Vue.component('barcode', VueBarcode)
+Vue.component('barcode', VueBarcode);
+Vue.use(VueHtmlToPaper, options);
+
+
 
 Vue.filter('ChangeName', function(value) {
   if (value == 'admin') {

@@ -21,7 +21,6 @@
                 <v-btn @click=" Expand_his_brw = true, Expand_Borrow = false " >
                   <h3>ประวัติการยืม</h3>
                 </v-btn>
-  
               </v-bottom-navigation>
             </v-col>
             </v-row>
@@ -75,7 +74,6 @@
           </v-card>
         </v-col>
       </v-row>
-
     </v-card>
   </v-container>
 </template>
@@ -111,7 +109,7 @@ export default {
   }),
 
    mounted() {
-     /////// check access permission /////////////  
+     ////////////// check access permission /////////////  
      let Position = localStorage.getItem("Position");
        if(Position !== "student" && Position !== "personnel" ) {
           alert('ไม่สามารถเข้าใช้งานหน้านี้ได้');
@@ -123,7 +121,7 @@ export default {
           this.$router.push("/LoginUsers")
           }
        }
-    //////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
 
     //////////////// APT GET DATA////////////////////////
      let memberID = localStorage.getItem("member_ID");
