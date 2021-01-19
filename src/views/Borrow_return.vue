@@ -251,7 +251,7 @@
                     <td>{{ item.Copy }}</td>
                     <td>{{ item.Item_status }}</td>
                     <td align="center">
-                      <v-icon @click="deleteB(item)">delete</v-icon>
+                      <v-icon @click="deleteBorrow(item)">delete</v-icon>
                     </td>
                   </tr>
                 </template>
@@ -291,7 +291,7 @@
                     <td>{{ item.Copy }}</td>
                     <td>{{ item.Item_status }}</td>
                     <td align="center">
-                      <v-icon @click="deleteR(item)">delete</v-icon>
+                      <v-icon @click="deleteReturn(item)">delete</v-icon>
                     </td>
                   </tr>
                 </template>
@@ -419,7 +419,7 @@
                       <v-card-actions>
                         <v-spacer></v-spacer>
               <v-btn color="error" @click="dialogS=false">ยกเลิก</v-btn>
-            <v-btn color="success" @click="selectF">จัดการ</v-btn>
+            <v-btn color="success" @click="Manage_fines">จัดการ</v-btn>
         </v-card-actions>
       </v-card>
      
@@ -561,16 +561,15 @@ export default {
   }),
 
   methods: {
-    //เรียกรายชื่อผู้ใช้
+    //เรียกรายชื่อผู้ใช้ทั้งหมดมาดู
     API_GetusersALL() {
       this.dialogUsersData = true;
       const url = `${process.env.VUE_APP_API_URL}/allmember/listalluser`;
       axios.get(url).then((results) => {
-        console.log(results.data.Position);
         this.Data_modul_selectUser = results.data;
       });
     },
-    //ใส่รหัสโค้ดยืมหนังสือ และ คืนหนังสือ
+    //ใส่บาร์โค้ดยืมหนังสือ และ คืนหนังสือ
     API_BCcode() {
       if (this.switchBorrow_return == "1") {
         const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
@@ -584,37 +583,6 @@ export default {
         });
       }
     },
-    deleteB(item) {
-      this.editedIndex = this.Data_Expand_Borrow.indexOf(item);
-      this.Data_Expand_Borrow.splice(this.editedIndex, 1);
-    },
-    deleteR(item) {
-      this.editedIndex = this.Data_Expand_Return.indexOf(item);
-      this.Data_Expand_Return.splice(this.editedIndex, 1);
-    },
-
-    Change_TH(card_Position) {
-       if (card_Position == 'personnel') {
-            return this.Posit='บุคลากร'
-          }else if (card_Position == 'student'){
-            return this.Posit='นักเรียน'
-          }
-    },
-    
-
-    close() {
-      this.dialog = false;
-      this.dialogspecial = false;
-      this.$nextTick(() => {
-        this.editedAddmodul = Object.assign({}, this.defaultItem);
-        this.marc21 = "";
-        this.Data_modul_1 = [];
-        this.Data_modul_2 = [];
-        this.Data_modul_3 = [];
-        this.editedAddmodul.Subfield = {};
-        this.editedIndex = -1;
-      });
-    },
 
     //เลือกผู้ใช้งานและแสดงข้อมูล
     API_SelectUserclick(item) {
@@ -624,29 +592,74 @@ export default {
         (this.card_Position = item.Position),
         (this.card_Fname = item.FName),
         (this.card_Lname = item.LName);
+        this.Data_Expand_Borrow_history =[],
+        this.Data_Expand_Backlog =[],
+        this.Data_Expand_Fines =[],
 
       this.Change_TH(item.Position)
       const url = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${this.card_ID}`;
       axios.get(url).then((results) => {
-        //console.log(results.data);
-        this.Data_Expand_Backlog = results.data.databorrow;
-        this.Data_Expand_Borrow_history = results.data.bnr_history;
-        this.Data_Expand_Fines = results.data.finebooks;
         
-        this.Data_Expand_Fines.forEach((element) => {
+        if(results.data.databorrow =='ไม่พบรายการหนังสือคงค้าง'){
+          alert('ไม่พบรายการหนังสือคงค้าง');
+        }else{
+          this.Data_Expand_Backlog = results.data.databorrow;
+        }
+        
+        if(results.data.bnr_history =='ไม่พบประวัติการยืม'){
+          alert('ไม่พบประวัติการยืม');
+        }else{
+          this.Data_Expand_Borrow_history = results.data.bnr_history;
+        }
 
+        if(results.data.finebooks =='ไม่พบรายการค่าปรับคงค้าง'){
+          alert('ไม่พบรายการค่าปรับคงค้าง');
+        }else{
+          this.Data_Expand_Fines = results.data.finebooks;
+          this.Data_Expand_Fines.forEach((element) => {
           Object.assign(this.managefines,{'receipt_ID':element.receipt_ID}); 
           });
+        }  
+        
       });
-
-      this.dialogUsersData = false;
+          this.dialogUsersData = false;
     },
 
+    //ลบแถวในตารางยืม
+    deleteBorrow(item) {
+      this.editedIndex = this.Data_Expand_Borrow.indexOf(item);
+      this.Data_Expand_Borrow.splice(this.editedIndex, 1);
+    },
+
+    //ลบแถวในตารางคืน
+    deleteReturn(item) {
+      this.editedIndex = this.Data_Expand_Return.indexOf(item);
+      this.Data_Expand_Return.splice(this.editedIndex, 1);
+    },
+
+    //เปลี่ยนภาษา
+    Change_TH(card_Position) {
+       if (card_Position == 'personnel') {
+            return this.Posit='บุคลากร'
+          }else if (card_Position == 'student'){
+            return this.Posit='นักเรียน'
+          }
+    },
+
+    //รีโหลดหน้าใหม่
     reset() {
       window.location.reload();
     },
 
+    Manage_fines(){
+      const url = `${process.env.VUE_APP_API_URL}/bnr/updatefinereceipt`;
+      axios.post(url, { receipt_ID: this.managefines.Description, Description: this.managefines.Description }).then((results) => {
+        alert("บันทึกจัดการค่าปรับเรียบร้อยแล้ว", results);
+      });
 
+    },
+
+    //บันทึกยืม
     saveBorrow() {
       (this.BCcode = ""), (this.databorrow = []);
       this.Data_Expand_Borrow.forEach((element) => {
@@ -664,6 +677,7 @@ export default {
       });
     },
 
+    //บันทึกคืน
     saveReturn() {
       (this.BCcode = ""), (this.datareturn = []);
       this.Data_Expand_Return.forEach((element) => {
