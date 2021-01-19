@@ -2,7 +2,7 @@
   <v-container class="grey lighten-3">
     <v-row class="justify-center">
       <v-col cols="9">
-        <v-card class="mx-auto pa-5" outlined>
+        <v-card class="mx-auto pa-5" height="2000" width="2000" outlined>
           <!-- ปุ่มย้อนกลับ -->
           <v-col>
             <v-row>
@@ -493,7 +493,7 @@
             </div>
             <div v-if="Report_type === 'descriptreport'">
               <!--Table รายงานการตัดจำหน่ายหนังสือ -->
-              <v-card class="mx-auto pa-5" outlined>
+              <v-card max-height="900px" class="mx-auto pa-5" outlined>
                 <v-card-actions>
                   <v-col>
                     <v-row justify="center">
@@ -515,22 +515,20 @@
                   <v-data-table
                     :headers="headers_descriptreport"
                     :items="GatData_descriptreport"
-                    hide-default-footer
-                    disable-pagination
                     class="elevation-1"
                   >
                     <template v-slot:item="{ item, index }">
                       <tr>
-                        <td align="center" >{{ index + 1 }}</td>
-                        <td>{{ item.Barcode }}</td>
-                        <td>{{ item.namebooks }}</td>
-                        <td align="center ">{{ item.Copy }}</td>
+                        <td align="center">{{ index + 1 }}</td>
+                        <td align="center">{{ item.Barcode }}</td>
+                        <td align="center">{{ item.namebooks }}</td>
+                        <td align="center">{{ item.Copy }}</td>
                         <td align="center">{{ item.item_status }}</td>
                         <td align="center">{{ item.item_in }}</td>
                         <td align="center">{{ item.desc_in }}</td>
                         <td align="center">{{ item.item_out }}</td>
                         <td align="center">{{ item.desc_out }}</td>
-                        <td>{{ item.librariannames }}</td>
+                        <td align="center">{{ item.librariannames }}</td>
                       </tr>
                     </template>
                   </v-data-table>
@@ -773,16 +771,16 @@ export default {
     Item_number_descriptreport: "",
     GatData_descriptreport: [],
     headers_descriptreport: [
-      { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "Barcode", align: "center",value: "Barcode",sortable: false},
-      { text: "ชื่อทรัพยากร",align: "center",value: "namebooks",sortable: false},
-      { text: "ฉบับที่",align: "center",value: "Copy",sortable: false},
-      { text: "สถานะ",align: "center",value: "item_status",sortable: false},
-      { text: "วันที่นำเข้า",align: "center",value: "item_in",sortable: false},
-      { text: "ตัดจำหน่ายนำเข้า",align: "center",value: "desc_in",sortable: false},
-      { text: "วันที่นำออก",align: "center",value: "item_out",sortable: false,},
-      { text: "ตัดจำหน่ายนำออก",align: "center",value: "desc_out",sortable: false},
-      { text: "ผู้จัดการ",align: "center",value: "librariannames",sortable: false},
+      { text: "ลำดับ", align: "center", value: "index", sortable: false , },
+      { text: "Barcode", align: "center",value: "Barcode",sortable: false, },
+      { text: "ชื่อทรัพยากร",align: "center",value: "namebooks",sortable: false , },
+      { text: "ฉบับที่",align: "center",value: "Copy",sortable: false , },
+      { text: "สถานะ",align: "center",value: "item_status",sortable: false , },
+      { text: "วันที่นำเข้า",align: "center",value: "item_in",sortable: false , },
+      { text: "ตัดจำหน่ายนำเข้า",align: "center",value: "desc_in",sortable: false , },
+      { text: "วันที่นำออก",align: "center",value: "item_out",sortable: false , },
+      { text: "ตัดจำหน่ายนำออก",align: "center",value: "desc_out",sortable: false , },
+      { text: "ผู้จัดการ",align: "center",value: "librariannames",sortable: false, },
     ],
   }),
 
@@ -847,51 +845,60 @@ export default {
                   this.Title_bnruserreport= results.data.Title
                   this.DateThai_bnruserreport= results.data.DateThai
                   this.Item_number_bnruserreport= results.data.Total
-                  this.GatData_bnruserreport = results.data.Data
-                  this.dialogUsersData=false
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก'){
+            alert('ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก')
+          }else{
+              this.GatData_bnruserreport = results.data.Data;
+          }     
         });
+              this.dialogUsersData=false
 
         //รายงานข้อมูลหนังสือ
       } else if (this.Report_type == "databibreport") {
-        console.log(this.Report_type);
         const url = `${process.env.VUE_APP_API_URL}/report/databibreport`;
         axios.post(url, sentDate).then((results) => {
-          console.log(results.data);
           this.Title_databibreport = results.data.Title;
           this.DateThai_databibreport = results.data.DateThai;
-          this.Item_number_items_databibreport = results.data.Total;
-          this.GatData_databibreport = results.data.Data;
+          this.Item_number_databibreport = results.data.Total;
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานข้อมูลหนังสือ'){
+            alert('ไม่พบข้อมูลรายงานข้อมูลหนังสือ')
+          }else{
+              this.GatData_databibreport = results.data.Data;
+          }
         });
 
         //รายงานข้อมูลหนังสือค้างส่ง
       } else if (this.Report_type == "notreturnreport") {
-        console.log(this.Report_type);
         const url = `${process.env.VUE_APP_API_URL}/report/notreturnreport`;
         axios.post(url, sentDate).then((results) => {
-          console.log(results.data);
           this.Title_notreturnreport = results.data.Title;
           this.DateThai_notreturnreport = results.data.DateThai;
           this.Item_number_notreturnreport = results.data.Total;
-          this.GatData_notreturnreport = results.data.Data;
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานหนังสือค้างส่ง'){
+            alert('ไม่พบข้อมูลรายงานหนังสือค้างส่ง')
+          }else{
+              this.GatData_notreturnreport = results.data.Data;
+          }
         });
 
         //รายงานสถิติข้อมูลการยืม-คืนหนังสือ
       } else if (this.Report_type == "bnrreport") {
-        console.log("ใน", this.Report_type);
-        console.log(sentDate);
         const url = `${process.env.VUE_APP_API_URL}/report/bnrreport`;
         axios.post(url, sentDate).then((results) => {
           this.Title_bnrreport = results.data.Title;
           this.DateThai_bnrreport = results.data.DateThai;
           this.Item_number_bnrreport = results.data.Total;
-          this.GatData_bnrreport = results.data.Data;
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ'){
+            alert('ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ')
+          }else{
+              this.GatData_bnrreport = results.data.Data;
+          }
         });
 
         //รายงานสถิติการเข้าใช้ห้องสมุด
       } else if (this.Report_type == "statbnrreport") {
         const url = `${process.env.VUE_APP_API_URL}/report/statbnrreport`;
         axios.post(url, {Date:this.date}).then((results) => {
-          console.log(results.data);
           this.Title_statbnrreport = results.data.Title;
           this.DateThai_statbnrreport = results.data.DateThai;
           this.Item_number_statbnrreport = results.data.Total;
@@ -902,25 +909,31 @@ export default {
 
         //รายงานค่าปรับ
       } else if (this.Report_type == "finesreport") {
-        console.log(sentDate);
         const url = `${process.env.VUE_APP_API_URL}/report/finesreport`;
         axios.post(url, sentDate).then((results) => {
-          console.log(results.data);
           this.Title_finesreport = results.data.Title;
           this.DateThai_finesreport = results.data.DateThai;
           this.Item_number_finesreport = results.data.Total;
-          this.GatData_finesreport = results.data.Data;
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานค่าปรับ'){
+            alert('ไม่พบข้อมูลรายงานค่าปรับ')
+          }else{
+              this.GatData_finesreport = results.data.Data;
+          }
+          
         });
 
         //รายงานการตัดจำหน่ายหนังสือ
       } else if (this.Report_type == "descriptreport") {
         const url = `${process.env.VUE_APP_API_URL}/report/descriptreport`;
         axios.post(url, sentDate).then((results) => {
-          console.log(results.data);
           this.Title_descriptreport = results.data.Title;
           this.DateThai_descriptreport = results.data.DateThai;
           this.Item_number_descriptreport = results.data.Total;
-          this.GatData_descriptreport = results.data.Data;
+          if(results.data.Data == 'ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ'){
+            alert('ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ')
+          }else{
+              this.GatData_descriptreport = results.data.Data;
+          }
         });
       }
     },
