@@ -626,7 +626,6 @@ export default {
   
     editItem(item) {
       this.edited_ID = item.member_ID;
-      console.log(this.edited_ID);
       axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${this.edited_ID} `,{ headers: {'Authorization': 'Basic abcd1234'}})
         .then((res) => {
           this.Put_Users = res.data;
@@ -659,7 +658,6 @@ export default {
 
     },
       saveMudul_Add(){
-        console.log(this.Put_Users);
         if(this.Put_Users.member_ID == ''){
           alert('ยังไม่ได้ใส่รหัสประจำตัว กรุณากรอกรหัสประจำตัวที่ไม่ซํ้ากับผู้ใช้งานอื่น')
         }else if(this.Put_Users.mem_Citizenid == '') {

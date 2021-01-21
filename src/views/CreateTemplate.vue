@@ -521,7 +521,6 @@ export default {
       }
     },
     deleteTemp(){
-        console.log(this.Select_Template_Name);
        let uri = `${process.env.VUE_APP_API_URL}/tempbib/deltempbib/${this.Select_Template_Name}`;
           axios.delete(uri).then((response) => {
             alert('ลบเทมเพลตเรียบร้อยแล้ว',response)

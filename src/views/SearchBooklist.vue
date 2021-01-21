@@ -111,7 +111,6 @@ export default {
       }
     },
     InfoBookclick(item) {
-      console.log(item);
       this.$store.dispatch({
         type: "inPutNumberbookID",
         numid: item.Bib_ID,

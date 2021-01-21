@@ -537,8 +537,6 @@ export default {
       };
       await axios(config).then((response) => {
         // alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
-        console.log(response.data.data);
-        console.log(this.inModul.databib);
         this.inModul.databib[this.field960Key].Subfield.$a = response.data.data.link;
       });
     },
@@ -569,7 +567,6 @@ export default {
           this.FieldName = results.data[0].Name;
           this.numField = results.data[0].Field;
           if (this.Data_modul_3.length <= 0) {
-            console.log(this.Data_modul_3.length);
             this.dialogspecial = true;
           } else {
             this.dialog = true;
@@ -713,8 +710,7 @@ export default {
         axios
           .put(`${process.env.VUE_APP_API_URL}/bibdata/edit`, this.inModul)
           .then((response) => {
-            console.log("response: ", response);
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            alert("บันทึกข้อมูลเรียบร้อยแล้ว",response);
             window.location.reload();
           });
       }

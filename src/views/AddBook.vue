@@ -955,7 +955,6 @@ export default {
         for (const element of temp) {
           this.inModul.databib.push(element);
         }
-        console.log(results.data);
       });
     },
 
@@ -985,7 +984,6 @@ export default {
       } else {
         const url = `${process.env.VUE_APP_API_URL}/marc/addmarc/${this.marc21}`;
         axios.get(url).then((results) => {
-          console.log(results);
           this.Data_modul_1 = results.data[0].indicator1;
           this.Data_modul_2 = results.data[0].indicator2;
           this.Data_modul_3 = results.data[0].subfields;
@@ -1158,7 +1156,6 @@ export default {
     
     await axios(config).then((response ) => {
         alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
-        console.log(response.data.data);
 
         this.inModul.databib[0].Subfield.$a = response.data.data.link;
       });
@@ -1184,7 +1181,6 @@ export default {
       
       const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numID}`;
       axios.get(url).then((results) => {
-        //console.log(results.data);
         this.Data_modul_additemsNo = results.data.data;
         this.MaxBC = results.data.maxBarcode;
       });
@@ -1201,7 +1197,6 @@ export default {
         //Apiเช็ค item ?
   await axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
             this.Ck_item= results.data.maxBarcode;
-            console.log(this.Ck_item);
         if(this.Ck_item !== null ){
           //กรณีที่มีฉบับแล้ว
             this.str1 = this.Bib_ID_New.substr(0, 6);
@@ -1228,7 +1223,6 @@ export default {
         const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
          axios.post(url, this.all).then((res) => {
           alert("เพิ่มฉบับเรียบร้อยแล้ว" , res);
-          console.log(res);
           this.Data_modul_additemsNo = [];
           this.additemsNo = "";
           this.ides ='';
@@ -1256,7 +1250,6 @@ export default {
 
 //////////////////////////////////////พิมพ์ บาร์โค้ด////////////////////////////////////////////////////
       showBC(item){
-         console.log(item);
          this.Barcshow = item
          this.dialogbarc=true
        },
@@ -1294,7 +1287,6 @@ export default {
         axios
           .post(`${process.env.VUE_APP_API_URL}/bibdata/bulkadd`, this.inModul)
           .then((res) => {
-            //console.log("response: ", res);
             alert("บันทึกข้อมูลเรียบร้อยแล้ว",res);
             window.location.reload();
           });

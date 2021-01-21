@@ -243,7 +243,7 @@ export default {
       await axios(config).then((response ) => {
       alert('อัพโหลดรูปเรียบร้อยแล้ว')
       this.Put_Users.profile_img = response.data.data.link;
-      console.log(this.Put_Users.profile_img);
+      //console.log(this.Put_Users.profile_img);
     });
   },
 
