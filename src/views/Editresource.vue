@@ -536,7 +536,7 @@ export default {
         data: data,
       };
       await axios(config).then((response) => {
-        // alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
+        alert('อัพโหลดรูปเรียบร้อยแล้ว กรุณาตรวจสอบที่ Field ที่ 960')
         this.inModul.databib[this.field960Key].Subfield.$a = response.data.data.link;
       });
     },

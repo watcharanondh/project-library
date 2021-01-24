@@ -684,7 +684,7 @@
                 <v-row justify="center">
                    <div id="print">
                   <v-card  class="ma-auto ">
-                        <barcode :value="this.Barcshow" :tag="tag"  :options="options"></barcode>
+                        <barcode :value="this.Barcshow" :tag="tag" ></barcode>
                   </v-card>
                   </div>
                   </v-row>
@@ -747,7 +747,6 @@ export default {
     numField: "",
     imageURL:"https://dl.acm.org/specs/products/acm/releasedAssets/images/cover-default--book.svg",
 
-    MaxBC: "",
     item_descriptionNEW: "",
     Bib_ID_New:"",
     itemNo: {
@@ -1181,26 +1180,32 @@ export default {
       
       const url = `${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.numID}`;
       axios.get(url).then((results) => {
+        if(results.data.maxBarcode == null){
+            this.dialogAdditemsNo = true;
+        }else{
         this.Data_modul_additemsNo = results.data.data;
-        this.MaxBC = results.data.maxBarcode;
+        this.dialogAdditemsNo = true;
+        }
       });
-      this.dialogAdditemsNo = true;
+      
     },
 
     //ฟังกชั่นเพิ่มฉบับ หน้าเพิ่มฉบับ
     async API_AdditemsNo() {
       this.lib_id = localStorage.getItem("member_ID");
 
-      if (this.additemsNo == ''){
-        alert("ไม่ได้ใส่หมายเลขฉบับที่");
+      if (this.additemsNo == '' || this.additemsNo == null || this.ides =='' || this.ides ==null){
+        alert("ไม่ได้ใส่หมายเลขฉบับที่ และคำอธิบายที่มาตัดจำหน่าย");
+
       } else {
         //Apiเช็ค item ?
-  await axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
+  await axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`)
+          .then((results) => {
             this.Ck_item= results.data.maxBarcode;
         if(this.Ck_item !== null ){
           //กรณีที่มีฉบับแล้ว
             this.str1 = this.Bib_ID_New.substr(0, 6);
-            this.barcords = this.MaxBC;
+            this.barcords = this.Ck_item;
             this.int1 = (parseInt(this.barcords.substr(6, 12)) + 1).toString();
             this.str2 = this.int1.padStart(6, "0");
             this.brcd_id = this.str1 + this.str2;
@@ -1220,19 +1225,26 @@ export default {
           ides: this.ides,
         };
 
+        console.log(this.all);
+
         const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
-         axios.post(url, this.all).then((res) => {
-          alert("เพิ่มฉบับเรียบร้อยแล้ว" , res);
-          this.Data_modul_additemsNo = [];
-          this.additemsNo = "";
-          this.ides ='';
+    axios.post(url, this.all)
+          .then(() => {
+          alert("เพิ่มฉบับเรียบร้อยแล้ว")
+          this.additemsNo = '';
+          this.ides =''; 
+          this.Data_modul_additemsNo=[];
 
-          axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
-            return this.Data_modul_additemsNo = results.data.data;
+            axios.get(`${process.env.VUE_APP_API_URL}/bibdata/bibitem/${this.Bib_ID_New}`).then((results) => {
+                  return this.Data_modul_additemsNo = results.data.data;
             });
+        
+        
+        });
 
 
-          });
+
+
         });  
       }
     },
