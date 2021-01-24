@@ -571,10 +571,12 @@ export default {
     },
     //ใส่บาร์โค้ดยืมหนังสือ และ คืนหนังสือ
     API_BCcode() {
+      
       if (this.switchBorrow_return == "1") {
         const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
         axios.get(url).then((results) => {
           return this.Data_Expand_Borrow.push(results.data[0]);
+          
         });
       } else if (this.switchBorrow_return == "2") {
         const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
@@ -582,6 +584,7 @@ export default {
           return this.Data_Expand_Return.push(results.data[0]);
         });
       }
+      this.BCcode =''
     },
 
     //เลือกผู้ใช้งานและแสดงข้อมูล
@@ -653,8 +656,10 @@ export default {
 
     Manage_fines(){
       const url = `${process.env.VUE_APP_API_URL}/bnr/updatefinereceipt`;
-      axios.post(url, { receipt_ID: this.managefines.Description, Description: this.managefines.Description }).then((results) => {
+      axios.put(url, { receipt_ID: this.managefines.receipt_ID, Description: this.managefines.Description }).then((results) => {
         alert("บันทึกจัดการค่าปรับเรียบร้อยแล้ว", results);
+        this.dialogS = false;
+        this.reset()
       });
 
     },

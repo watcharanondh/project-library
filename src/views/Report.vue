@@ -275,12 +275,10 @@
                       <tr>
                         <td align="center" >{{ index + 1 }}</td>
                         <td>{{ item.Barcode }}</td>
-                        <td>{{ item.ISBNs }}</td>
-                        <td>{{ item.nameBooks }}</td>
-                        <td>{{ item.membernames }}</td>
-                        <td>{{ item.librariannames }}</td>
-                        <td>{{ item.Borrow }}</td>
-                        <td>{{ item.Due }}</td>
+                        <td>{{ item.namebooks }}</td>
+                        <td>{{ item.item_in }}</td>
+                        <td>{{ item.item_out }}</td>
+                        <td>{{ item.item_description }}</td>
                         <td>{{ item.librariannames }}</td>
                       </tr>
                     </template>
@@ -325,7 +323,7 @@
                         <td>{{ item.membernames }}</td>
                         <td>{{ item.librariannames }}</td>
                         <td>{{ item.Borrow }}</td>
-                        <td>{{ item.Due }}</td>
+                        <td>{{ item.Returns }}</td>
                       </tr>
                     </template>
                   </v-data-table>
@@ -682,14 +680,12 @@ export default {
     Item_number_databibreport: "",
     GatData_databibreport: [],
     headers_databibreport: [
+      { text: "ลำดับ", align: "center", value: "index", sortable: false },
       { text: "Barcode", align: "start",value: "Barcode",sortable: false},
       { text: "ชื่อทรัพยากร",align: "start",value: "namebooks",sortable: false},
-      { text: "ฉบับที่",align: "start",value: "Copy",sortable: false},
-      { text: "สถานะ",align: "start",value: "item_status",sortable: false},
       { text: "วันที่นำเข้า",align: "start",value: "item_in",sortable: false},
-      { text: "ตัดจำหน่ายนำเข้า",align: "start",value: "desc_in",sortable: false},
       { text: "วันที่นำออก",align: "start",value: "item_out",sortable: false,},
-      { text: "ตัดจำหน่ายนำออก",align: "start",value: "desc_out",sortable: false},
+      { text: "คำอธิบาย",align: "start",value: "item_description",sortable: false},
       { text: "ผู้จัดการ",align: "start",value: "librariannames",sortable: false}, 
     ],
     //Table รายงานข้อมูลหนังสือค้างส่ง
@@ -705,7 +701,7 @@ export default {
       { text: "ผู้ยืม",align: "center",value: "membernames",sortable: false},
       { text: "ผู้ให้ยืม",align: "center",value: "librariannames",sortable: false,},
       { text: "วันที่ยืม",align: "center",value: "Borrow",sortable: false},
-      { text: "วันที่คืน",align: "center",value: "Due",sortable: false},
+      { text: "วันที่คืน",align: "center",value: "Returns",sortable: false},
     ],
     //Table รายงานสถิติข้อมูลการยืม-คืนหนังสือ
     Title_bnrreport: "",
