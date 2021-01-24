@@ -2,7 +2,7 @@
   <v-container class="grey lighten-3">
     <v-row class="justify-center">
       <v-col cols="9">
-        <v-card class="mx-auto pa-5" height="2000" width="2000" outlined>
+        <v-card class="mx-auto pa-5" height="4000" width="2000" outlined>
           <!-- ปุ่มย้อนกลับ -->
           <v-col>
             <v-row>
@@ -513,6 +513,8 @@
                   <v-data-table
                     :headers="headers_descriptreport"
                     :items="GatData_descriptreport"
+                    hide-default-footer
+                    disable-pagination
                     class="elevation-1"
                   >
                     <template v-slot:item="{ item, index }">
