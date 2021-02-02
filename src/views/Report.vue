@@ -276,8 +276,8 @@
                         <td align="center" >{{ index + 1 }}</td>
                         <td>{{ item.Barcode }}</td>
                         <td>{{ item.namebooks }}</td>
+                        <td>{{ item.item_status }}</td>
                         <td>{{ item.item_in }}</td>
-                        <td>{{ item.item_out }}</td>
                         <td>{{ item.item_description }}</td>
                         <td>{{ item.librariannames }}</td>
                       </tr>
@@ -521,14 +521,13 @@
                       <tr>
                         <td align="center">{{ index + 1 }}</td>
                         <td align="center">{{ item.Barcode }}</td>
-                        <td align="center">{{ item.namebooks }}</td>
+                        <td align="strat">{{ item.namebooks }}</td>
                         <td align="center">{{ item.Copy }}</td>
-                        <td align="center">{{ item.item_status }}</td>
-                        <td align="center">{{ item.item_in }}</td>
-                        <td align="center">{{ item.desc_in }}</td>
-                        <td align="center">{{ item.item_out }}</td>
+                        <td align="strat">{{ item.item_in }}</td>
+                        <td align="strat">{{ item.desc_in }}</td>
+                        <td align="strat">{{ item.item_out }}</td>
                         <td align="center">{{ item.desc_out }}</td>
-                        <td align="center">{{ item.librariannames }}</td>
+                        <td align="strat">{{ item.librariannames }}</td>
                       </tr>
                     </template>
                   </v-data-table>
@@ -685,8 +684,8 @@ export default {
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
       { text: "Barcode", align: "start",value: "Barcode",sortable: false},
       { text: "ชื่อทรัพยากร",align: "start",value: "namebooks",sortable: false},
+      { text: "สถานะ",align: "start",value: "item_status",sortable: false},
       { text: "วันที่นำเข้า",align: "start",value: "item_in",sortable: false},
-      { text: "วันที่นำออก",align: "start",value: "item_out",sortable: false,},
       { text: "คำอธิบาย",align: "start",value: "item_description",sortable: false},
       { text: "ผู้จัดการ",align: "start",value: "librariannames",sortable: false}, 
     ],
@@ -773,7 +772,6 @@ export default {
       { text: "Barcode", align: "center",value: "Barcode",sortable: false, },
       { text: "ชื่อทรัพยากร",align: "center",value: "namebooks",sortable: false , },
       { text: "ฉบับที่",align: "center",value: "Copy",sortable: false , },
-      { text: "สถานะ",align: "center",value: "item_status",sortable: false , },
       { text: "วันที่นำเข้า",align: "center",value: "item_in",sortable: false , },
       { text: "ตัดจำหน่ายนำเข้า",align: "center",value: "desc_in",sortable: false , },
       { text: "วันที่นำออก",align: "center",value: "item_out",sortable: false , },

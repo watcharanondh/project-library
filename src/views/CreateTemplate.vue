@@ -353,7 +353,7 @@ export default {
     dialogFindbibliography: false,
 
     editedIndex: -1,
-    codes: "\\a",
+    codes: "$a",
     FieldName: "",
     numField: "",
 

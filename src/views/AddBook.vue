@@ -1225,7 +1225,6 @@ export default {
           ides: this.ides,
         };
 
-        console.log(this.all);
 
         const url = `${process.env.VUE_APP_API_URL}/bibdata/addnewitem`;
     axios.post(url, this.all)

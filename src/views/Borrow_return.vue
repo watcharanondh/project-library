@@ -381,7 +381,7 @@
                       </div>
                     </td>
                     <td align="center">
-                      <v-icon @click="dialogS=true">library_add_check</v-icon>
+                      <v-icon @click="GatAmount(item)">library_add_check</v-icon>
                     </td>
                   </tr>
                 </template>
@@ -401,25 +401,27 @@
           <v-card-title class="justify-center">
             <span class="headline">จัดการค่าปรับ</span>
               </v-card-title>
-              
-                <v-row justify="center">
-                  <v-col  justify="center" md="6">
-                <v-text-field
-                  v-model="managefines.Description"
-                  label="คำอธิบาย"
-                  v-on:keyup.enter="selectF"
-                  dense
-                  solo
-                  outlined
-                  clearable
-                  required
-                ></v-text-field>
+                <v-row justify="center">   
+              <span cols="5" class="mt-5">
+               <h4>ค่าปรับจำนวน<span> {{showAmount}}:</span> </h4>
+              </span>  
+                <v-col  justify="center" md="6">
+                      <v-text-field
+                        v-model="managefines.Description"
+                        label="คำอธิบาย"
+                        v-on:keyup.enter="selectF"
+                        dense
+                        solo
+                        outlined
+                        clearable
+                        required
+                      ></v-text-field>
                   </v-col>
                   </v-row>
                       <v-card-actions>
                         <v-spacer></v-spacer>
               <v-btn color="error" @click="dialogS=false">ยกเลิก</v-btn>
-            <v-btn color="success" @click="Manage_fines">จัดการ</v-btn>
+            <v-btn color="success" @click="Manage_fines">ยืนยัน</v-btn>
         </v-card-actions>
       </v-card>
      
@@ -469,6 +471,7 @@ export default {
     card_Lname: "",
     Posit:'',
     editedIndex: -1,
+    showAmount:'',
     
     
     dialogS:false,
@@ -652,6 +655,13 @@ export default {
     //รีโหลดหน้าใหม่
     reset() {
       window.location.reload();
+    },
+
+    GatAmount(item){
+
+      this.showAmount = item.Amount
+      this.dialogS = true;
+
     },
 
     Manage_fines(){
