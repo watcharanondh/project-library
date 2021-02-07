@@ -41,7 +41,7 @@
                       :items="Data_modul_selectUser"
                       :search="searchUser"
                       :items-per-page="5"
-                        class="pointer"
+                      class="pointer"
                     >
                       <!-- table top section -->
                       <template v-slot:top>
@@ -69,7 +69,9 @@
                           <td align="center">{{ item.mem_Citizenid }}</td>
                           <td align="center">{{ item.FName }}</td>
                           <td align="center">{{ item.LName }}</td>
-                          <td align="center">{{ item.Position | ChangeName}}</td>
+                          <td align="center">
+                            {{ item.Position | ChangeName }}
+                          </td>
                         </tr>
                       </template>
                     </v-data-table>
@@ -96,7 +98,6 @@
                   solo
                   outlined
                   clearable
-                  required
                 ></v-text-field>
               </v-row>
             </v-col>
@@ -230,7 +231,7 @@
                       (Expand_Borrow_history = false)
                   "
                 >
-                  <h4>ค่าปรับค้าง</h4>
+                  <h4>รายการค่าปรับค้าง</h4>
                 </v-btn>
               </v-bottom-navigation>
             </v-col>
@@ -250,6 +251,47 @@
                     <td>{{ item.namebooks }}</td>
                     <td>{{ item.Copy }}</td>
                     <td>{{ item.Item_status }}</td>
+                    <td style="width:15%">
+                      <v-col cols="12" sm="12" md="12" class="pt-10">
+                            <v-text-field
+                              v-model="date1"
+                              dense
+                              solo
+                              outlined
+                              readonly
+                              disabled
+                            ></v-text-field>
+                      </v-col>
+                    </td>
+                    <td style="width:15%">
+                      <v-col cols="12" sm="12" md="12" class="pt-10">
+                        <v-menu
+                          v-model="menu2"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="date2"
+                              label="กำหนดวันส่งคืน"
+                              dense
+                              solo
+                              outlined
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="date2"
+                            @input="menu2 = false"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-col>
+                    </td>
                     <td align="center">
                       <v-icon @click="deleteBorrow(item)">delete</v-icon>
                     </td>
@@ -305,9 +347,7 @@
                   >
                     ลบทั้งหมด
                   </v-btn>
-                  <v-btn color="primary" @click="saveReturn">
-                    บันทึก
-                  </v-btn>
+                  <v-btn color="primary" @click="saveReturn"> บันทึก </v-btn>
                 </v-row>
               </v-card-actions>
             </v-card>
@@ -381,7 +421,9 @@
                       </div>
                     </td>
                     <td align="center">
-                      <v-icon @click="GatAmount(item)">library_add_check</v-icon>
+                      <v-icon @click="GatAmount(item)"
+                        >library_add_check</v-icon
+                      >
                     </td>
                   </tr>
                 </template>
@@ -393,38 +435,84 @@
     </v-row>
 
     <!-- dialogจัดการค่าปรับ -->
-    <v-dialog
-         :retain-focus="false"
-         v-model="dialogS"
-         max-width="500px">
-        <v-card >
-          <v-card-title class="justify-center">
-            <span class="headline">จัดการค่าปรับ</span>
+    <v-dialog :retain-focus="false" v-model="dialogS" max-width="500px">
+            <v-card>
+        <v-container>
+          <v-card class="grey lighten-4 mx-auto pa-5" outlined>
+            <v-row justify="center">
+              <v-card-title>
+                <span class="headline">จัดการค่าปรับ</span>
               </v-card-title>
-                <v-row justify="center">   
-              <span cols="5" class="mt-5">
-               <h4>ค่าปรับจำนวน<span> {{showAmount}}:</span> </h4>
-              </span>  
-                <v-col  justify="center" md="6">
-                      <v-text-field
-                        v-model="managefines.Description"
-                        label="คำอธิบาย"
-                        v-on:keyup.enter="selectF"
-                        dense
-                        solo
-                        outlined
-                        clearable
-                        required
-                      ></v-text-field>
-                  </v-col>
-                  </v-row>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-              <v-btn color="error" @click="dialogS=false">ยกเลิก</v-btn>
-            <v-btn color="success" @click="Manage_fines">ยืนยัน</v-btn>
-        </v-card-actions>
+            </v-row>
+
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ราคาค่าปรับ :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="2">
+                <v-text-field v-model="showAmount" disabled> </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ชื่อทรัพยากร :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="6">
+                <v-text-field v-model="showNamebooks" disabled>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>สถานะ :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="3">
+                <v-text-field  v-model="showStatus" disabled> </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>คำอธิบาย :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="3">
+                <v-text-field v-model="showDescription"  disabled>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>เลขที่ใบเสร็จ :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="6">
+                <v-text-field v-model="showreceipt_NO" disabled>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="error" @click="dialogS = false">
+                ยกเลิก
+              </v-btn>
+              <v-btn
+                color="success"
+                @click="Manage_fines"
+              >
+                บันทึก
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-container>
       </v-card>
-     
     </v-dialog>
   </v-container>
 </template>
@@ -448,6 +536,8 @@ export default {
         this.$router.push("/LoginUsers");
       }
     }
+
+
   },
   /////////////////////////////////////////////////
 
@@ -457,10 +547,10 @@ export default {
     Member_ID: "",
     BCcode: "",
     Getusers_search: "",
-    managefines:{
-      receipt_ID:null,
-      Description:'',
-      },
+    managefines: {
+      receipt_ID: null,
+      Description: "",
+    },
     databorrow: [],
     datareturn: [],
 
@@ -469,19 +559,28 @@ export default {
     card_Position: "",
     card_Fname: "",
     card_Lname: "",
-    Posit:'',
+    Posit: "",
     editedIndex: -1,
-    showAmount:'',
-    
-    
-    dialogS:false,
+
+    showAmount: "",
+    showNamebooks:"",
+    showStatus:"",
+    showDescription:"",
+    showreceipt_NO:"",
+
+
+    date1: new Date().toISOString().substr(0, 10),
+    date2: new Date().toISOString().substr(0, 10),
+    menu1: false,
+    menu2: false,
+
+    dialogS: false,
     dialogUsersData: false,
     Expand_Borrow: false,
     Expand_Return: false,
     Expand_Backlog: false,
     Expand_Borrow_history: false,
     Expand_Fines: false,
-    
 
     //Table User All
     Data_modul_selectUser: [],
@@ -504,6 +603,8 @@ export default {
       { text: "ชื่อทรัพยากร", value: "namebooks", align: "start" },
       { text: "ฉบับที่", value: "Copy", align: "start" },
       { text: "สถานะ", value: "Item_status", align: "start" },
+      { text: "วันที่ยืม", value: "", align: "center" },
+      { text: "กำหนดวันที่คืน", value: "", align: "center" },
       { text: "Actions", value: "actions", align: "center" },
     ],
     //Table Expand_Return
@@ -574,12 +675,12 @@ export default {
     },
     //ใส่บาร์โค้ดยืมหนังสือ และ คืนหนังสือ
     API_BCcode() {
-      
       if (this.switchBorrow_return == "1") {
         const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
         axios.get(url).then((results) => {
-          return this.Data_Expand_Borrow.push(results.data[0]);
-          
+          console.log(results.data[0].Returns_send);
+            this.Data_Expand_Borrow.push(results.data[0]);
+            this.date2 = results.data[0].Returns_send
         });
       } else if (this.switchBorrow_return == "2") {
         const url = `${process.env.VUE_APP_API_URL}/bnr/listbookbnr/${this.BCcode}`;
@@ -587,7 +688,7 @@ export default {
           return this.Data_Expand_Return.push(results.data[0]);
         });
       }
-      this.BCcode =''
+      this.BCcode = "";
     },
 
     //เลือกผู้ใช้งานและแสดงข้อมูล
@@ -598,37 +699,35 @@ export default {
         (this.card_Position = item.Position),
         (this.card_Fname = item.FName),
         (this.card_Lname = item.LName);
-        this.Data_Expand_Borrow_history =[],
-        this.Data_Expand_Backlog =[],
-        this.Data_Expand_Fines =[],
-
-      this.Change_TH(item.Position)
+      (this.Data_Expand_Borrow_history = []),
+        (this.Data_Expand_Backlog = []),
+        (this.Data_Expand_Fines = []),
+        this.Change_TH(item.Position);
       const url = `${process.env.VUE_APP_API_URL}/bnr/listbnr/${this.card_ID}`;
       axios.get(url).then((results) => {
-        
-        if(results.data.databorrow =='ไม่พบรายการหนังสือคงค้าง'){
-          alert('ไม่พบรายการหนังสือคงค้าง');
-        }else{
+        if (results.data.databorrow == "ไม่พบรายการหนังสือคงค้าง") {
+          alert("ไม่พบรายการหนังสือคงค้าง");
+        } else {
           this.Data_Expand_Backlog = results.data.databorrow;
         }
-        
-        if(results.data.bnr_history =='ไม่พบประวัติการยืม'){
-          alert('ไม่พบประวัติการยืม');
-        }else{
+
+        if (results.data.bnr_history == "ไม่พบประวัติการยืม") {
+          alert("ไม่พบประวัติการยืม");
+        } else {
           this.Data_Expand_Borrow_history = results.data.bnr_history;
         }
 
-        if(results.data.finebooks =='ไม่พบรายการค่าปรับคงค้าง'){
-          alert('ไม่พบรายการค่าปรับคงค้าง');
-        }else{
+        if (results.data.finebooks == "ไม่พบรายการค่าปรับคงค้าง") {
+          alert("ไม่พบรายการค่าปรับคงค้าง");
+        } else {
+          console.log(results.data.finebooks);
           this.Data_Expand_Fines = results.data.finebooks;
           this.Data_Expand_Fines.forEach((element) => {
-          Object.assign(this.managefines,{'receipt_ID':element.receipt_ID}); 
+            Object.assign(this.managefines, { receipt_ID: element.receipt_ID });
           });
-        }  
-        
+        }
       });
-          this.dialogUsersData = false;
+      this.dialogUsersData = false;
     },
 
     //ลบแถวในตารางยืม
@@ -645,11 +744,11 @@ export default {
 
     //เปลี่ยนภาษา
     Change_TH(card_Position) {
-       if (card_Position == 'personnel') {
-            return this.Posit='บุคลากร'
-          }else if (card_Position == 'student'){
-            return this.Posit='นักเรียน'
-          }
+      if (card_Position == "personnel") {
+        return (this.Posit = "บุคลากร");
+      } else if (card_Position == "student") {
+        return (this.Posit = "นักเรียน");
+      }
     },
 
     //รีโหลดหน้าใหม่
@@ -657,21 +756,29 @@ export default {
       window.location.reload();
     },
 
-    GatAmount(item){
+    GatAmount(item) {
+      console.log(item);
+      this.showAmount = item.Amount;
+      this.showNamebooks = item.namebooks;
+      this.showStatus = item.IsPaid;
+      this.showDescription = item.Description;
+      this.showreceipt_NO = item.receipt_NO;
 
-      this.showAmount = item.Amount
       this.dialogS = true;
-
     },
 
-    Manage_fines(){
+    Manage_fines() {
       const url = `${process.env.VUE_APP_API_URL}/bnr/updatefinereceipt`;
-      axios.put(url, { receipt_ID: this.managefines.receipt_ID, Description: this.managefines.Description }).then((results) => {
-        alert("บันทึกจัดการค่าปรับเรียบร้อยแล้ว", results);
-        this.dialogS = false;
-        this.reset()
-      });
-
+      axios
+        .put(url, {
+          receipt_ID: this.managefines.receipt_ID,
+          Description: this.managefines.Description,
+        })
+        .then((results) => {
+          alert("บันทึกจัดการค่าปรับเรียบร้อยแล้ว", results);
+          this.dialogS = false;
+          this.reset();
+        });
     },
 
     //บันทึกยืม
@@ -682,8 +789,11 @@ export default {
           Librarian_ID: localStorage.getItem("member_ID"),
           Member_ID: this.card_ID,
           Barcode: element.Barcode,
+          Borrow: this.date1,
+          Returns: this.date2,
         });
       });
+       this.Data_Expand_Borrow
       const url = `${process.env.VUE_APP_API_URL}/bnr/addborrow`;
       axios.post(url, { databorrow: this.databorrow }).then((results) => {
         alert("บันทึกการยืมหนังสือเรียบร้อยแล้ว", results);
@@ -709,5 +819,7 @@ export default {
 </script>
 
 <style scoped>
-.pointer {cursor: pointer;}
+.pointer {
+  cursor: pointer;
+}
 </style>
