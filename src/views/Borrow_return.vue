@@ -436,9 +436,10 @@
 
     <!-- dialogจัดการค่าปรับ -->
     <v-dialog :retain-focus="false" v-model="dialogS" max-width="500px">
-            <v-card>
+      <v-card>
         <v-container>
           <v-card class="grey lighten-4 mx-auto pa-5" outlined>
+            <div id="printReceipt">
             <v-row justify="center">
               <v-card-title>
                 <span class="headline">จัดการค่าปรับ</span>
@@ -448,11 +449,14 @@
             <v-row>
               <v-col cols="4">
                 <v-row justify="end">
-                  <v-subheader><h4>ราคาค่าปรับ :</h4></v-subheader>
+                  <v-subheader><h4>เลขที่ใบเสร็จ :</h4></v-subheader>
                 </v-row>
               </v-col>
-              <v-col md="2">
-                <v-text-field v-model="showAmount" disabled> </v-text-field>
+              <v-col md="6">
+                <v-text-field v-if="showreceipt_NO" v-model="showreceipt_NO" disabled>
+                </v-text-field>
+                <v-text-field v-else label="ไม่มีเลขที่ใบเสร็จ" disabled>
+                </v-text-field>
               </v-col>
             </v-row>
             <v-row>
@@ -464,6 +468,16 @@
               <v-col md="6">
                 <v-text-field v-model="showNamebooks" disabled>
                 </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-row justify="end">
+                  <v-subheader><h4>ราคาค่าปรับ :</h4></v-subheader>
+                </v-row>
+              </v-col>
+              <v-col md="2">
+                <v-text-field v-model="showAmount" disabled> </v-text-field>
               </v-col>
             </v-row>
             <v-row>
@@ -483,31 +497,29 @@
                 </v-row>
               </v-col>
               <v-col md="3">
-                <v-text-field v-model="showDescription"  disabled>
+                <v-text-field v-if="!showreceipt_NO" v-model="showDescription">
+                </v-text-field>
+                <v-text-field v-else v-model="showDescription" disabled>
                 </v-text-field>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="4">
-                <v-row justify="end">
-                  <v-subheader><h4>เลขที่ใบเสร็จ :</h4></v-subheader>
-                </v-row>
-              </v-col>
-              <v-col md="6">
-                <v-text-field v-model="showreceipt_NO" disabled>
-                </v-text-field>
-              </v-col>
-            </v-row>
+      </div>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="error" @click="dialogS = false">
                 ยกเลิก
               </v-btn>
-              <v-btn
+              <v-btn v-if="!showreceipt_NO"
                 color="success"
                 @click="Manage_fines"
               >
-                บันทึก
+                บันทึกค่าปรับ
+              </v-btn>
+              <v-btn v-else
+                color="primary"
+                @click="view_fines_receipt"
+              >
+                พิมพ์ใบเสร็จค่าปรับ
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -779,6 +791,10 @@ export default {
           this.dialogS = false;
           this.reset();
         });
+    },
+
+    view_fines_receipt() {
+      this.$htmlToPaper('printReceipt');
     },
 
     //บันทึกยืม
