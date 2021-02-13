@@ -435,11 +435,11 @@
     </v-row>
 
     <!-- dialogจัดการค่าปรับ -->
-    <v-dialog :retain-focus="false" v-model="dialogS" max-width="500px">
+    <v-dialog :retain-focus="false" v-model="dialogS" max-width="900px">
       <v-card>
         <v-container>
           <v-card class="grey lighten-4 mx-auto pa-5" outlined>
-            <div id="printReceipt">
+            <div>
             <v-row justify="center">
               <v-card-title>
                 <span class="headline">จัดการค่าปรับ</span>
@@ -503,6 +503,51 @@
                 </v-text-field>
               </v-col>
             </v-row>
+
+            <!--Table ปริ้นใบเสร็จค่าปรับ -->
+            <div id="printReceipt" v-if="showreceipt_NO">
+              <v-card max-height="900px" class="mx-auto pa-5" outlined>
+                <v-card-actions>
+                  <v-col>
+                    <v-row justify="center">
+                      <h2>ใบเสร็จค่าปรับ</h2>
+                    </v-row>
+                    <v-divider></v-divider>
+                  </v-col>
+                </v-card-actions>
+                <v-col>
+                  <table cellpadding="1">
+                    <thead style="width:100%;">
+                      <tr>
+                        <th align="left" style="width:100px;">เลขที่ใบเสร็จ</th>
+                        <th align="left" style="width:400px; padding:0 10px 0;">ชื่อทรัพยากร</th>
+                        <th align="center" style="width:10%;text-align:center;">จำนวน</th>
+                        <th align="center" style="width:15%;text-align:center;">สถานะ</th>
+                        <th align="left" style="width:20%;">หมายเหตุ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td align="left" style="width:100px">{{ showreceipt_NO }}</td>
+                        <td align="left" style="width:400px;padding:0 10px 0">{{ showNamebooks}}</td>
+                        <td align="center" style="width:10%">{{ showAmount }}</td>
+                        <td align="center" style="width:15%">{{ showStatus }}</td>
+                        <td v-if="showDescription !=''" align="left" style="width:20%">{{ showDescription }}</td>
+                        <td v-else align="left" style="width:20%">-</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td align="right" style="font-weight:bold;">รวม</td>
+                        <td align="center" style="font-weight:bold;">{{ showAmount }}</td>
+                        <td></td>
+                        <td ></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </v-col>
+              </v-card>
+            </div>
+
       </div>
             <v-card-actions>
               <v-spacer></v-spacer>
