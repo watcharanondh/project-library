@@ -111,36 +111,75 @@
               <v-row>
                 <v-col cols="3">
                   <v-row justify="end">
-                    <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                    <div v-if="this.chkpo==1">
+                          <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                    </div>
+                    <div v-if="this.chkpo==2">
+                          <v-subheader><h4>ประเภท :</h4></v-subheader>
+                    </div>
                   </v-row>
                 </v-col>
                 <v-col md="4">
-                  <v-autocomplete
-                    v-model="Put_Users.Class"
-                    :items="items_Grade"
-                    return-object
-                    filled
-                    dense
-                    solo
-                    outlined
-                  >
-                  </v-autocomplete>
+                <!-- นักเรียน -->
+                <div v-if="this.chkpo==1">
+                        <v-select
+                          v-model="Put_Users.Class"
+                          :items="items_Grade" 
+                          label="เลือกระดับชั้นเรียน"
+                          return-object
+                          filled
+                          dense
+                          solo
+                          outlined
+                        >
+                        </v-select>
+                </div>
+                <!-- บุคคลกร -->
+                <div v-if="this.chkpo==2">
+                        <v-select
+                          v-model="Put_Users.Class"
+                          :items="items_personnel" 
+                          label="เลือกระดับประเภทบุคคลกร"
+                          return-object
+                          filled
+                          dense
+                          solo
+                          outlined
+                        >
+                        </v-select>
+                  </div>
                 </v-col>
               </v-row>
-
               <v-row>
                 <v-col cols="3">
                   <v-row justify="end">
-                    <v-subheader><h4>ห้อง :</h4></v-subheader>
+                   <div v-if="this.chkpo==1">
+                              <v-subheader><h4>ห้องเรียน :</h4></v-subheader>
+                           </div>
+                          <div v-if="this.chkpo==2">
+                              <v-subheader><h4>ห้องประจำการ :</h4></v-subheader>
+                           </div>
                   </v-row>
                 </v-col>
                 <v-col md="3">
-                  <v-text-field
-                    v-model="Put_Users.Classroom"
-                    solo
-                    dense
-                  >
-                  </v-text-field>
+                    <div v-if="this.chkpo==1">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                        <div v-if="this.chkpo==2">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                        <div v-if="this.chkpo==0">
+                        </div>
                 </v-col>
               </v-row>
 
@@ -173,7 +212,10 @@ export default {
     imageURL:localStorage.getItem("profile_img"),
     redir_path:'',
 
-    items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
+    chkpo:null,
+
+    items_Grade: ['มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
+    items_personnel: ['ผู้อำนวยการ','รองผู้อำนวยการ','ครู','ผู้ช่วยครู','ครูฝึกหัด', 'เจ้าพนักงานการเงินและบัญชี', 'เจ้าพนักงานธุรการ','นักการ-ภารโรง'],
 
     //แก้ไข Users in Modul
     Put_Users: {
@@ -194,6 +236,16 @@ export default {
       let Member_ID = localStorage.getItem("member_ID");
     axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${Member_ID}`,{ headers: {'Authorization': 'Basic abcd1234'}})
             .then((res) => {
+             if(res.data.Position=='student'){
+                this.chkpo=1;
+                this.Put_Users = res.data;
+          }else if(res.data.Position=='personnel'){
+                this.chkpo=2;
+                this.Put_Users = res.data;
+          }else{
+                this.Put_Users = res.data;
+                this.chkpo=0;
+          }
             this.Put_Users = res.data;
             this.imageURL = res.data.profile_img
           });

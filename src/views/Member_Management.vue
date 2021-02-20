@@ -136,7 +136,6 @@
                         dense
                         solo
                         outlined
-                        clearable
                       >
                       </v-select>
                     </v-row>
@@ -217,7 +216,6 @@
                         <v-text-field
                           v-model="Put_Users.FName"
                           label="ชื่อ"
-                          value="วัทนพร"
                           solo
                           dense
                         ></v-text-field>
@@ -229,7 +227,6 @@
                         <v-text-field
                           v-model="Put_Users.LName"
                           label="นาม-สกุล"
-                          value="ปันทะโชติ"
                           solo
                           dense
                         ></v-text-field>
@@ -239,10 +236,17 @@
                     <v-row>
                       <v-col cols="4">
                         <v-row justify="end">
+                          <div v-if="this.chkpo==1">
                           <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                          </div>
+                           <div v-if="this.chkpo==2">
+                            <v-subheader><h4>ประเภท :</h4></v-subheader>
+                          </div>
                         </v-row>
                       </v-col>
                       <v-col md="4">
+                        <!-- นักเรียน -->
+                        <div v-if="this.chkpo==1">
                         <v-select
                           v-model="Put_Users.Class"
                           :items="items_Grade" 
@@ -254,22 +258,53 @@
                           outlined
                         >
                         </v-select>
+                      </div>
+                      <!-- บุคคลกร -->
+                        <div v-if="this.chkpo==2">
+                        <v-select
+                          v-model="Put_Users.Class"
+                          :items="items_personnel" 
+                          label="เลือกระดับประเภทบุคคลกร"
+                          return-object
+                          filled
+                          dense
+                          solo
+                          outlined
+                        >
+                        </v-select>
+                        </div>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="4">
                         <v-row justify="end">
-                          <v-subheader><h4>ห้อง :</h4></v-subheader>
+                          <div v-if="this.chkpo==1">
+                              <v-subheader><h4>ห้องเรียน :</h4></v-subheader>
+                           </div>
+                          <div v-if="this.chkpo==2">
+                              <v-subheader><h4>ห้องประจำการ :</h4></v-subheader>
+                           </div>
                         </v-row>
                       </v-col>
                       <v-col sm="6" md="3">
-                        <v-text-field
-                          v-model="Put_Users.Classroom"
-                          label="ห้อง"
-                          value="ห้องปกครอง"
-                          solo
-                          dense
-                        ></v-text-field>
+                        <div v-if="this.chkpo==1">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                        <div v-if="this.chkpo==2">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                        <div v-if="this.chkpo==0">
+                        </div>
                       </v-col>
                     </v-row>
                     <v-card-actions>
@@ -410,7 +445,6 @@
                         <v-text-field
                           v-model="Put_Users.FName"
                           label="ชื่อ"
-                          value="วัทนพร"
                           solo
                           dense
                         ></v-text-field>
@@ -422,7 +456,6 @@
                         <v-text-field
                           v-model="Put_Users.LName"
                           label="นาม-สกุล"
-                          value="ปันทะโชติ"
                           solo
                           dense
                         ></v-text-field>
@@ -432,10 +465,17 @@
                     <v-row>
                       <v-col cols="4">
                         <v-row justify="end">
-                          <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                          <div v-if="this.chkpoE==1">
+                                <v-subheader><h4>ระดับชั้น :</h4></v-subheader>
+                          </div>
+                          <div v-if="this.chkpoE==2">
+                                <v-subheader><h4>ประเภท :</h4></v-subheader>
+                          </div>
                         </v-row>
                       </v-col>
                       <v-col md="4">
+                      <!-- นักเรียน -->
+                        <div v-if="this.chkpoE==1">
                         <v-select
                           v-model="Put_Users.Class"
                           :items="items_Grade" 
@@ -447,22 +487,53 @@
                           outlined
                         >
                         </v-select>
+                      </div>
+                      <!-- บุคคลกร -->
+                        <div v-if="this.chkpoE==2">
+                        <v-select
+                          v-model="Put_Users.Class"
+                          :items="items_personnel" 
+                          label="เลือกระดับประเภทบุคคลกร"
+                          return-object
+                          filled
+                          dense
+                          solo
+                          outlined
+                        >
+                        </v-select>
+                        </div>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="4">
                         <v-row justify="end">
-                          <v-subheader><h4>ห้อง :</h4></v-subheader>
+                         <div v-if="this.chkpoE==1">
+                              <v-subheader><h4>ห้องเรียน :</h4></v-subheader>
+                           </div>
+                          <div v-if="this.chkpoE==2">
+                              <v-subheader><h4>ห้องประจำการ :</h4></v-subheader>
+                           </div>
                         </v-row>
                       </v-col>
                       <v-col sm="6" md="3">
-                        <v-text-field
-                          v-model="Put_Users.Classroom"
-                          label="ห้อง"
-                          value="ห้องปกครอง"
-                          solo
-                          dense
-                        ></v-text-field>
+                         <div v-if="this.chkpoE==1">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                        <div v-if="this.chkpoE==2">
+                            <v-text-field
+                              v-model="Put_Users.Classroom"
+                              label="ห้อง"
+                              solo
+                              dense
+                            ></v-text-field>
+                        </div>
+                         <div v-if="this.chkpoE==0">
+                        </div>
                       </v-col>
                     </v-row>
                     <v-card-actions>
@@ -498,14 +569,16 @@ export default {
     formTitle:'',
     imageURL: "https://i.imgur.com/A44vyNC.png",
     redir_path:'',
-    
+    chkpo:null,
+    chkpoE:null,
 
     select:'',
     items_Type: [
       { name: "บุคคลากร", value: "personnel" },
       { name: "นักเรียน", value: "student" },
     ],
-    items_Grade: ['ไม่มี','มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
+    items_Grade: ['มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4','มัธยมศึกษาปีที่ 5','มัธยมศึกษาปีที่ 6'],
+    items_personnel: ['ผู้อำนวยการ','รองผู้อำนวยการ','ครู','ผู้ช่วยครู','ครูฝึกหัด', 'เจ้าพนักงานการเงินและบัญชี', 'เจ้าพนักงานธุรการ','นักการ-ภารโรง'],
 
     Oldmem_ID: null,
 
@@ -516,7 +589,7 @@ export default {
       Position:"",
       FName: "",
       LName: "",
-      Class: "",
+      Class: 'ไม่มี',
       Classroom: "",
       profile_img: 'https://i.imgur.com/A44vyNC.png',
     },
@@ -586,9 +659,16 @@ export default {
   },
 
   methods: {
-
   setSelectedtype() {
+    //console.log(this.select.value);
       this.Put_Users.Position = this.select.value;
+      if(this.select.value=='student'){
+                this.chkpo=1;
+      }else if(this.select.value=='personnel'){
+                this.chkpo=2;
+      }else{
+                this.chkpo=0;
+     }
     },
 
 
@@ -628,7 +708,17 @@ export default {
       this.edited_ID = item.member_ID;
       axios.get(`${process.env.VUE_APP_API_URL}/allmember/listedituser/${this.edited_ID} `,{ headers: {'Authorization': 'Basic abcd1234'}})
         .then((res) => {
-          this.Put_Users = res.data;
+          //console.log('แก้ไข',res.data);
+          if(res.data.Position=='student'){
+                this.chkpoE=1;
+                this.Put_Users = res.data;
+          }else if(res.data.Position=='personnel'){
+                this.chkpoE=2;
+                this.Put_Users = res.data;
+          }else{
+                this.Put_Users = res.data;
+                this.chkpoE=0;
+          }
           this.select = res.data.Position;
           this.imageURL = res.data.profile_img
          //Object.assign(this.Put_Users, this.edited_item);
@@ -676,8 +766,13 @@ export default {
           
           
         axios.post(`${process.env.VUE_APP_API_URL}/allmember/adduser`,this.Put_Users).then((res) => {
-                      alert("บันทึกข้อมูลเรียบร้อยแล้ว", res.data.msg);
-                      this.close();
+                      //console.log(res.data.Response);
+                      if(res.data.Response == 'OK'){
+                        alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+                        this.close();
+                      }else{
+                        alert(`บันทึกข้อมูลไม่สำเร็จเนื่องจาก ${res.data.msg} `);
+                      }
                   }); 
         }
       },
