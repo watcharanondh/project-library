@@ -156,9 +156,9 @@
                    <div v-if="this.chkpo==1">
                               <v-subheader><h4>ห้องเรียน :</h4></v-subheader>
                            </div>
-                          <div v-if="this.chkpo==2">
+                          <!-- <div v-if="this.chkpo==2">
                               <v-subheader><h4>ห้องประจำการ :</h4></v-subheader>
-                           </div>
+                           </div> -->
                   </v-row>
                 </v-col>
                 <v-col md="3">
@@ -170,14 +170,14 @@
                               dense
                             ></v-text-field>
                         </div>
-                        <div v-if="this.chkpo==2">
+                        <!-- <div v-if="this.chkpo==2">
                             <v-text-field
                               v-model="Put_Users.Classroom"
                               label="ห้อง"
                               solo
                               dense
                             ></v-text-field>
-                        </div>
+                        </div> -->
                         <div v-if="this.chkpo==0">
                         </div>
                 </v-col>
@@ -224,7 +224,7 @@ export default {
       FName: "",
       LName: "",
       Class: "",
-      Classroom: "",
+      Classroom: "-",
       profile_img: "",
     },
 
