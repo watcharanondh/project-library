@@ -54,143 +54,156 @@
                 </v-col>
               </v-row>
 
-               <!-- ปุ่มค้นหาสมาชิกรวม -->
-                <div v-if="Report_type == 'bnruserreport'">
-               <v-row>
-                <v-col cols="5">
-                  <v-row justify="end">
-                    <h3 class="mt-2">
-                      สมาชิกทั้งหมด
-                    </h3>
-                  </v-row>
-                </v-col>
-                <v-col md="7">
-                  <v-btn color="primary" v-on:click="API_GetusersALL">
-                    ค้นหา
-                  </v-btn>
-                </v-col>
-              </v-row>
+              <!-- ปุ่มค้นหาสมาชิกรวม -->
+              <div v-if="Report_type == 'bnruserreport'">
+                <v-row>
+                  <v-col cols="5">
+                    <v-row justify="end">
+                      <h3 class="mt-2">
+                        สมาชิกทั้งหมด
+                      </h3>
+                    </v-row>
+                  </v-col>
+                  <v-col md="7">
+                    <v-btn color="primary" v-on:click="API_GetusersALL">
+                      ค้นหา
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </div>
 
-                <!-- เดือน/ปี -->
-               <div v-if="Report_type == 'statbnrreport'">
-              <v-row>
-                <v-col cols="5">
-                  <v-row justify="end">
-                    <h3 class="mt-2">
-                      เลือกเดือน/ปี :
-                    </h3>
-                  </v-row>
-                </v-col>
-                <v-col md="7">
-                   <v-menu
-                    ref="menu"
-                    v-model="menu"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
+              <!-- เดือน/ปี -->
+              <div v-if="Report_type == 'statbnrreport'">
+                <v-row>
+                  <v-col cols="5">
+                    <v-row justify="end">
+                      <h3 class="mt-2">
+                        เลือกเดือน/ปี :
+                      </h3>
+                    </v-row>
+                  </v-col>
+                  <v-col md="7">
+                    <v-menu
+                      ref="menu"
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="คลิกเลือกเดือน/ปี"
+                          readonly
+                          single-line
+                          filled
+                          dense
+                          solo
+                          outlined
+                          clearable
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        type="month"
+                        ref="picker"
                         v-model="date"
-                        label="คลิกเลือกเดือน/ปี"
-                        readonly
-                        single-line
-                        filled
-                        dense
-                        solo
-                        outlined
-                        clearable
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker 
-                      type="month"
-                      ref="picker"
-                      v-model="date"
-                      :max="new Date().toISOString().substr(0, 7)"
-                      min="1950-01"
-                      @change="save"
-                    ></v-date-picker>
-                  </v-menu>
-                </v-col>
-              </v-row>
+                        :max="new Date().toISOString().substr(0, 7)"
+                        min="1950-01"
+                        @change="save"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
 
-              <!-- ปุ่มแสดงค่าที่เลือก -->
-              <v-row>
-                <v-col cols="5">
-                  <v-row> </v-row>
-                </v-col>
-                <v-col md="7">
-                  <v-btn
-                    color="primary"
-                    class="mr-4"
-                    @click="Gat_API_Report_Data"
-                  >
-                    แสดงค่า
-                  </v-btn>
-                  <v-btn color="error" @click="reset">
-                    Reset
-                  </v-btn>
-                </v-col>
-              </v-row>
-              
+                <!-- ปุ่มแสดงค่าที่เลือก -->
+                <v-row>
+                  <v-col cols="5">
+                    <v-row> </v-row>
+                  </v-col>
+                  <v-col md="7">
+                    <v-btn
+                      color="primary"
+                      class="mr-4"
+                      @click="Gat_API_Report_Data"
+                    >
+                      แสดงค่า
+                    </v-btn>
+                    <v-btn color="error" @click="reset">
+                      Reset
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </div>
 
-            <div  v-if="Report_type == 'databibreport' || Report_type == 'notreturnreport' || Report_type == 'bnrreport' || Report_type == 'finesreport' || Report_type == 'descriptreport' ">
-              <!-- วัน/เดือน/ปี -->
-              <v-row>
-                <v-col cols="5">
-                  <v-row justify="end">
-                    <h3 class="mt-2">
-                      เลือกวันเดือนปี :
-                    </h3>
-                  </v-row>
-                </v-col>
-                <v-col md="7">
-                  <v-text-field
-                    v-model="dateRangeText"
-                    single-line
-                    filled
-                    dense
-                    solo
-                    outlined
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-               
-              <!-- ปุ่มแสดงค่าที่เลือก -->
-              <v-row>
-                <v-col cols="5">
-                  <v-row> </v-row>
-                </v-col>
-                <v-col md="7">
-                  <v-btn
-                    color="primary"
-                    class="mr-4"
-                    @click="Gat_API_Report_Data"
-                  >
-                    แสดงค่า
-                  </v-btn>
-                  <v-btn color="error" @click="reset">
-                    Reset
-                  </v-btn>
-                </v-col>
-              </v-row>
+              <div
+                v-if="
+                  Report_type == 'databibreport' ||
+                    Report_type == 'notreturnreport' ||
+                    Report_type == 'bnrreport' ||
+                    Report_type == 'finesreport' ||
+                    Report_type == 'descriptreport'
+                "
+              >
+                <!-- วัน/เดือน/ปี -->
+                <v-row>
+                  <v-col cols="5">
+                    <v-row justify="end">
+                      <h3 class="mt-2">
+                        เลือกวันเดือนปี :
+                      </h3>
+                    </v-row>
+                  </v-col>
+                  <v-col md="7">
+                    <v-text-field
+                      v-model="dateRangeText"
+                      single-line
+                      filled
+                      dense
+                      solo
+                      outlined
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <!-- ปุ่มแสดงค่าที่เลือก -->
+                <v-row>
+                  <v-col cols="5">
+                    <v-row> </v-row>
+                  </v-col>
+                  <v-col md="7">
+                    <v-btn
+                      color="primary"
+                      class="mr-4"
+                      @click="Gat_API_Report_Data"
+                    >
+                      แสดงค่า
+                    </v-btn>
+                    <v-btn color="error" @click="reset">
+                      Reset
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </div>
             </v-col>
-              
-           
+
             <v-col cols="12" sm="6">
-              <div v-if="Report_type == 'databibreport' || Report_type == 'notreturnreport' || Report_type == 'bnrreport' || Report_type == 'finesreport'|| Report_type == 'descriptreport' ">
+              <div
+                v-if="
+                  Report_type == 'databibreport' ||
+                    Report_type == 'notreturnreport' ||
+                    Report_type == 'bnrreport' ||
+                    Report_type == 'finesreport' ||
+                    Report_type == 'descriptreport'
+                "
+              >
                 <v-date-picker v-model="dates" range></v-date-picker>
               </div>
             </v-col>
           </v-row>
-             
 
           <!-- ปุ่มพิมพ์ -->
           <v-row justify="center">
@@ -198,7 +211,6 @@
           </v-row>
           <br />
 
-        
           <div id="printMe">
             <div v-if="Report_type == 'bnruserreport'">
               <!--Table รายงานข้อมูลสมาชิก -->
@@ -228,8 +240,8 @@
                     disable-pagination
                   >
                     <template v-slot:item="{ item, index }">
-                      <tr> 
-                        <td align="center" >{{ index + 1 }}</td>
+                      <tr>
+                        <td align="center">{{ index + 1 }}</td>
                         <td>{{ item.Barcode }}</td>
                         <td>{{ item.ISBNs }}</td>
                         <td>{{ item.nameBooks }}</td>
@@ -273,7 +285,7 @@
                   >
                     <template v-slot:item="{ item, index }">
                       <tr>
-                        <td align="center" >{{ index + 1 }}</td>
+                        <td align="center">{{ index + 1 }}</td>
                         <td>{{ item.Barcode }}</td>
                         <td>{{ item.namebooks }}</td>
                         <td>{{ item.item_status }}</td>
@@ -316,7 +328,7 @@
                   >
                     <template v-slot:item="{ item, index }">
                       <tr>
-                        <td align="center" >{{ index + 1 }}</td>
+                        <td align="center">{{ index + 1 }}</td>
                         <td>{{ item.Barcode }}</td>
                         <td>{{ item.ISBNs }}</td>
                         <td>{{ item.nameBooks }}</td>
@@ -343,9 +355,7 @@
                       <h4>ระหว่างวันที่ : {{ DateThai_bnrreport }}</h4>
                     </v-row>
                     <v-row justify="center">
-                      <h4>
-                        รายการรวมทั้งหมด : {{ Item_number_bnrreport }}
-                      </h4>
+                      <h4>รายการรวมทั้งหมด : {{ Item_number_bnrreport }}</h4>
                     </v-row>
                     <v-divider></v-divider>
                   </v-col>
@@ -460,9 +470,7 @@
                       <h4>ระหว่างวันที่ : {{ DateThai_finesreport }}</h4>
                     </v-row>
                     <v-row justify="center">
-                      <h4>
-                        รายการรวมทั้งหมด : {{ Item_number_finesreport }}
-                      </h4>
+                      <h4>รายการรวมทั้งหมด : {{ Item_number_finesreport }}</h4>
                     </v-row>
                     <v-divider></v-divider>
                   </v-col>
@@ -476,7 +484,7 @@
                   >
                     <template v-slot:item="{ item, index }">
                       <tr>
-                        <td align="center" >{{ index + 1 }}</td>
+                        <td align="center">{{ index + 1 }}</td>
                         <td>{{ item.fine_type }}</td>
                         <td>{{ item.receipt_NO }}</td>
                         <td>{{ item.Amount }}</td>
@@ -486,6 +494,16 @@
                       </tr>
                     </template>
                   </v-data-table>
+                  <v-col>
+                    <v-row
+                      justify="center"
+                      style="padding-left: 135px; font-weight: bold;"
+                    >
+                      <span class="w-200  pr-16 mr-16">{{
+                        TotalFineAmount
+                      }}</span>
+                    </v-row>
+                  </v-col>
                 </v-col>
               </v-card>
             </div>
@@ -541,66 +559,66 @@
       </v-col>
     </v-row>
     <!-- dialog dialogUsersData-->
-            <v-dialog
-              :retain-focus="false"
-              v-model="dialogUsersData"
-              persistent
-              max-width="900px"
+    <v-dialog
+      :retain-focus="false"
+      v-model="dialogUsersData"
+      persistent
+      max-width="900px"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="headline">รายชื่อผู้ใช้งาน</span>
+        </v-card-title>
+        <hr />
+        <v-card-text>
+          <v-container>
+            <v-data-table
+              :headers="headers_modul_selectUser"
+              :items="Data_modul_selectUser"
+              :search="searchUser"
+              :items-per-page="5"
+              class="pointer"
             >
-              <v-card>
-                <v-card-title>
-                  <span class="headline">รายชื่อผู้ใช้งาน</span>
-                </v-card-title>
-                <hr />
-                <v-card-text>
-                  <v-container>
-                    <v-data-table
-                      :headers="headers_modul_selectUser"
-                      :items="Data_modul_selectUser"
-                      :search="searchUser"
-                      :items-per-page="5"
-                      class="pointer"
-                    >
-                      <!-- table top section -->
-                      <template v-slot:top>
-                        <v-toolbar flat color="green lighten-3">
-                          <v-toolbar-title
-                            >ค้นหารายชื่อที่ต้องการหรือรหัส</v-toolbar-title
-                          >
-                          <v-divider class="mx-4" inset vertical></v-divider>
-                          <v-col md="5">
-                            <v-row>
-                              <v-text-field
-                                v-model="searchUser"
-                                clearable
-                                single-line
-                                hide-details
-                              ></v-text-field>
-                            </v-row>
-                          </v-col>
-                        </v-toolbar>
-                      </template>
-                      <!-- table tr section -->
-                      <template v-slot:item="{ item }">
-                        <tr v-on:click="Gat_API_Report_Data(item)" align="left">
-                          <td align="center">{{ item.member_ID }}</td>
-                          <td align="center">{{ item.mem_Citizenid }}</td>
-                          <td align="center">{{ item.FName }}</td>
-                          <td align="center">{{ item.LName }}</td>
-                          <td align="center">{{ item.Position | ChangeName }}</td>
-                        </tr>
-                      </template>
-                    </v-data-table>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="error" @click="dialogUsersData = false">
-                    ยกเลิก
-                  </v-btn>
-                </v-card-actions>
-          </v-card>
-      </v-dialog>
+              <!-- table top section -->
+              <template v-slot:top>
+                <v-toolbar flat color="green lighten-3">
+                  <v-toolbar-title
+                    >ค้นหารายชื่อที่ต้องการหรือรหัส</v-toolbar-title
+                  >
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-col md="5">
+                    <v-row>
+                      <v-text-field
+                        v-model="searchUser"
+                        clearable
+                        single-line
+                        hide-details
+                      ></v-text-field>
+                    </v-row>
+                  </v-col>
+                </v-toolbar>
+              </template>
+              <!-- table tr section -->
+              <template v-slot:item="{ item }">
+                <tr v-on:click="Gat_API_Report_Data(item)" align="left">
+                  <td align="center">{{ item.member_ID }}</td>
+                  <td align="center">{{ item.mem_Citizenid }}</td>
+                  <td align="center">{{ item.FName }}</td>
+                  <td align="center">{{ item.LName }}</td>
+                  <td align="center">{{ item.Position | ChangeName }}</td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click="dialogUsersData = false">
+            ยกเลิก
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -643,14 +661,16 @@ export default {
     date: null,
     menu: false,
 
+    TotalFineAmount: "",
+
     dialogUsersData: false,
-    searchUser:'',
+    searchUser: "",
 
     //ค่าที่จะส่ง
     Report_type: "",
     sentDate: {},
 
-     //Table User All
+    //Table User All
     Data_modul_selectUser: [],
     headers_modul_selectUser: [
       { text: "รหัส", align: "center", value: "member_ID" },
@@ -667,13 +687,28 @@ export default {
     GatData_bnruserreport: [],
     headers_bnruserreport: [
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "Barcode", align: "center",value: "Barcode",sortable: false},
-      { text: "ISBN",align: "center",value: "ISBNs",sortable: false},
-      { text: "ชื่อทรัพยากร",align: "center",value: "nameBooks",sortable: false},
-      { text: "ผู้ยืม",align: "center",value: "membernames",sortable: false},
-      { text: "ผู้ให้ยืม",align: "center",value: "librariannames",sortable: false,},
-      { text: "วันที่ยืม",align: "center",value: "Borrow",sortable: false},
-      { text: "วันที่คืน",align: "center",value: "Due",sortable: false},
+      { text: "Barcode", align: "center", value: "Barcode", sortable: false },
+      { text: "ISBN", align: "center", value: "ISBNs", sortable: false },
+      {
+        text: "ชื่อทรัพยากร",
+        align: "center",
+        value: "nameBooks",
+        sortable: false,
+      },
+      {
+        text: "ผู้ยืม",
+        align: "center",
+        value: "membernames",
+        sortable: false,
+      },
+      {
+        text: "ผู้ให้ยืม",
+        align: "center",
+        value: "librariannames",
+        sortable: false,
+      },
+      { text: "วันที่ยืม", align: "center", value: "Borrow", sortable: false },
+      { text: "วันที่คืน", align: "center", value: "Due", sortable: false },
     ],
     //Table รายงานข้อมูลหนังสือ
     Title_databibreport: "",
@@ -682,12 +717,32 @@ export default {
     GatData_databibreport: [],
     headers_databibreport: [
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "Barcode", align: "start",value: "Barcode",sortable: false},
-      { text: "ชื่อทรัพยากร",align: "start",value: "namebooks",sortable: false},
-      { text: "สถานะ",align: "start",value: "item_status",sortable: false},
-      { text: "วันที่นำเข้า",align: "start",value: "item_in",sortable: false},
-      { text: "คำอธิบาย",align: "start",value: "item_description",sortable: false},
-      { text: "ผู้จัดการ",align: "start",value: "librariannames",sortable: false}, 
+      { text: "Barcode", align: "start", value: "Barcode", sortable: false },
+      {
+        text: "ชื่อทรัพยากร",
+        align: "start",
+        value: "namebooks",
+        sortable: false,
+      },
+      { text: "สถานะ", align: "start", value: "item_status", sortable: false },
+      {
+        text: "วันที่นำเข้า",
+        align: "start",
+        value: "item_in",
+        sortable: false,
+      },
+      {
+        text: "คำอธิบาย",
+        align: "start",
+        value: "item_description",
+        sortable: false,
+      },
+      {
+        text: "ผู้จัดการ",
+        align: "start",
+        value: "librariannames",
+        sortable: false,
+      },
     ],
     //Table รายงานข้อมูลหนังสือค้างส่ง
     Title_notreturnreport: "",
@@ -696,13 +751,28 @@ export default {
     GatData_notreturnreport: [],
     headers_notreturnreport: [
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "Barcode", align: "center",value: "Barcode",sortable: false},
-      { text: "ISBN",align: "center",value: "ISBNs",sortable: false},
-      { text: "ชื่อทรัพยากร",align: "center",value: "nameBooks",sortable: false},
-      { text: "ผู้ยืม",align: "center",value: "membernames",sortable: false},
-      { text: "ผู้ให้ยืม",align: "center",value: "librariannames",sortable: false,},
-      { text: "วันที่ยืม",align: "center",value: "Borrow",sortable: false},
-      { text: "วันที่คืน",align: "center",value: "Returns",sortable: false},
+      { text: "Barcode", align: "center", value: "Barcode", sortable: false },
+      { text: "ISBN", align: "center", value: "ISBNs", sortable: false },
+      {
+        text: "ชื่อทรัพยากร",
+        align: "center",
+        value: "nameBooks",
+        sortable: false,
+      },
+      {
+        text: "ผู้ยืม",
+        align: "center",
+        value: "membernames",
+        sortable: false,
+      },
+      {
+        text: "ผู้ให้ยืม",
+        align: "center",
+        value: "librariannames",
+        sortable: false,
+      },
+      { text: "วันที่ยืม", align: "center", value: "Borrow", sortable: false },
+      { text: "วันที่คืน", align: "center", value: "Returns", sortable: false },
     ],
     //Table รายงานสถิติข้อมูลการยืม-คืนหนังสือ
     Title_bnrreport: "",
@@ -711,13 +781,28 @@ export default {
     GatData_bnrreport: [],
     headers_bnrreport: [
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "Barcode", align: "center",value: "Barcode",sortable: false},
-      { text: "ISBN",align: "center",value: "ISBNs",sortable: false},
-      { text: "ชื่อทรัพยากร",align: "center",value: "nameBooks",sortable: false},
-      { text: "ผู้ยืม",align: "center",value: "membernames",sortable: false},
-      { text: "ผู้ให้ยืม",align: "center",value: "librariannames",sortable: false,},
-      { text: "วันที่ยืม",align: "center",value: "Borrow",sortable: false},
-      { text: "วันที่คืน",align: "center",value: "Due",sortable: false},
+      { text: "Barcode", align: "center", value: "Barcode", sortable: false },
+      { text: "ISBN", align: "center", value: "ISBNs", sortable: false },
+      {
+        text: "ชื่อทรัพยากร",
+        align: "center",
+        value: "nameBooks",
+        sortable: false,
+      },
+      {
+        text: "ผู้ยืม",
+        align: "center",
+        value: "membernames",
+        sortable: false,
+      },
+      {
+        text: "ผู้ให้ยืม",
+        align: "center",
+        value: "librariannames",
+        sortable: false,
+      },
+      { text: "วันที่ยืม", align: "center", value: "Borrow", sortable: false },
+      { text: "วันที่คืน", align: "center", value: "Due", sortable: false },
     ],
     //Table รายงานสถิติการเข้าใช้ห้องสมุด
     Title_statbnrreport: "",
@@ -728,23 +813,28 @@ export default {
     GatData_statbnrreport_month: [],
     headers_statbnrreport_day: [
       { text: "วันจันทร์", align: "center", value: "Mon", sortable: false },
-      { text: "วันอังคาร", align: "center",value: "Tue",sortable: false},
-      { text: "วันพุธ",align: "center",value: "Wed",sortable: false},
-      { text: "วันพฤหัสบดี",align: "center",value: "Thu",sortable: false},
-      { text: "วันศุกร์",align: "center",value: "Fri",sortable: false},
-      { text: "วันเสาร์",align: "center",value: "Sat",sortable: false,},
-      { text: "วันอาทิตย์",align: "center",value: "Sun",sortable: false},
+      { text: "วันอังคาร", align: "center", value: "Tue", sortable: false },
+      { text: "วันพุธ", align: "center", value: "Wed", sortable: false },
+      { text: "วันพฤหัสบดี", align: "center", value: "Thu", sortable: false },
+      { text: "วันศุกร์", align: "center", value: "Fri", sortable: false },
+      { text: "วันเสาร์", align: "center", value: "Sat", sortable: false },
+      { text: "วันอาทิตย์", align: "center", value: "Sun", sortable: false },
     ],
     headers_statbnrreport_week: [
       { text: "สัปดาห์ที่1", align: "center", value: "WEEK1", sortable: false },
-      { text: "สัปดาห์ที่2", align: "center",value: "WEEK2",sortable: false},
-      { text: "สัปดาห์ที่3",align: "center",value: "WEEK3",sortable: false},
-      { text: "สัปดาห์ที่4",align: "center",value: "WEEK4",sortable: false},
-      { text: "สัปดาห์ที่5",align: "center",value: "WEEK5",sortable: false},
+      { text: "สัปดาห์ที่2", align: "center", value: "WEEK2", sortable: false },
+      { text: "สัปดาห์ที่3", align: "center", value: "WEEK3", sortable: false },
+      { text: "สัปดาห์ที่4", align: "center", value: "WEEK4", sortable: false },
+      { text: "สัปดาห์ที่5", align: "center", value: "WEEK5", sortable: false },
     ],
     headers_statbnrreport_month: [
       { text: "เดือน", align: "center", value: "MONTH", sortable: false },
-      { text: "จำนวน(รายการ)", align: "center", value: "COUNT", sortable: false },
+      {
+        text: "จำนวน(รายการ)",
+        align: "center",
+        value: "COUNT",
+        sortable: false,
+      },
     ],
     //Table รายงานค่าปรับ
     Title_finesreport: "",
@@ -753,13 +843,32 @@ export default {
     GatData_finesreport: [],
     headers_finesreport: [
       { text: "ลำดับ", align: "center", value: "index", sortable: false },
-      { text: "ชนิดค่าปรับ",align: "start",value: "fine_type",sortable: false},
-      { text: "เลขที่ใบเสร็จ", align: "start",value: "receipt_NO",sortable: false},
-      { text: "จำนวน(บาท)",align: "start",value: "Amount",sortable: false},
-      { text: "สถานะ",align: "start",value: "IsPaid",sortable: false},
-      { text: "คำอธิบาย",align: "start",value: "Description",sortable: false,},
-      { text: "วันที่ทำรายการ",align: "start",value: "createdAt",sortable: false},
-
+      {
+        text: "ชนิดค่าปรับ",
+        align: "start",
+        value: "fine_type",
+        sortable: false,
+      },
+      {
+        text: "เลขที่ใบเสร็จ",
+        align: "start",
+        value: "receipt_NO",
+        sortable: false,
+      },
+      { text: "จำนวน(บาท)", align: "start", value: "Amount", sortable: false },
+      { text: "สถานะ", align: "start", value: "IsPaid", sortable: false },
+      {
+        text: "คำอธิบาย",
+        align: "start",
+        value: "Description",
+        sortable: false,
+      },
+      {
+        text: "วันที่ทำรายการ",
+        align: "start",
+        value: "createdAt",
+        sortable: false,
+      },
     ],
 
     //Table รายงานการตัดจำหน่ายหนังสือ
@@ -768,23 +877,53 @@ export default {
     Item_number_descriptreport: "",
     GatData_descriptreport: [],
     headers_descriptreport: [
-      { text: "ลำดับ", align: "center", value: "index", sortable: false , },
-      { text: "Barcode", align: "center",value: "Barcode",sortable: false, },
-      { text: "ชื่อทรัพยากร",align: "center",value: "namebooks",sortable: false , },
-      { text: "ฉบับที่",align: "center",value: "Copy",sortable: false , },
-      { text: "วันที่นำเข้า",align: "center",value: "item_in",sortable: false , },
-      { text: "ตัดจำหน่ายนำเข้า",align: "center",value: "desc_in",sortable: false , },
-      { text: "วันที่นำออก",align: "center",value: "item_out",sortable: false , },
-      { text: "ตัดจำหน่ายนำออก",align: "center",value: "desc_out",sortable: false , },
-      { text: "ผู้จัดการ",align: "center",value: "librariannames",sortable: false, },
+      { text: "ลำดับ", align: "center", value: "index", sortable: false },
+      { text: "Barcode", align: "center", value: "Barcode", sortable: false },
+      {
+        text: "ชื่อทรัพยากร",
+        align: "center",
+        value: "namebooks",
+        sortable: false,
+      },
+      { text: "ฉบับที่", align: "center", value: "Copy", sortable: false },
+      {
+        text: "วันที่นำเข้า",
+        align: "center",
+        value: "item_in",
+        sortable: false,
+      },
+      {
+        text: "ตัดจำหน่ายนำเข้า",
+        align: "center",
+        value: "desc_in",
+        sortable: false,
+      },
+      {
+        text: "วันที่นำออก",
+        align: "center",
+        value: "item_out",
+        sortable: false,
+      },
+      {
+        text: "ตัดจำหน่ายนำออก",
+        align: "center",
+        value: "desc_out",
+        sortable: false,
+      },
+      {
+        text: "ผู้จัดการ",
+        align: "center",
+        value: "librariannames",
+        sortable: false,
+      },
     ],
   }),
 
-    watch: {
-      menu (val) {
-        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-      },
+  watch: {
+    menu(val) {
+      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
+  },
 
   computed: {
     dateRangeText() {
@@ -793,12 +932,12 @@ export default {
   },
 
   methods: {
-    save (date) {
-        this.$refs.menu.save(date)
-      },
-    API_GetusersALL(){
+    save(date) {
+      this.$refs.menu.save(date);
+    },
+    API_GetusersALL() {
       this.dialogUsersData = true;
-      this.GatData_bnruserreport=[];
+      this.GatData_bnruserreport = [];
       const url = `${process.env.VUE_APP_API_URL}/allmember/listalluser`;
       axios.get(url).then((results) => {
         this.Data_modul_selectUser = results.data;
@@ -820,34 +959,36 @@ export default {
     },
 
     Gat_API_Report_Data(item) {
-      this.GatData_bnruserrepor =[];
-      this.GatData_databibreport =[];
-      this.GatData_notreturnreport =[];
-      this.GatData_bnrreport =[];
-      this.GatData_statbnrreport =[];
-      this.GatData_statbnrreport_date= [],
-      this.GatData_statbnrreport_week= [],
-      this.GatData_statbnrreport_month= [],
-      this.GatData_finesreport =[];
-      this.GatData_descriptreport =[];
+      this.GatData_bnruserrepor = [];
+      this.GatData_databibreport = [];
+      this.GatData_notreturnreport = [];
+      this.GatData_bnrreport = [];
+      this.GatData_statbnrreport = [];
+      (this.GatData_statbnrreport_date = []),
+        (this.GatData_statbnrreport_week = []),
+        (this.GatData_statbnrreport_month = []),
+        (this.GatData_finesreport = []);
+      this.GatData_descriptreport = [];
 
-
-      var sentDate = Object.assign({},{ startDate: this.dates[0], endDate: this.dates[1] });
+      var sentDate = Object.assign(
+        {},
+        { startDate: this.dates[0], endDate: this.dates[1] }
+      );
 
       //รายงานข้อมูลสมาชิก
       if (this.Report_type == "bnruserreport") {
-          const url = `${process.env.VUE_APP_API_URL}/report/bnruserreport`;
-          axios.post(url,{member_ID:item.member_ID}).then((results) => {
-                  this.Title_bnruserreport= results.data.Title
-                  this.DateThai_bnruserreport= results.data.DateThai
-                  this.Item_number_bnruserreport= results.data.Total
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก'){
-            alert('ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก')
-          }else{
-              this.GatData_bnruserreport = results.data.Data;
-          }     
+        const url = `${process.env.VUE_APP_API_URL}/report/bnruserreport`;
+        axios.post(url, { member_ID: item.member_ID }).then((results) => {
+          this.Title_bnruserreport = results.data.Title;
+          this.DateThai_bnruserreport = results.data.DateThai;
+          this.Item_number_bnruserreport = results.data.Total;
+          if (results.data.Data == "ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก") {
+            alert("ไม่พบข้อมูลรายงานข้อมูลการยืมสมาชิก");
+          } else {
+            this.GatData_bnruserreport = results.data.Data;
+          }
         });
-              this.dialogUsersData=false
+        this.dialogUsersData = false;
 
         //รายงานข้อมูลหนังสือ
       } else if (this.Report_type == "databibreport") {
@@ -856,10 +997,10 @@ export default {
           this.Title_databibreport = results.data.Title;
           this.DateThai_databibreport = results.data.DateThai;
           this.Item_number_databibreport = results.data.Total;
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานข้อมูลหนังสือ'){
-            alert('ไม่พบข้อมูลรายงานข้อมูลหนังสือ')
-          }else{
-              this.GatData_databibreport = results.data.Data;
+          if (results.data.Data == "ไม่พบข้อมูลรายงานข้อมูลหนังสือ") {
+            alert("ไม่พบข้อมูลรายงานข้อมูลหนังสือ");
+          } else {
+            this.GatData_databibreport = results.data.Data;
           }
         });
 
@@ -870,10 +1011,10 @@ export default {
           this.Title_notreturnreport = results.data.Title;
           this.DateThai_notreturnreport = results.data.DateThai;
           this.Item_number_notreturnreport = results.data.Total;
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานหนังสือค้างส่ง'){
-            alert('ไม่พบข้อมูลรายงานหนังสือค้างส่ง')
-          }else{
-              this.GatData_notreturnreport = results.data.Data;
+          if (results.data.Data == "ไม่พบข้อมูลรายงานหนังสือค้างส่ง") {
+            alert("ไม่พบข้อมูลรายงานหนังสือค้างส่ง");
+          } else {
+            this.GatData_notreturnreport = results.data.Data;
           }
         });
 
@@ -884,17 +1025,19 @@ export default {
           this.Title_bnrreport = results.data.Title;
           this.DateThai_bnrreport = results.data.DateThai;
           this.Item_number_bnrreport = results.data.Total;
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ'){
-            alert('ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ')
-          }else{
-              this.GatData_bnrreport = results.data.Data;
+          if (
+            results.data.Data == "ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ"
+          ) {
+            alert("ไม่พบข้อมูลรายงานสถิติข้อมูลการยืม-คืนหนังสือ");
+          } else {
+            this.GatData_bnrreport = results.data.Data;
           }
         });
 
         //รายงานสถิติการเข้าใช้ห้องสมุด
       } else if (this.Report_type == "statbnrreport") {
         const url = `${process.env.VUE_APP_API_URL}/report/statbnrreport`;
-        axios.post(url, {Date:this.date}).then((results) => {
+        axios.post(url, { Date: this.date }).then((results) => {
           this.Title_statbnrreport = results.data.Title;
           this.DateThai_statbnrreport = results.data.DateThai;
           this.Item_number_statbnrreport = results.data.Total;
@@ -910,12 +1053,12 @@ export default {
           this.Title_finesreport = results.data.Title;
           this.DateThai_finesreport = results.data.DateThai;
           this.Item_number_finesreport = results.data.Total;
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานค่าปรับ'){
-            alert('ไม่พบข้อมูลรายงานค่าปรับ')
-          }else{
-              this.GatData_finesreport = results.data.Data;
+          this.TotalFineAmount = results.data.TotalFineAmount;
+          if (results.data.Data == "ไม่พบข้อมูลรายงานค่าปรับ") {
+            alert("ไม่พบข้อมูลรายงานค่าปรับ");
+          } else {
+            this.GatData_finesreport = results.data.Data;
           }
-          
         });
 
         //รายงานการตัดจำหน่ายหนังสือ
@@ -925,10 +1068,10 @@ export default {
           this.Title_descriptreport = results.data.Title;
           this.DateThai_descriptreport = results.data.DateThai;
           this.Item_number_descriptreport = results.data.Total;
-          if(results.data.Data == 'ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ'){
-            alert('ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ')
-          }else{
-              this.GatData_descriptreport = results.data.Data;
+          if (results.data.Data == "ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ") {
+            alert("ไม่พบข้อมูลรายงานการตัดจำหน่ายหนังสือ");
+          } else {
+            this.GatData_descriptreport = results.data.Data;
           }
         });
       }
@@ -938,7 +1081,11 @@ export default {
 </script>
 
 <style>
-.pointer {cursor: pointer;}
-
-
+.pointer {
+  cursor: pointer;
+}
+.w-200 {
+  font-weight: 600;
+  margin-left: -255px;
+}
 </style>
