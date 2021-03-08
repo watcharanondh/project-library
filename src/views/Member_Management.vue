@@ -183,6 +183,7 @@
                           label="รหัส"
                           solo
                           dense
+                          disabled
                         >
                         </v-text-field>
                       </v-col>
@@ -624,6 +625,16 @@ export default {
     ],
 
   }),
+  
+  created() {
+    this.GeneratePassword();
+
+    let uri = localStorage.getItem("Position") == 'admin' ? `${process.env.VUE_APP_API_URL}/allmember/listalluseradmin/`: `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
+    // let uri = `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
+    axios.get(uri).then((response) => {
+      this.Data_Users = response.data;
+    });
+  },
 
     /////// check access permission /////////////  
    mounted() {
@@ -650,15 +661,14 @@ export default {
   },
   /////////////////////////////////////////////////
 
-  created() {
-    let uri = localStorage.getItem("Position") == 'admin' ? `${process.env.VUE_APP_API_URL}/allmember/listalluseradmin/`: `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
-    // let uri = `${process.env.VUE_APP_API_URL}/allmember/listalluser/`;
-    axios.get(uri).then((response) => {
-      this.Data_Users = response.data;
-    });
-  },
-
   methods: {
+    GeneratePassword(){
+    axios.get(`${process.env.VUE_APP_API_URL}/allmember/getnextmemid`).then((ras) =>{
+      this.Put_Users.member_ID = ras.data;
+      //console.log('สร้างรหัส',this.Put_Users.member_ID);
+      });
+
+    },
   setSelectedtype() {
     //console.log(this.select.value);
       this.Put_Users.Position = this.select.value;
@@ -670,8 +680,6 @@ export default {
                 this.chkpo=0;
      }
     },
-
-
 
   //อัพเดทรูป โปรไฟล์
   async onFileSelected(event) {
@@ -772,6 +780,12 @@ export default {
                         this.close();
                       }else{
                         alert(`บันทึกข้อมูลไม่สำเร็จเนื่องจาก ${res.data.msg} `);
+                        if(res.data.msg == 'มีผู้ใช้รหัสนี้แล้ว'){
+                          alert(`บันทึกข้อมูลไม่สำเร็จเนื่องจาก ${res.data.msg} ระบบจะสร้างรหัสใหม่อีกครั้งโปรดกดบันทึกใหม่อีกครั้ง`);
+                          this.Put_Users.member_ID =null;
+                          this.GeneratePassword();
+                        }
+                          
                       }
                   }); 
         }
